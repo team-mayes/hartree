@@ -10,7 +10,7 @@ tokens { TERM; CPUTIME;
 }
 
 @header {
-  package org.cmayes.hartree.parser.gaussian;
+  package org.cmayes.hartree.parser.gaussian.antlr;
 }
 
 // This is Java-specific; these are context flags to avoid matching on unwanted data. 

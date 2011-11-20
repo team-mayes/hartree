@@ -7,7 +7,7 @@ options {
 }
 
 @header {
-package org.cmayes.hartree.parser.gaussian;
+package org.cmayes.hartree.parser.gaussian.antlr;
 }
 
 // These rules pull data out of the token stream and create an AST using the format at the end of the line.

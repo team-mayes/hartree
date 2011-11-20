@@ -12,3 +12,5 @@ djapian_spaces/
 *.pyc
 *.swp
 .~*#
+antlr-generator/
+*.tokens

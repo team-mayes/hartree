@@ -14,6 +14,8 @@ import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.EnvironmentException;
 import org.cmayes.hartree.parser.CalculationResult;
 import org.cmayes.hartree.parser.ParseException;
+import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
+import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Parser;
 import org.joda.time.Duration;
 
 /**
