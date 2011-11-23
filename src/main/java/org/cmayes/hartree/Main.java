@@ -25,6 +25,15 @@ public class Main {
     @Argument
     private List<String> arguments = new ArrayList<String>();
     private File file;
+
+    File getFile() {
+        return file;
+    }
+
+    File getDirectory() {
+        return directory;
+    }
+
     private File directory;
 
     /**
@@ -35,7 +44,7 @@ public class Main {
      * @throws IllegalArgumentException
      *             If the file is not readable.
      */
-    @Option(name = "-file", usage = "The file to process")
+    @Option(aliases = { "-f" }, name = "--file", usage = "The file to process")
     public void setFile(final File theFile) {
         if (theFile.canRead()) {
             this.file = theFile;
@@ -51,7 +60,7 @@ public class Main {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(name = "-directory", usage = "The base directory of the files to process")
+    @Option(aliases = { "-d" }, name = "--directory", usage = "The base directory of the files to process")
     public void setDirectory(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.directory = dir;
@@ -66,7 +75,7 @@ public class Main {
      * @param args
      *            The CLI arguments.
      */
-    public static void main(final String[] args) {
+    public static void main(final String... args) {
         try {
             new Main().doMain(args);
         } catch (final CmdLineException e) {
@@ -93,7 +102,7 @@ public class Main {
      * @throws CmdLineException
      *             When there are problems processing the command line.
      */
-    public void doMain(final String[] args) throws CmdLineException {
+    public void doMain(final String... args) throws CmdLineException {
         final CmdLineParser parser = new CmdLineParser(this);
 
         parser.parseArgument(args);
