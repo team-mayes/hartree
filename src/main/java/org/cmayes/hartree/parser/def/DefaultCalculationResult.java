@@ -1,10 +1,11 @@
-package org.cmayes.hartree.parser;
+package org.cmayes.hartree.parser.def;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.cmayes.hartree.parser.CalculationResult;
 import org.joda.time.Duration;
 
 /**
@@ -12,7 +13,7 @@ import org.joda.time.Duration;
  * 
  * @author cmayes
  */
-public class DefaultCalculationResult {
+public class DefaultCalculationResult implements CalculationResult {
     private List<Date> terminationDates = new ArrayList<Date>();
     private List<Duration> cpuTimes = new ArrayList<Duration>();
     private Double transPart;

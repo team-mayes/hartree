@@ -11,9 +11,10 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
-import org.cmayes.hartree.parser.DefaultCalculationResult;
+import org.cmayes.hartree.parser.CalculationResult;
 import org.cmayes.hartree.parser.ParseException;
 import org.cmayes.hartree.parser.Parser;
+import org.cmayes.hartree.parser.def.DefaultCalculationResult;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Parser;
 import org.joda.time.Duration;
@@ -27,7 +28,7 @@ import com.cmayes.common.exception.EnvironmentException;
  * 
  * @author cmayes
  */
-public class Gaussian09Loader implements Parser<DefaultCalculationResult> {
+public class Gaussian09Loader implements Parser<CalculationResult> {
     private static final int SEC_IDX = 3;
     private static final int MIN_IDX = 2;
     private static final int HOUR_IDX = 1;
@@ -41,7 +42,7 @@ public class Gaussian09Loader implements Parser<DefaultCalculationResult> {
      * 
      * @see org.cmayes.hartree.parser.Parser#parse(java.io.Reader)
      */
-    public DefaultCalculationResult parse(final Reader reader) {
+    public CalculationResult parse(final Reader reader) {
         return extractCalcThermData(extractAst(reader));
     }
 
@@ -67,14 +68,14 @@ public class Gaussian09Loader implements Parser<DefaultCalculationResult> {
     }
 
     /**
-     * Fills a {@link DefaultCalculationResult} instance with data from the AST.
+     * Fills a {@link CalculationResult} instance with data from the AST.
      * 
      * @param ast
      *            The AST to traverse.
      * @return The filled result instance.
      */
-    private DefaultCalculationResult extractCalcThermData(final CommonTree ast) {
-        final DefaultCalculationResult result = new DefaultCalculationResult();
+    private CalculationResult extractCalcThermData(final CommonTree ast) {
+        final CalculationResult result = new DefaultCalculationResult();
         @SuppressWarnings("unchecked")
         final List<CommonTree> eventList = ast.getChildren();
         for (CommonTree curNode : eventList) {
