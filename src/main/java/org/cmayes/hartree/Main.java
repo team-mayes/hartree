@@ -25,16 +25,25 @@ public class Main {
     @Argument
     private List<String> arguments = new ArrayList<String>();
     private File file;
+    private File directory;
 
+    /**
+     * Returns the specified file location.
+     * 
+     * @return The specified file location.
+     */
     File getFile() {
         return file;
     }
 
+    /**
+     * Returns the specified directory location.
+     * 
+     * @return The specified directory location.
+     */
     File getDirectory() {
         return directory;
     }
-
-    private File directory;
 
     /**
      * Sets the file if it is readable.

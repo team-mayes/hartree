@@ -1,35 +1,51 @@
 package org.cmayes.hartree.parser;
 
+/**
+ * Thrown for parsing errors.
+ * 
+ * @author cmayes
+ */
 public class ParseException extends RuntimeException {
 
     /** UID. */
     private static final long serialVersionUID = 6873324155349921602L;
 
     /**
-     * {@inheritDoc}
+     * Zero-arg constructor.
      */
     public ParseException() {
         super();
     }
 
     /**
-     * {@inheritDoc}
+     * Wrapped cause.
+     * 
+     * @param cause
+     *            The wrapped cause.
      */
-    public ParseException(Throwable cause) {
+    public ParseException(final Throwable cause) {
         super(cause);
     }
 
     /**
-     * {@inheritDoc}
+     * Exception message.
+     * 
+     * @param mes
+     *            Exception message.
      */
-    public ParseException(String mes) {
+    public ParseException(final String mes) {
         super(mes);
     }
 
     /**
-     * {@inheritDoc}
+     * Cause and message.
+     * 
+     * @param mes
+     *            Exception message.
+     * @param cause
+     *            The wrapped cause.
      */
-    public ParseException(String mes, Throwable cause) {
+    public ParseException(final String mes, final Throwable cause) {
         super(mes, cause);
     }
 }
