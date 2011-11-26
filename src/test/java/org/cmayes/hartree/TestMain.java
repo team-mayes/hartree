@@ -4,8 +4,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Tests the main class.
@@ -15,8 +13,6 @@ import org.slf4j.LoggerFactory;
 public class TestMain {
     private static final String GAUSS_DIR = "src/test/resources/files/g09";
     private static final String REV4_LOC = GAUSS_DIR + "/GL_THF_rev4.log";
-    /** Logger. */
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Tests specifying an existing file.
