@@ -1,4 +1,4 @@
-package org.cmayes.hartree.basic;
+package org.cmayes.hartree.proc.basic;
 
 import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 
@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 import org.cmayes.hartree.parser.Parser;
+import org.cmayes.hartree.proc.FileProcessor;
 
 import com.cmayes.common.exception.EnvironmentException;
 
@@ -18,7 +19,7 @@ import com.cmayes.common.exception.EnvironmentException;
  * @param <T>
  *            The type that is returned from file processing.
  */
-public class BasicFileProcessor<T> {
+public class BasicFileProcessor<T> implements FileProcessor<T> {
     private final Parser<T> parser;
 
     /**
@@ -32,11 +33,9 @@ public class BasicFileProcessor<T> {
     }
 
     /**
-     * Processes a single file.
+     * {@inheritDoc}
      * 
-     * @param processMe
-     *            The file to process.
-     * @return The results of the processing.
+     * @see org.cmayes.hartree.proc.FileProcessor#single(java.io.File)
      */
     public T single(final File processMe) {
         try {
