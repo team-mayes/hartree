@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
-import org.cmayes.hartree.parser.Parser;
+import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.proc.FileProcessor;
 
 import com.cmayes.common.exception.EnvironmentException;
@@ -20,7 +20,7 @@ import com.cmayes.common.exception.EnvironmentException;
  *            The type that is returned from file processing.
  */
 public class BasicFileProcessor<T> implements FileProcessor<T> {
-    private final Parser<T> parser;
+    private final Loader<T> parser;
 
     /**
      * Creates a processor that will use the given parser.
@@ -28,7 +28,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      * @param theParser
      *            The parser to use.
      */
-    public BasicFileProcessor(final Parser<T> theParser) {
+    public BasicFileProcessor(final Loader<T> theParser) {
         parser = asNotNull(theParser, "Parser is null");
     }
 
@@ -39,7 +39,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      */
     public T single(final File processMe) {
         try {
-            return parser.parse(new FileReader(processMe));
+            return parser.load(new FileReader(processMe));
         } catch (final FileNotFoundException e) {
             throw new EnvironmentException(
                     "File not found while creating reader", e);

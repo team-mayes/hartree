@@ -1,4 +1,4 @@
-package org.cmayes.hartree.parser;
+package org.cmayes.hartree.loader;
 
 import java.io.Reader;
 
@@ -13,7 +13,7 @@ import com.cmayes.common.exception.EnvironmentException;
  * @param <T>
  *            The type of data structure that will be returned.
  */
-public interface Parser<T> {
+public interface Loader<T> {
 
     /**
      * Parses the data from the reader, returning the handled result type.
@@ -27,5 +27,5 @@ public interface Parser<T> {
      * @throws ParseException
      *             If there is a problem parsing data from the reader.
      */
-    T parse(Reader reader);
+    T load(Reader reader);
 }

@@ -1,4 +1,4 @@
-package org.cmayes.hartree.parser;
+package org.cmayes.hartree.loader;
 
 /**
  * Thrown for parsing errors.

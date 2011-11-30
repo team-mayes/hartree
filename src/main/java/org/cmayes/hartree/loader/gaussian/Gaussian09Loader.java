@@ -1,4 +1,4 @@
-package org.cmayes.hartree.parser.gaussian;
+package org.cmayes.hartree.loader.gaussian;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -11,9 +11,9 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
-import org.cmayes.hartree.parser.CalculationResult;
-import org.cmayes.hartree.parser.ParseException;
-import org.cmayes.hartree.parser.Parser;
+import org.cmayes.hartree.loader.CalculationResult;
+import org.cmayes.hartree.loader.Loader;
+import org.cmayes.hartree.loader.ParseException;
 import org.cmayes.hartree.parser.def.DefaultCalculationResult;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Parser;
@@ -28,7 +28,7 @@ import com.cmayes.common.exception.EnvironmentException;
  * 
  * @author cmayes
  */
-public class Gaussian09Loader implements Parser<CalculationResult> {
+public class Gaussian09Loader implements Loader<CalculationResult> {
     private static final int SEC_IDX = 3;
     private static final int MIN_IDX = 2;
     private static final int HOUR_IDX = 1;
@@ -40,9 +40,9 @@ public class Gaussian09Loader implements Parser<CalculationResult> {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.Parser#parse(java.io.Reader)
+     * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader)
      */
-    public CalculationResult parse(final Reader reader) {
+    public CalculationResult load(final Reader reader) {
         return extractCalcThermData(extractAst(reader));
     }
 

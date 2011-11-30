@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.cmayes.hartree.parser.CalculationResult;
+import org.cmayes.hartree.loader.CalculationResult;
 import org.joda.time.Duration;
 
 /**
@@ -26,7 +26,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#getElecEn()
+     * @see org.cmayes.hartree.loader.CalculationResult#getElecEn()
      */
     public Double getElecEn() {
         return elecEn;
@@ -35,7 +35,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#setElecEn(java.lang.Double)
+     * @see org.cmayes.hartree.loader.CalculationResult#setElecEn(java.lang.Double)
      */
     public void setElecEn(final Double energies) {
         this.elecEn = energies;
@@ -44,7 +44,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#getMult()
+     * @see org.cmayes.hartree.loader.CalculationResult#getMult()
      */
     public Integer getMult() {
         return mult;
@@ -53,7 +53,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#setMult(java.lang.Integer)
+     * @see org.cmayes.hartree.loader.CalculationResult#setMult(java.lang.Integer)
      */
     public void setMult(final Integer multVal) {
         this.mult = multVal;
@@ -62,7 +62,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#getRotPart()
+     * @see org.cmayes.hartree.loader.CalculationResult#getRotPart()
      */
     public Double getRotPart() {
         return rotPart;
@@ -71,7 +71,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#setRotPart(java.lang.Double)
+     * @see org.cmayes.hartree.loader.CalculationResult#setRotPart(java.lang.Double)
      */
     public void setRotPart(final Double rotationalPart) {
         this.rotPart = rotationalPart;
@@ -80,7 +80,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#getTransPart()
+     * @see org.cmayes.hartree.loader.CalculationResult#getTransPart()
      */
     public Double getTransPart() {
         return transPart;
@@ -89,7 +89,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#setTransPart(java.lang.Double
+     * @see org.cmayes.hartree.loader.CalculationResult#setTransPart(java.lang.Double
      *      )
      */
     public void setTransPart(final Double translationalPart) {
@@ -99,7 +99,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#getAtomCount()
+     * @see org.cmayes.hartree.loader.CalculationResult#getAtomCount()
      */
     public Integer getAtomCount() {
         return atomCount;
@@ -108,7 +108,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#setAtomCount(java.lang.Integer
+     * @see org.cmayes.hartree.loader.CalculationResult#setAtomCount(java.lang.Integer
      *      )
      */
     public void setAtomCount(final Integer count) {
@@ -118,7 +118,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#getFrequencyValues()
+     * @see org.cmayes.hartree.loader.CalculationResult#getFrequencyValues()
      */
     public List<Double> getFrequencyValues() {
         return frequencyValues;
@@ -127,7 +127,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#setFrequencyValues(java.util
+     * @see org.cmayes.hartree.loader.CalculationResult#setFrequencyValues(java.util
      *      .List)
      */
     public void setFrequencyValues(final List<Double> freqValues) {
@@ -137,7 +137,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#getTerminationDates()
+     * @see org.cmayes.hartree.loader.CalculationResult#getTerminationDates()
      */
     public List<Date> getTerminationDates() {
         return terminationDates;
@@ -146,7 +146,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#setTerminationDates(java.
+     * @see org.cmayes.hartree.loader.CalculationResult#setTerminationDates(java.
      *      util.List)
      */
     public void setTerminationDates(final List<Date> termDates) {
@@ -156,7 +156,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#getCpuTimes()
+     * @see org.cmayes.hartree.loader.CalculationResult#getCpuTimes()
      */
     public List<Duration> getCpuTimes() {
         return cpuTimes;
@@ -165,7 +165,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.parser.CalculationResult#setCpuTimes(java.util.List)
+     * @see org.cmayes.hartree.loader.CalculationResult#setCpuTimes(java.util.List)
      */
     public void setCpuTimes(final List<Duration> durations) {
         this.cpuTimes = durations;
