@@ -2,7 +2,6 @@ package org.cmayes.hartree.calc.impl;
 
 import static com.cmayes.common.PhysicalConstants.AVOGADRO;
 import static com.cmayes.common.PhysicalConstants.BOLTZ;
-import static com.cmayes.common.PhysicalConstants.GAS_JOULES;
 import static com.cmayes.common.PhysicalConstants.GAS_KCAL;
 import static com.cmayes.common.PhysicalConstants.KELVIN_25C;
 import static com.cmayes.common.PhysicalConstants.LIGHT_CM;
@@ -24,8 +23,6 @@ import org.cmayes.hartree.model.def.DefaultThermalResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cmayes.common.PhysicalConstants;
-
 /**
  * Calculates enthalpy, entropy, and heat capacity needed for calculating Gibbs
  * free energy and kinetic parameters.
@@ -33,7 +30,7 @@ import com.cmayes.common.PhysicalConstants;
  * @author cmayes
  */
 public class ThermalCalculation implements
-        Calculation<CalculationResult, CalculationResult> {
+        Calculation<CalculationResult, List<ThermalResult>> {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
     // Scaling Factors //
@@ -41,12 +38,6 @@ public class ThermalCalculation implements
     private static final double SCALE_RATIO = 3 / 2;
     /** Scaled gas constant. */
     private static final double SCALED_GAS_KCAL = SCALE_RATIO * GAS_KCAL;
-    /**
-     * Universal gas constant multiplied by room temperature (Kelvin) divided
-     * for English unit conversion.
-     */
-    private static final double MYSTERY_VALUE = GAS_JOULES * KELVIN_25C
-            / PhysicalConstants.Conversions.ATM_TO_PASCALS;
     /** The temperatures (Kelvin) to use for calculations. */
     private static final List<Double> TEMPS = Arrays.asList(298.15, 300.0,
             400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 1000.0, 1100.0, 1200.0,
@@ -61,26 +52,19 @@ public class ThermalCalculation implements
     private double ssf = 0.9450;
     /** Enthalpy. */
     private double hsf = 0.9440;
-    /** Partition function. */
-    private double qsf = 0.9355;
-    /** Low-frequency scaling factor. */
-    private double lsf = 0.9355;
 
     /**
      * {@inheritDoc}
      * 
      * @see org.cmayes.hartree.calc.impl.Calculation#calculate(T)
      */
-    public CalculationResult calculate(final CalculationResult calcResult) {
+    public List<ThermalResult> calculate(final CalculationResult calcResult) {
         final List<ThermalResult> results = new ArrayList<ThermalResult>();
         final SymAdj symAdj = evalSym(calcResult);
         for (Double curTemp : TEMPS) {
-            double transVal = scaleTransPart(calcResult.getTransPart(), curTemp);
-            double rotVal = scaleRotPart(calcResult, symAdj, curTemp);
             double entropyTemp = scaleEntropyTemp(calcResult, symAdj, curTemp);
             double heatCap = scaleHeatCap(symAdj);
             double enthalpy = scaleEnthalpyTemp(symAdj, curTemp);
-            double vibeVal = 1;
             double zpeVal = 0;
             for (double curFreq : calcResult.getFrequencyValues()) {
                 if (curFreq < 0) {
@@ -88,8 +72,6 @@ public class ThermalCalculation implements
                     continue;
                 }
 
-                vibeVal *= 1 - pow(1 - exp(-PLANCK * curFreq * qsf * LIGHT_CM
-                        / (BOLTZ * curTemp)), -1);
                 entropyTemp += GAS_KCAL
                         * (((PLANCK * curFreq * ssf * LIGHT_CM / BOLTZ) / curTemp)
                                 / (exp(PLANCK) - 1) - Math.log(1 - exp(-(PLANCK
@@ -206,7 +188,7 @@ public class ThermalCalculation implements
      *            The result to evaluate.
      * @return The adjustment settings.
      */
-    private SymAdj evalSym(CalculationResult result) {
+    private SymAdj evalSym(final CalculationResult result) {
         // the SCE_adj matrix is to adjust in case there are linear molecules
         // which have a different contribution to rotational energy/Cv/S. See
         // Ochterski.
