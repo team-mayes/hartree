@@ -43,6 +43,9 @@ FREQTAG: 'Frequencies' { freqCtx = true; $channel = HIDDEN; } ;
 FREQVAL: {freqCtx}? => FLOAT ;
 REDMASS: {freqCtx}? => 'Red. masses' { freqCtx = false; $channel = HIDDEN;} ; 
 
+// Find asymmetric top, if it exists
+ASYM: 'asymmetric' ;
+
 // Partition
 PARTITIONTAG: 'Q' WS+ 'Log10(Q)' WS+ 'Ln(Q)' { partCtx = true; $channel = HIDDEN; } ;
 TRANSTAG: {partCtx}? => 'Translational' { transCtx = true; $channel = HIDDEN; } ;

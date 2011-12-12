@@ -1,11 +1,11 @@
-package org.cmayes.hartree.parser.def;
+package org.cmayes.hartree.model.def;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.cmayes.hartree.loader.CalculationResult;
+import org.cmayes.hartree.model.CalculationResult;
 import org.joda.time.Duration;
 
 /**
@@ -22,11 +22,13 @@ public class DefaultCalculationResult implements CalculationResult {
     private Integer mult;
     private Integer atomCount;
     private List<Double> frequencyValues = new ArrayList<Double>();
+    // We look for asymmetric, so val is symmetric by default
+    private boolean isSymmetric = true;
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#getElecEn()
+     * @see org.cmayes.hartree.model.CalculationResult#getElecEn()
      */
     public Double getElecEn() {
         return elecEn;
@@ -35,7 +37,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#setElecEn(java.lang.Double)
+     * @see org.cmayes.hartree.model.CalculationResult#setElecEn(java.lang.Double)
      */
     public void setElecEn(final Double energies) {
         this.elecEn = energies;
@@ -44,7 +46,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#getMult()
+     * @see org.cmayes.hartree.model.CalculationResult#getMult()
      */
     public Integer getMult() {
         return mult;
@@ -53,7 +55,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#setMult(java.lang.Integer)
+     * @see org.cmayes.hartree.model.CalculationResult#setMult(java.lang.Integer)
      */
     public void setMult(final Integer multVal) {
         this.mult = multVal;
@@ -62,7 +64,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#getRotPart()
+     * @see org.cmayes.hartree.model.CalculationResult#getRotPart()
      */
     public Double getRotPart() {
         return rotPart;
@@ -71,7 +73,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#setRotPart(java.lang.Double)
+     * @see org.cmayes.hartree.model.CalculationResult#setRotPart(java.lang.Double)
      */
     public void setRotPart(final Double rotationalPart) {
         this.rotPart = rotationalPart;
@@ -80,7 +82,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#getTransPart()
+     * @see org.cmayes.hartree.model.CalculationResult#getTransPart()
      */
     public Double getTransPart() {
         return transPart;
@@ -89,7 +91,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#setTransPart(java.lang.Double
+     * @see org.cmayes.hartree.model.CalculationResult#setTransPart(java.lang.Double
      *      )
      */
     public void setTransPart(final Double translationalPart) {
@@ -99,7 +101,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#getAtomCount()
+     * @see org.cmayes.hartree.model.CalculationResult#getAtomCount()
      */
     public Integer getAtomCount() {
         return atomCount;
@@ -108,7 +110,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#setAtomCount(java.lang.Integer
+     * @see org.cmayes.hartree.model.CalculationResult#setAtomCount(java.lang.Integer
      *      )
      */
     public void setAtomCount(final Integer count) {
@@ -118,7 +120,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#getFrequencyValues()
+     * @see org.cmayes.hartree.model.CalculationResult#getFrequencyValues()
      */
     public List<Double> getFrequencyValues() {
         return frequencyValues;
@@ -127,7 +129,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#setFrequencyValues(java.util
+     * @see org.cmayes.hartree.model.CalculationResult#setFrequencyValues(java.util
      *      .List)
      */
     public void setFrequencyValues(final List<Double> freqValues) {
@@ -137,7 +139,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#getTerminationDates()
+     * @see org.cmayes.hartree.model.CalculationResult#getTerminationDates()
      */
     public List<Date> getTerminationDates() {
         return terminationDates;
@@ -146,7 +148,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#setTerminationDates(java.
+     * @see org.cmayes.hartree.model.CalculationResult#setTerminationDates(java.
      *      util.List)
      */
     public void setTerminationDates(final List<Date> termDates) {
@@ -156,7 +158,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#getCpuTimes()
+     * @see org.cmayes.hartree.model.CalculationResult#getCpuTimes()
      */
     public List<Duration> getCpuTimes() {
         return cpuTimes;
@@ -165,7 +167,7 @@ public class DefaultCalculationResult implements CalculationResult {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.CalculationResult#setCpuTimes(java.util.List)
+     * @see org.cmayes.hartree.model.CalculationResult#setCpuTimes(java.util.List)
      */
     public void setCpuTimes(final List<Duration> durations) {
         this.cpuTimes = durations;
@@ -188,5 +190,22 @@ public class DefaultCalculationResult implements CalculationResult {
                         this.frequencyValues.size()), this.frequencyValues)
                 .append("mult", this.mult).append("atomCount", this.atomCount)
                 .append("rotPart", this.rotPart).toString();
+    }
+
+    /**
+     * Return whether the molecule's top is symmetric.
+     * 
+     * @return the isSymmetricTop
+     */
+    public boolean isSymmetricTop() {
+        return isSymmetric;
+    }
+
+    /**
+     * @param isSymTop
+     *            the isSymmetricTop to set
+     */
+    public void setSymmetricTop(final boolean isSymTop) {
+        this.isSymmetric = isSymTop;
     }
 }

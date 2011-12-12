@@ -1,4 +1,4 @@
-package org.cmayes.hartree.loader;
+package org.cmayes.hartree.model;
 
 import java.util.Date;
 import java.util.List;
@@ -131,4 +131,17 @@ public interface CalculationResult {
      *            The durations to set.
      */
     void setCpuTimes(final List<Duration> durations);
+
+    /**
+     * @param isSymTop
+     *            the isSymmetricTop to set
+     */
+    void setSymmetricTop(boolean isSymTop);
+
+    /**
+     * Return whether the molecule's top is symmetric.
+     * 
+     * @return the isSymmetricTop
+     */
+    boolean isSymmetricTop();
 }

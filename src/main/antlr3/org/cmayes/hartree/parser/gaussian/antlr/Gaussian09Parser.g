@@ -28,5 +28,5 @@ term
 
 script
   :
-  (MULT NATOMS ELECENG+ (FREQVAL+ TRANSPART ROTPART)? cputime term?)+ EOF
+  (MULT NATOMS ELECENG+ (FREQVAL+ ASYM? TRANSPART ROTPART)? cputime term?)+ EOF
   ;

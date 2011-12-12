@@ -11,10 +11,10 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
-import org.cmayes.hartree.loader.CalculationResult;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
-import org.cmayes.hartree.parser.def.DefaultCalculationResult;
+import org.cmayes.hartree.model.CalculationResult;
+import org.cmayes.hartree.model.def.DefaultCalculationResult;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Parser;
 import org.joda.time.Duration;
@@ -108,6 +108,9 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
                 break;
             case Gaussian09Lexer.ELECENG:
                 result.setElecEn(toDouble(curNode.getText()));
+                break;
+            case Gaussian09Lexer.ASYM:
+                result.setSymmetricTop(false);
                 break;
             default:
                 break;

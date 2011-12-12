@@ -6,10 +6,12 @@ package org.cmayes.hartree.calc;
  * 
  * @author cmayes
  * 
- * @param <T>
- *            The handled type.
+ * @param <I>
+ *            The input type.
+ * @param <O>
+ *            The output type.
  */
-public interface Calculation<T> {
+public interface Calculation<I, O> {
 
     /**
      * Perfoms the calculation.
@@ -18,6 +20,6 @@ public interface Calculation<T> {
      *            The input to process.
      * @return The results of the calculation.
      */
-    T calculate(T rawInput);
+    O calculate(I rawInput);
 
 }
