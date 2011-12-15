@@ -25,11 +25,18 @@ tokens { TERM; CPUTIME;
     boolean natomsCtx = false;
     boolean freqCtx = false;
     boolean elecEngCtx = false;
+    boolean xyzCtx = false; 
 }
 
 // Multiplicity
 MULTTAG: 'Multiplicity' { multCtx = true; $channel = HIDDEN; };
 MULT: {multCtx}? => INT { multCtx = false; };
+
+// XYZ coordinates
+XYZTAG: 'Input orientation:' { xyzCtx = true; $channel = HIDDEN; };
+XYZFLOAT: {xyzCtx}? FLOAT ;
+XYZINT: {xyzCtx}? INT ;
+XYZEND: 'Distance matrix (angstroms):' { xyzCtx = false; $channel = HIDDEN; };
 
 // Number of atoms
 NATOMSTAG: {!natomsFound}? => 'NAtoms' { natomsCtx = true; $channel = HIDDEN; };
