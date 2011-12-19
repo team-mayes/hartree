@@ -26,7 +26,12 @@ term
       ^(TERM $d)
   ;
 
+xyzAtoms
+  :
+  (XYZINT XYZINT XYZINT XYZFLOAT XYZFLOAT XYZFLOAT)+
+  ;
+
 script
   :
-  (MULT NATOMS ELECENG+ (FREQVAL+ ASYM? TRANSPART ROTPART)? cputime term?)+ EOF
+  (MULT xyzAtoms NATOMS ELECENG+ (FREQVAL+ ASYM? TRANSPART ROTPART)? cputime term?)+ EOF
   ;

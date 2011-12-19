@@ -113,6 +113,8 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
                 result.setSymmetricTop(false);
                 break;
             default:
+                logger.warn(String.format("Unhandled data %s %s",
+                        curNode.getType(), curNode.getText()));
                 break;
             }
         }

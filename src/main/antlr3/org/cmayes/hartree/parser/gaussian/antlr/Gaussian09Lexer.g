@@ -6,7 +6,7 @@ options {
   filter=true;
 }
 
-tokens { TERM; CPUTIME;
+tokens { TERM; CPUTIME; XYZATOM;
 }
 
 @header {

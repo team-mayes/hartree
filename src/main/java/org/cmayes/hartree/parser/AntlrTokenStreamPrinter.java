@@ -12,6 +12,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.Token;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
+import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Parser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -42,6 +43,16 @@ public class AntlrTokenStreamPrinter {
      */
     protected Lexer createLexer() {
         return new Gaussian09Lexer();
+    }
+    
+    /**
+     * Creates an instance of the lexer. Users may override this method to use a
+     * different lexer.
+     * 
+     * @return The lexer to use for token extraction.
+     */
+    protected String[] getTokenNames() {
+        return Gaussian09Parser.tokenNames;
     }
 
     /**
@@ -118,7 +129,12 @@ public class AntlrTokenStreamPrinter {
             if (!(Gaussian09Lexer.WS == token.getType())) {
                 System.out.println("=======================================\n"
                         + "EmbeddedCode = " + token.getText());
-                System.out.println("\nType: " + token.getType());
+                if (token.getType() > 0) {
+                    System.out.println("\nType: "
+                            + getTokenNames()[token.getType()]);
+                } else {
+                    System.out.println("EOF");
+                }
             }
         }
     }
