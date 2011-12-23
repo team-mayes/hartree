@@ -3,6 +3,8 @@ package org.cmayes.hartree.loader.gaussian;
 import java.io.FileReader;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests load cases using different files.
@@ -13,6 +15,8 @@ import org.junit.Test;
 public class TestGaussian09Loader {
     /** The prefix for file locations. */
     private static final String FILE_DIR_PFX = "src/test/resources/files/g09/";
+    /** Logger. */
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Test.
@@ -23,7 +27,8 @@ public class TestGaussian09Loader {
     @Test
     public void testThf() throws Exception {
         final Gaussian09Loader loader = new Gaussian09Loader();
-        loader.load(new FileReader(FILE_DIR_PFX + "GL_THF_rev4.log"));
+        logger.debug("Result: "
+                + loader.load(new FileReader(FILE_DIR_PFX + "GL_THF_rev4.log")));
     }
 
     /**

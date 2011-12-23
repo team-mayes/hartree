@@ -144,4 +144,19 @@ public interface CalculationResult {
      * @return the isSymmetricTop
      */
     boolean isSymmetricTop();
+
+    /**
+     * Returns the atoms used in the calculation.
+     * 
+     * @return The atoms used in the calculation.
+     */
+    List<Atom> getAtoms();
+
+    /**
+     * Sets the atoms used in the calculation.
+     * 
+     * @param atoms
+     *            The atoms to set.
+     */
+    void setAtoms(List<Atom> atoms);
 }

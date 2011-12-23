@@ -13,7 +13,9 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
+import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.CalculationResult;
+import org.cmayes.hartree.model.def.DefaultAtom;
 import org.cmayes.hartree.model.def.DefaultCalculationResult;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Parser;
@@ -21,6 +23,7 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cmayes.common.AtomicElement;
 import com.cmayes.common.exception.EnvironmentException;
 
 /**
@@ -29,6 +32,8 @@ import com.cmayes.common.exception.EnvironmentException;
  * @author cmayes
  */
 public class Gaussian09Loader implements Loader<CalculationResult> {
+    /** The number of columns in the atom info table "Input orientation". */
+    private static final int ATOM_COL_COUNT = 6;
     private static final int SEC_IDX = 3;
     private static final int MIN_IDX = 2;
     private static final int HOUR_IDX = 1;
@@ -76,6 +81,8 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
      */
     private CalculationResult extractCalcThermData(final CommonTree ast) {
         final CalculationResult result = new DefaultCalculationResult();
+        int atomColCount = 0;
+        Atom curAtom = new DefaultAtom();
         @SuppressWarnings("unchecked")
         final List<CommonTree> eventList = ast.getChildren();
         for (CommonTree curNode : eventList) {
@@ -112,6 +119,15 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
             case Gaussian09Lexer.ASYM:
                 result.setSymmetricTop(false);
                 break;
+            case Gaussian09Lexer.XYZINT:
+            case Gaussian09Lexer.XYZFLOAT:
+                handleAtom(curNode.getText(), curAtom, atomColCount);
+                atomColCount++;
+                if (atomColCount % ATOM_COL_COUNT == 0) {
+                    result.getAtoms().add(curAtom);
+                    curAtom = new DefaultAtom();
+                }
+                break;
             default:
                 logger.warn(String.format("Unhandled data %s %s",
                         curNode.getType(), curNode.getText()));
@@ -119,6 +135,43 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
             }
         }
         return result;
+    }
+
+    /**
+     * Adds data to the current atom.
+     * 
+     * @param nodeText
+     *            The text value of the current node.
+     * @param curAtom
+     *            The atom we are currently filling.
+     * @param atomColCount
+     *            The number of columns processed for XYZ atom data.
+     */
+    private void handleAtom(final String nodeText, final Atom curAtom,
+            final int atomColCount) {
+        switch (atomColCount % ATOM_COL_COUNT) {
+        case 0:
+            curAtom.setId(toInt(nodeText));
+            break;
+        case 1:
+            curAtom.setType(AtomicElement.valueOf(toInt(nodeText)));
+            break;
+        case 2:
+            // Atomic type? Skip it; we don't know what it is.
+            break;
+        case 3:
+            curAtom.setxPos(toDouble(nodeText));
+            break;
+        case 4:
+            curAtom.setyPos(toDouble(nodeText));
+            break;
+        case 5:
+            curAtom.setyPos(toDouble(nodeText));
+            break;
+        default:
+            logger.warn("Unlikely atom mod %d", atomColCount);
+            break;
+        }
     }
 
     /**

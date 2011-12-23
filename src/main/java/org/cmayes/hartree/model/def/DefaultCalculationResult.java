@@ -5,8 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.CalculationResult;
 import org.joda.time.Duration;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Default implementation of a value object for a calculation result.
@@ -14,6 +17,7 @@ import org.joda.time.Duration;
  * @author cmayes
  */
 public class DefaultCalculationResult implements CalculationResult {
+    private List<Atom> atoms = new ArrayList<Atom>();
     private List<Date> terminationDates = new ArrayList<Date>();
     private List<Duration> cpuTimes = new ArrayList<Duration>();
     private Double transPart;
@@ -174,25 +178,6 @@ public class DefaultCalculationResult implements CalculationResult {
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append(String.format("cpuTimes(%d)", this.cpuTimes.size()),
-                        this.cpuTimes)
-                .append(String.format("terminationDates(%d)",
-                        this.terminationDates.size()), this.terminationDates)
-                .append("transPart", this.transPart)
-                .append("elecEn", this.elecEn)
-                .append(String.format("frequencyValues(%d)",
-                        this.frequencyValues.size()), this.frequencyValues)
-                .append("mult", this.mult).append("atomCount", this.atomCount)
-                .append("rotPart", this.rotPart).toString();
-    }
-
-    /**
      * Return whether the molecule's top is symmetric.
      * 
      * @return the isSymmetricTop
@@ -207,5 +192,76 @@ public class DefaultCalculationResult implements CalculationResult {
      */
     public void setSymmetricTop(final boolean isSymTop) {
         this.isSymmetric = isSymTop;
+    }
+
+    /**
+     * @return the atoms
+     */
+    @Override
+    public List<Atom> getAtoms() {
+        return atoms;
+    }
+
+    /**
+     * @param ats
+     *            the atoms to set
+     */
+    @Override
+    public void setAtoms(final List<Atom> ats) {
+        this.atoms = ats;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(final Object object) {
+        if (!(object instanceof DefaultCalculationResult)) {
+            return false;
+        }
+        final DefaultCalculationResult rhs = (DefaultCalculationResult) object;
+        return new EqualsBuilder().appendSuper(super.equals(object))
+                .append(this.atoms, rhs.atoms).append(this.mult, rhs.mult)
+                .append(this.atomCount, rhs.atomCount)
+                .append(this.frequencyValues, rhs.frequencyValues)
+                .append(this.rotPart, rhs.rotPart)
+                .append(this.cpuTimes, rhs.cpuTimes)
+                .append(this.isSymmetric, rhs.isSymmetric)
+                .append(this.elecEn, rhs.elecEn)
+                .append(this.terminationDates, rhs.terminationDates)
+                .append(this.transPart, rhs.transPart).isEquals();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return new HashCodeBuilder(-745002675, 1572120063)
+                .appendSuper(super.hashCode()).append(this.atoms)
+                .append(this.mult).append(this.atomCount)
+                .append(this.frequencyValues).append(this.rotPart)
+                .append(this.cpuTimes).append(this.isSymmetric)
+                .append(this.elecEn).append(this.terminationDates)
+                .append(this.transPart).toHashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("symmetricTop", this.isSymmetricTop())
+                .append("transPart", this.transPart)
+                .append("elecEn", this.elecEn).append("atoms", this.atoms)
+                .append("frequencyValues", this.frequencyValues)
+                .append("cpuTimes", this.cpuTimes).append("mult", this.mult)
+                .append("terminationDates", this.terminationDates)
+                .append("atomCount", this.atomCount)
+                .append("rotPart", this.rotPart).toString();
     }
 }
