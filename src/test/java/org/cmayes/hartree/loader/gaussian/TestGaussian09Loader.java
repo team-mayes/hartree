@@ -26,7 +26,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void testThf() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         logger.debug("Result: "
                 + loader.load(new FileReader(FILE_DIR_PFX + "GL_THF_rev4.log")));
     }
@@ -39,7 +39,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void testGasRad2() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         loader.load(new FileReader(FILE_DIR_PFX + "init_gas_rad2_3.out"));
     }
 
@@ -51,7 +51,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void testThfFail() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         loader.load(new FileReader(FILE_DIR_PFX + "init_THF+negFAIL.log"));
     }
 
@@ -63,7 +63,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void testWater() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         loader.load(new FileReader(FILE_DIR_PFX + "init_water+pos4.log"));
     }
 
@@ -75,7 +75,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void testCamAgain() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         loader.load(new FileReader(FILE_DIR_PFX + "init2thfTS+camAgain3.log"));
     }
 
@@ -87,7 +87,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void test8spTooLittleData() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         loader.load(new FileReader(FILE_DIR_PFX
                 + "levoglucosan8spTooLittleData.log"));
     }
@@ -100,7 +100,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void testGasm062x() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         loader.load(new FileReader(FILE_DIR_PFX + "m-glucose_gasm062x.out"));
     }
 
@@ -112,7 +112,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void testWaterm062x() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         loader.load(new FileReader(FILE_DIR_PFX
                 + "m-glucose_waterm062xspTooLittleData.out"));
     }
@@ -125,7 +125,7 @@ public class TestGaussian09Loader {
      */
     @Test
     public void testMp4mp2TooLittleData() throws Exception {
-        final Gaussian09Loader loader = new Gaussian09Loader();
+        final CalcResultLoader loader = new CalcResultLoader();
         loader.load(new FileReader(FILE_DIR_PFX
                 + "methanolmp4mp2TooLittleData.log"));
     }

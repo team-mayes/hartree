@@ -1,13 +1,13 @@
 package org.cmayes.hartree.calc.impl;
 
-import static com.cmayes.common.PhysicalConstants.AVOGADRO;
-import static com.cmayes.common.PhysicalConstants.BOLTZ;
-import static com.cmayes.common.PhysicalConstants.GAS_KCAL;
-import static com.cmayes.common.PhysicalConstants.KELVIN_25C;
-import static com.cmayes.common.PhysicalConstants.LIGHT_CM;
-import static com.cmayes.common.PhysicalConstants.PLANCK;
-import static com.cmayes.common.PhysicalConstants.Conversions.CALTH_TO_JOULE;
-import static com.cmayes.common.PhysicalConstants.Conversions.HARTREE_TO_KCALTH;
+import static com.cmayes.common.chem.PhysicalConstants.AVOGADRO;
+import static com.cmayes.common.chem.PhysicalConstants.BOLTZ;
+import static com.cmayes.common.chem.PhysicalConstants.GAS_KCAL;
+import static com.cmayes.common.chem.PhysicalConstants.KELVIN_25C;
+import static com.cmayes.common.chem.PhysicalConstants.LIGHT_CM;
+import static com.cmayes.common.chem.PhysicalConstants.PLANCK;
+import static com.cmayes.common.chem.PhysicalConstants.Conversions.CALTH_TO_JOULE;
+import static com.cmayes.common.chem.PhysicalConstants.Conversions.HARTREE_TO_KCALTH;
 import static java.lang.Math.exp;
 import static java.lang.Math.log;
 import static java.lang.Math.pow;

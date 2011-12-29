@@ -2,7 +2,8 @@ package org.cmayes.hartree.model.def;
 
 import org.cmayes.hartree.model.Atom;
 
-import com.cmayes.common.AtomicElement;
+import com.cmayes.common.chem.AtomicElement;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -103,7 +104,7 @@ public class DefaultAtom implements Atom {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.model.Atom#setType(com.cmayes.common.AtomicElement)
+     * @see org.cmayes.hartree.model.Atom#setType(com.cmayes.common.chem.AtomicElement)
      */
     public void setType(final AtomicElement atomType) {
         this.type = atomType;

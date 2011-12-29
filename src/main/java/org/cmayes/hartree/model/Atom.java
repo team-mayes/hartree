@@ -1,6 +1,6 @@
 package org.cmayes.hartree.model;
 
-import com.cmayes.common.AtomicElement;
+import com.cmayes.common.chem.AtomicElement;
 
 /**
  * Defines the properties of an atom.

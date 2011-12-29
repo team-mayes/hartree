@@ -23,33 +23,24 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cmayes.common.AtomicElement;
+import com.cmayes.common.chem.AtomicElement;
 import com.cmayes.common.exception.EnvironmentException;
 
 /**
- * Fills a CalculationResult from data parsed from the given reader.
+ * Logic common to Gaussian AST loaders.
  * 
  * @author cmayes
  */
-public class Gaussian09Loader implements Loader<CalculationResult> {
+public class BaseGaussianLoader {
     /** The number of columns in the atom info table "Input orientation". */
-    private static final int ATOM_COL_COUNT = 6;
-    private static final int SEC_IDX = 3;
-    private static final int MIN_IDX = 2;
-    private static final int HOUR_IDX = 1;
-    private static final int DAY_IDX = 0;
-    private static final String TERM_DATE_PAT = "E MMM dd HH:mm:ss yyyy";
+    public static final int ATOM_COL_COUNT = 6;
+    public static final int SEC_IDX = 3;
+    public static final int MIN_IDX = 2;
+    public static final int HOUR_IDX = 1;
+    public static final int DAY_IDX = 0;
+    public static final String TERM_DATE_PAT = "E MMM dd HH:mm:ss yyyy";
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader)
-     */
-    public CalculationResult load(final Reader reader) {
-        return extractCalcThermData(extractAst(reader));
-    }
 
     /**
      * Parses the data from the reader into an abstract syntax tree.
@@ -58,7 +49,7 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
      *            The source of the data to parse.
      * @return The abstract syntax tree pulled from the reader.
      */
-    private CommonTree extractAst(final Reader reader) {
+    protected CommonTree extractAst(final Reader reader) {
         try {
             final Gaussian09Lexer lexer = new Gaussian09Lexer(
                     new ANTLRReaderStream(reader));
@@ -73,71 +64,6 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
     }
 
     /**
-     * Fills a {@link CalculationResult} instance with data from the AST.
-     * 
-     * @param ast
-     *            The AST to traverse.
-     * @return The filled result instance.
-     */
-    private CalculationResult extractCalcThermData(final CommonTree ast) {
-        final CalculationResult result = new DefaultCalculationResult();
-        int atomColCount = 0;
-        Atom curAtom = new DefaultAtom();
-        @SuppressWarnings("unchecked")
-        final List<CommonTree> eventList = ast.getChildren();
-        for (CommonTree curNode : eventList) {
-            switch (curNode.getType()) {
-            case Gaussian09Lexer.EOF:
-                break;
-            case Gaussian09Lexer.CPUTIME:
-                result.getCpuTimes().add(processCpuTime(curNode));
-                break;
-            case Gaussian09Lexer.TERM:
-                result.getTerminationDates().add(processTermDate(curNode));
-                break;
-            case Gaussian09Lexer.TRANSPART:
-                result.setTransPart(toDouble(curNode.getText()));
-                break;
-            case Gaussian09Lexer.ROTPART:
-                result.setRotPart(toDouble(curNode.getText()));
-                break;
-            case Gaussian09Lexer.MULT:
-                result.setMult(toInt(curNode.getText()));
-                break;
-            case Gaussian09Lexer.NATOMS:
-                result.setAtomCount(toInt(curNode.getText()));
-                break;
-            case Gaussian09Lexer.FREQVAL:
-                final Double freqVal = toDouble(curNode.getText());
-                if (freqVal != null) {
-                    result.getFrequencyValues().add(freqVal);
-                }
-                break;
-            case Gaussian09Lexer.ELECENG:
-                result.setElecEn(toDouble(curNode.getText()));
-                break;
-            case Gaussian09Lexer.ASYM:
-                result.setSymmetricTop(false);
-                break;
-            case Gaussian09Lexer.XYZINT:
-            case Gaussian09Lexer.XYZFLOAT:
-                handleAtom(curNode.getText(), curAtom, atomColCount);
-                atomColCount++;
-                if (atomColCount % ATOM_COL_COUNT == 0) {
-                    result.getAtoms().add(curAtom);
-                    curAtom = new DefaultAtom();
-                }
-                break;
-            default:
-                logger.warn(String.format("Unhandled data %s %s",
-                        curNode.getType(), curNode.getText()));
-                break;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Adds data to the current atom.
      * 
      * @param nodeText
@@ -147,7 +73,7 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
      * @param atomColCount
      *            The number of columns processed for XYZ atom data.
      */
-    private void handleAtom(final String nodeText, final Atom curAtom,
+    protected void handleAtom(final String nodeText, final Atom curAtom,
             final int atomColCount) {
         switch (atomColCount % ATOM_COL_COUNT) {
         case 0:
@@ -181,7 +107,7 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
      *            The string value to convert.
      * @return The integer value or null if the parse fails.
      */
-    private Integer toInt(final String strVal) {
+    protected Integer toInt(final String strVal) {
         try {
             return Integer.valueOf(strVal);
         } catch (final NumberFormatException e) {
@@ -197,7 +123,7 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
      *            The string value to convert.
      * @return The double value or null if the parse fails.
      */
-    private Double toDouble(final String strVal) {
+    protected Double toDouble(final String strVal) {
         try {
             final String properSciNot = strVal.replace('D', 'E');
             return Double.valueOf(properSciNot);
@@ -215,7 +141,7 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
      *            The date node.
      * @return The filled date instance.
      */
-    private Date processTermDate(final CommonTree curNode) {
+    protected Date processTermDate(final CommonTree curNode) {
         String rawDate = null;
         try {
             rawDate = curNode.getChild(0).getText();
@@ -233,7 +159,7 @@ public class Gaussian09Loader implements Loader<CalculationResult> {
      *            The node to parse.
      * @return The duration or null if the parse fails.
      */
-    private Duration processCpuTime(final CommonTree curNode) {
+    protected Duration processCpuTime(final CommonTree curNode) {
         try {
             final Duration dur = Duration
                     .standardDays(
