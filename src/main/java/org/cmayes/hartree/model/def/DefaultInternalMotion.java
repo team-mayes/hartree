@@ -16,8 +16,8 @@ public class DefaultInternalMotion implements InternalMotion {
     private InternalMotionType type;
     private String name;
     private List<Integer> members = new ArrayList<Integer>();
-    private double value;
-    private double weight;
+    private Double value;
+    private Double weight;
 
     /**
      * {@inheritDoc}
@@ -85,17 +85,17 @@ public class DefaultInternalMotion implements InternalMotion {
      * @see org.cmayes.hartree.model.InternalMotion#getValue()
      */
     @Override
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.model.InternalMotion#setValue(double)
+     * @see org.cmayes.hartree.model.InternalMotion#setValue(Double)
      */
     @Override
-    public void setValue(final double val) {
+    public void setValue(final Double val) {
         this.value = val;
     }
 
@@ -105,17 +105,17 @@ public class DefaultInternalMotion implements InternalMotion {
      * @see org.cmayes.hartree.model.InternalMotion#getWeight()
      */
     @Override
-    public double getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.model.InternalMotion#setWeight(double)
+     * @see org.cmayes.hartree.model.InternalMotion#setWeight(Double)
      */
     @Override
-    public void setWeight(final double wt) {
+    public void setWeight(final Double wt) {
         this.weight = wt;
     }
 }

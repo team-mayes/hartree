@@ -12,46 +12,24 @@ import org.cmayes.hartree.model.NormalMode;
  * @author cmayes
  */
 public class DefaultNormalMode implements NormalMode {
-    private Integer id;
-    private List<InternalMotion> components = new ArrayList<InternalMotion>();
-
+    private List<InternalMotion> motions = new ArrayList<InternalMotion>();
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.model.NormalMode#getId()
+     * @see org.cmayes.hartree.model.NormalMode#getMotions()
      */
     @Override
-    public Integer getId() {
-        return id;
+    public List<InternalMotion> getMotions() {
+        return motions;
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.model.NormalMode#setId(java.lang.Integer)
+     * @see org.cmayes.hartree.model.NormalMode#setMotions(java.util.List)
      */
     @Override
-    public void setId(final Integer theId) {
-        this.id = theId;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.NormalMode#getComponents()
-     */
-    @Override
-    public List<InternalMotion> getComponents() {
-        return components;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.NormalMode#setComponents(java.util.List)
-     */
-    @Override
-    public void setComponents(final List<InternalMotion> comps) {
-        this.components = comps;
+    public void setMotions(final List<InternalMotion> comps) {
+        this.motions = comps;
     }
 }

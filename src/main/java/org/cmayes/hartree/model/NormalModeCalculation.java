@@ -8,7 +8,7 @@ import java.util.List;
  * 
  * @author cmayes
  */
-public interface NormalModeSummary extends BaseResult {
+public interface NormalModeCalculation extends BaseResult {
     /**
      * @return the normalModes
      */

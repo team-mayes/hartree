@@ -26,6 +26,8 @@ tokens { TERM; CPUTIME; XYZATOM;
     boolean freqCtx = false;
     boolean elecEngCtx = false;
     boolean xyzCtx = false; 
+    boolean normCtx = false; 
+    boolean normParenCtx = false; 
 }
 
 // Multiplicity
@@ -59,6 +61,14 @@ TRANSTAG: {partCtx}? => 'Translational' { transCtx = true; $channel = HIDDEN; } 
 TRANSPART: {transCtx}? => FLOAT { transCtx = false; } ;
 ROTTAG: {partCtx}? => 'Rotational' { rotCtx = true; partCtx = false; $channel = HIDDEN; } ;
 ROTPART: {rotCtx}? => FLOAT { rotCtx = false; } ;
+
+// Normal mode
+NORMTAG: '! Normal Mode' { normCtx = true; } ;
+NORMEND: {normCtx}? => 'Center' WS+ 'Atomic' { normCtx = false; $channel = HIDDEN; } ;
+NORMOPEN: {normCtx}? => LETTER '(' { normParenCtx = true; } ;
+NORMCLOSE: {(normCtx && normParenCtx)}? => ')' { normParenCtx = false; $channel = HIDDEN; } ;
+NORMFLOAT: {normCtx}? => FLOAT ; 
+NORMATOM: {(normCtx && normParenCtx)}? => INT ;
 
 // CPU time
 CPUTAG: 'Job cpu time:' { cpuCtx = true; } ;

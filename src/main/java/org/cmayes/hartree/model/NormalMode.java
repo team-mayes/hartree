@@ -9,29 +9,18 @@ import java.util.List;
  * @author cmayes
  */
 public interface NormalMode {
-
-    /**
-     * @return the id
-     */
-    Integer getId();
-
-    /**
-     * @param theId
-     *            the id to set
-     */
-    void setId(final Integer theId);
-
     /**
      * Returns the component internal motions that are a part of this mode.
      * 
      * @return the components
      */
-    List<InternalMotion> getComponents();
+    List<InternalMotion> getMotions();
 
     /**
      * @param comps
      *            the components to set
      */
-    void setComponents(final List<InternalMotion> comps);
-
+    void setMotions(final List<InternalMotion> comps);
+    
+    
 }

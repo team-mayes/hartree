@@ -48,23 +48,23 @@ public interface InternalMotion {
     /**
      * @return the value
      */
-    double getValue();
+    Double getValue();
 
     /**
      * @param val
      *            the value to set
      */
-    void setValue(final double val);
+    void setValue(final Double val);
 
     /**
      * @return the weight
      */
-    double getWeight();
+    Double getWeight();
 
     /**
      * @param wt
      *            the weight to set
      */
-    void setWeight(final double wt);
+    void setWeight(final Double wt);
 
 }
