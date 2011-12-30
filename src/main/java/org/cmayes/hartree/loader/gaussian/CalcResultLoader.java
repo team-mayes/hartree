@@ -1,17 +1,25 @@
 package org.cmayes.hartree.loader.gaussian;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
+import org.antlr.runtime.ANTLRReaderStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
+import org.cmayes.hartree.loader.ParseException;
 import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.CalculationResult;
 import org.cmayes.hartree.model.def.DefaultAtom;
 import org.cmayes.hartree.model.def.DefaultCalculationResult;
+import org.cmayes.hartree.parser.gaussian.antlr.CalcResultParser;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.cmayes.common.exception.EnvironmentException;
 
 /**
  * Fills a CalculationResult from data parsed from the given reader.
@@ -95,5 +103,26 @@ public class CalcResultLoader extends BaseGaussianLoader implements
             }
         }
         return result;
+    }
+    
+    /**
+     * Parses the data from the reader into an abstract syntax tree.
+     * 
+     * @param reader
+     *            The source of the data to parse.
+     * @return The abstract syntax tree pulled from the reader.
+     */
+    protected CommonTree extractAst(final Reader reader) {
+        try {
+            final Gaussian09Lexer lexer = new Gaussian09Lexer(
+                    new ANTLRReaderStream(reader));
+            final CalcResultParser parser = new CalcResultParser(
+                    new CommonTokenStream(lexer));
+            return (CommonTree) parser.script().getTree();
+        } catch (final IOException e) {
+            throw new EnvironmentException("Problems reading file", e);
+        } catch (final RecognitionException e) {
+            throw new ParseException("Problems parsing file", e);
+        }
     }
 }

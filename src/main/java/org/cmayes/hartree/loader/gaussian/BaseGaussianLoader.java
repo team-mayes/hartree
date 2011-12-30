@@ -1,30 +1,16 @@
 package org.cmayes.hartree.loader.gaussian;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-import org.antlr.runtime.ANTLRReaderStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
-import org.cmayes.hartree.loader.Loader;
-import org.cmayes.hartree.loader.ParseException;
 import org.cmayes.hartree.model.Atom;
-import org.cmayes.hartree.model.CalculationResult;
-import org.cmayes.hartree.model.def.DefaultAtom;
-import org.cmayes.hartree.model.def.DefaultCalculationResult;
-import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
-import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Parser;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.chem.AtomicElement;
-import com.cmayes.common.exception.EnvironmentException;
 
 /**
  * Logic common to Gaussian AST loaders.
@@ -41,27 +27,6 @@ public class BaseGaussianLoader {
     public static final String TERM_DATE_PAT = "E MMM dd HH:mm:ss yyyy";
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    /**
-     * Parses the data from the reader into an abstract syntax tree.
-     * 
-     * @param reader
-     *            The source of the data to parse.
-     * @return The abstract syntax tree pulled from the reader.
-     */
-    protected CommonTree extractAst(final Reader reader) {
-        try {
-            final Gaussian09Lexer lexer = new Gaussian09Lexer(
-                    new ANTLRReaderStream(reader));
-            final Gaussian09Parser parser = new Gaussian09Parser(
-                    new CommonTokenStream(lexer));
-            return (CommonTree) parser.script().getTree();
-        } catch (final IOException e) {
-            throw new EnvironmentException("Problems reading file", e);
-        } catch (final RecognitionException e) {
-            throw new ParseException("Problems parsing file", e);
-        }
-    }
 
     /**
      * Adds data to the current atom.

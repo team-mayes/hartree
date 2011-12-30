@@ -3,7 +3,6 @@ package org.cmayes.hartree.model.def;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.NormalMode;
 import org.cmayes.hartree.model.NormalModeSummary;
 
@@ -12,30 +11,9 @@ import org.cmayes.hartree.model.NormalModeSummary;
  * 
  * @author cmayes
  */
-public class DefaultNormalModeSummary implements NormalModeSummary {
-    private List<Atom> atoms = new ArrayList<Atom>();
-
+public class DefaultNormalModeSummary extends BaseCalculationResult implements
+        NormalModeSummary {
     private List<NormalMode> normalModes = new ArrayList<NormalMode>();
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.NormalModeSummary#getAtoms()
-     */
-    @Override
-    public List<Atom> getAtoms() {
-        return atoms;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.NormalModeSummary#setAtoms(java.util.List)
-     */
-    @Override
-    public void setAtoms(final List<Atom> ats) {
-        this.atoms = ats;
-    }
 
     /**
      * {@inheritDoc}

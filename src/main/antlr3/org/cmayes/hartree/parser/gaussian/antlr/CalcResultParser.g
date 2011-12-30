@@ -1,4 +1,4 @@
-parser grammar Gaussian09Parser;
+parser grammar CalcResultParser;
 
 options {
   language   = Java;

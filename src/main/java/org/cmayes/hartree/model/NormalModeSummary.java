@@ -8,19 +8,7 @@ import java.util.List;
  * 
  * @author cmayes
  */
-public interface NormalModeSummary {
-
-    /**
-     * @return the atoms
-     */
-    List<Atom> getAtoms();
-
-    /**
-     * @param ats
-     *            the atoms to set
-     */
-    void setAtoms(final List<Atom> ats);
-
+public interface NormalModeSummary extends BaseResult {
     /**
      * @return the normalModes
      */
@@ -31,5 +19,4 @@ public interface NormalModeSummary {
      *            the normalModes to set
      */
     void setNormalModes(final List<NormalMode> norModes);
-
 }

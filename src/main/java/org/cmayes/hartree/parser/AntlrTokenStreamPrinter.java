@@ -11,8 +11,8 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.Token;
+import org.cmayes.hartree.parser.gaussian.antlr.CalcResultParser;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
-import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Parser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -44,7 +44,7 @@ public class AntlrTokenStreamPrinter {
     protected Lexer createLexer() {
         return new Gaussian09Lexer();
     }
-    
+
     /**
      * Creates an instance of the lexer. Users may override this method to use a
      * different lexer.
@@ -52,7 +52,7 @@ public class AntlrTokenStreamPrinter {
      * @return The lexer to use for token extraction.
      */
     protected String[] getTokenNames() {
-        return Gaussian09Parser.tokenNames;
+        return CalcResultParser.tokenNames;
     }
 
     /**
