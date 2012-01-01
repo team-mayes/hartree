@@ -99,16 +99,12 @@ public class NormalModeLoader extends BaseGaussianLoader implements
                 }
                 break;
             case Gaussian09Lexer.NORMTAG:
-                if (curNormal != null) {
-                    result.getNormalModes().add(curNormal);
-                }
                 curNormal = new DefaultNormalMode();
+                result.getNormalModes().add(curNormal);
                 break;
             case Gaussian09Lexer.NORMOPEN:
-                if (curMotion != null) {
-                    curNormal.getMotions().add(curMotion);
-                }
                 curMotion = new DefaultInternalMotion();
+                curNormal.getMotions().add(curMotion);
                 curMotion.setType(InternalMotionType.valueOfSymbol(curNode
                         .getText().substring(0, 1)));
                 break;

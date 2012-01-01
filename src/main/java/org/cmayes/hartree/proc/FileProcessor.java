@@ -17,7 +17,6 @@ public interface FileProcessor<T> {
      * 
      * @param processMe
      *            The file to process.
-     * @return The results of processing the file.
      */
-    T single(final File processMe);
+    void display(final File processMe);
 }

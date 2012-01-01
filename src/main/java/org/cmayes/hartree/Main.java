@@ -6,6 +6,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
+import org.cmayes.hartree.loader.gaussian.NormalModeLoader;
+import org.cmayes.hartree.model.NormalModeCalculation;
+import org.cmayes.hartree.proc.basic.BasicFileProcessor;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -116,6 +120,11 @@ public class Main {
 
         parser.parseArgument(args);
 
+        final BasicFileProcessor<NormalModeCalculation> proc = new BasicFileProcessor<NormalModeCalculation>(
+                new NormalModeLoader(), new NormalModeTextDisplay());
+        if (file != null) {
+            proc.display(file);
+        }
         // after parsing arguments, you should check
         // if enough arguments are given.
         // if (arguments.isEmpty()) {

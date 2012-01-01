@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.cmayes.hartree.model.Atom;
 import org.joda.time.Duration;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Data common to multiple result types.
@@ -22,6 +25,23 @@ public class BaseCalculationResult {
     private List<Double> frequencyValues = new ArrayList<Double>();
     private boolean isSymmetric = true;
 
+
+    /**
+     * Looks up the atom with the given ID by pulling the atom in the atoms
+     * field by the ID - 1.
+     * 
+     * @param id
+     *            The atom to pull.
+     * @return The atom at the zero-based index equivalent of the ID.
+     */
+    public Atom getAtomById(final int id) {
+        try {
+            return getAtoms().get(id - 1);
+        } catch (final IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("No atom with ID " + id, e);
+        }
+    }
+    
     /**
      * {@inheritDoc}
      * 
@@ -163,5 +183,54 @@ public class BaseCalculationResult {
      */
     public void setAtoms(final List<Atom> ats) {
         this.atoms = ats;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(final Object object) {
+        if (!(object instanceof BaseCalculationResult)) {
+            return false;
+        }
+        final BaseCalculationResult rhs = (BaseCalculationResult) object;
+        return new EqualsBuilder().append(this.atoms, rhs.atoms)
+                .append(this.mult, rhs.mult)
+                .append(this.frequencyValues, rhs.frequencyValues)
+                .append(this.rotPart, rhs.rotPart)
+                .append(this.cpuTimes, rhs.cpuTimes)
+                .append(this.isSymmetric, rhs.isSymmetric)
+                .append(this.terminationDates, rhs.terminationDates)
+                .append(this.transPart, rhs.transPart).isEquals();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return new HashCodeBuilder(1174730777, -1227814673).append(this.atoms)
+                .append(this.mult).append(this.frequencyValues)
+                .append(this.rotPart).append(this.cpuTimes)
+                .append(this.isSymmetric).append(this.terminationDates)
+                .append(this.transPart).toHashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("symmetricTop", this.isSymmetricTop())
+                .append("transPart", this.transPart)
+                .append("atoms", this.atoms)
+                .append("frequencyValues", this.frequencyValues)
+                .append("cpuTimes", this.cpuTimes).append("mult", this.mult)
+                .append("terminationDates", this.terminationDates)
+                .append("rotPart", this.rotPart).toString();
     }
 }

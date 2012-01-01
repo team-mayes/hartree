@@ -1,6 +1,9 @@
 package org.cmayes.hartree.model.def;
 
 import org.cmayes.hartree.model.ThermalResult;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Default implementation of a thermal calculation result.
@@ -100,5 +103,40 @@ public class DefaultThermalResult implements ThermalResult {
      */
     public void setHeatCapacity(final double heatCap) {
         this.heatCapacity = heatCap;
+    }
+
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object object) {
+        if (!(object instanceof DefaultThermalResult)) {
+            return false;
+        }
+        DefaultThermalResult rhs = (DefaultThermalResult) object;
+        return new EqualsBuilder().append(this.enthalpy, rhs.enthalpy)
+                .append(this.entropy, rhs.entropy)
+                .append(this.heatCapacity, rhs.heatCapacity)
+                .append(this.temperature, rhs.temperature).isEquals();
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return new HashCodeBuilder(-742512927, 2044755235)
+                .append(this.enthalpy).append(this.entropy)
+                .append(this.heatCapacity).append(this.temperature)
+                .toHashCode();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("temperature", this.temperature)
+                .append("heatCapacity", this.heatCapacity)
+                .append("entropy", this.entropy)
+                .append("enthalpy", this.enthalpy).toString();
     }
 }

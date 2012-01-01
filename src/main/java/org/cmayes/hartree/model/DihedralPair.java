@@ -1,10 +1,10 @@
 package org.cmayes.hartree.model;
 
-import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Represents the central pair of atoms in a dihedral.
@@ -12,8 +12,8 @@ import org.apache.commons.lang.builder.CompareToBuilder;
  * @author cmayes
  */
 public class DihedralPair implements Comparable<DihedralPair> {
-    private final Atom lower;
-    private final Atom higher;
+    private final int lower;
+    private final int higher;
 
     /**
      * Creates a dihedral pair. The order of the arguments does not matter.
@@ -23,9 +23,8 @@ public class DihedralPair implements Comparable<DihedralPair> {
      * @param second
      *            The second atom.
      */
-    public DihedralPair(final Atom first, final Atom second) {
-        if (asNotNull(first, "First atom is null").getId() > asNotNull(second,
-                "Second atom is null").getId()) {
+    public DihedralPair(final int first, final int second) {
+        if (first > second) {
             this.higher = first;
             this.lower = second;
         } else {
@@ -37,14 +36,14 @@ public class DihedralPair implements Comparable<DihedralPair> {
     /**
      * @return the lower
      */
-    public Atom getLower() {
+    public int getLower() {
         return lower;
     }
 
     /**
      * @return the higher
      */
-    public Atom getHigher() {
+    public int getHigher() {
         return higher;
     }
 
@@ -78,8 +77,9 @@ public class DihedralPair implements Comparable<DihedralPair> {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return new ToStringBuilder(this).append("lower", this.lower)
-                .append("higher", this.higher).toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("lower", this.lower).append("higher", this.higher)
+                .toString();
     }
 
     /**

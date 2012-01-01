@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.cmayes.hartree.model.DihedralPair;
 import org.cmayes.hartree.model.NormalModeSummary;
 
@@ -150,7 +151,7 @@ public class DefaultNormalModeSummary implements NormalModeSummary {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return new ToStringBuilder(this)
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("bondStretchingWeight", this.bondStretchingWeight)
                 .append("dihedralPairWeights", this.dihedralPairWeights)
                 .append("angleBendingWeight", this.angleBendingWeight)

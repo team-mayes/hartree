@@ -5,11 +5,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cmayes.hartree.model.Atom;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.cmayes.hartree.model.DihedralPair;
 import org.cmayes.hartree.model.InternalMotion;
 import org.cmayes.hartree.model.NormalMode;
 import org.cmayes.hartree.model.NormalModeCalculation;
+import org.cmayes.hartree.model.NormalModeReport;
 import org.cmayes.hartree.model.NormalModeSummary;
 
 import com.google.common.base.Joiner;
@@ -47,13 +50,15 @@ public class DefaultNormalModeCalculation extends BaseCalculationResult
      * Calculates and returns a map of summaries keyed to their normal modes.
      * 
      * @return A map of summaries keyed to their normal modes.
+     * @see org.cmayes.hartree.model.NormalModeCalculation#generateReport()
      */
-    public Map<NormalMode, NormalModeSummary> calculateSummaries() {
+    @Override
+    public NormalModeReport generateReport() {
         final Map<NormalMode, NormalModeSummary> summaries = new LinkedHashMap<NormalMode, NormalModeSummary>();
         for (NormalMode curMode : normalModes) {
             summaries.put(curMode, calculateSummary(curMode));
         }
-        return summaries;
+        return new DefaultNormalModeReport(summaries);
     }
 
     /**
@@ -95,8 +100,8 @@ public class DefaultNormalModeCalculation extends BaseCalculationResult
      */
     DihedralPair genPair(final InternalMotion curMot) {
         try {
-            return new DihedralPair(getAtomById(curMot.getMembers().get(1)),
-                    getAtomById(curMot.getMembers().get(2)));
+            return new DihedralPair(curMot.getMembers().get(1), curMot
+                    .getMembers().get(2));
         } catch (final IndexOutOfBoundsException e) {
             throw new IllegalArgumentException(
                     String.format(
@@ -106,18 +111,45 @@ public class DefaultNormalModeCalculation extends BaseCalculationResult
     }
 
     /**
-     * Looks up the atom with the given ID by pulling the atom in the atoms
-     * field by the ID - 1.
+     * {@inheritDoc}
      * 
-     * @param id
-     *            The atom to pull.
-     * @return The atom at the zero-based index equivalent of the ID.
+     * @see java.lang.Object#equals(Object)
      */
-    Atom getAtomById(final int id) {
-        try {
-            return getAtoms().get(id - 1);
-        } catch (final IndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("No atom with ID " + id, e);
+    public boolean equals(final Object object) {
+        if (!(object instanceof DefaultNormalModeCalculation)) {
+            return false;
         }
+        final DefaultNormalModeCalculation rhs = (DefaultNormalModeCalculation) object;
+        return new EqualsBuilder().appendSuper(super.equals(rhs))
+                .append(this.normalModes, rhs.normalModes).isEquals();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return new HashCodeBuilder(-260541395, -1134444587)
+                .appendSuper(super.hashCode()).append(this.normalModes)
+                .toHashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("symmetricTop", this.isSymmetricTop())
+                .append("transPart", this.getTransPart())
+                .append("atoms", this.getAtoms())
+                .append("frequencyValues", this.getFrequencyValues())
+                .append("cpuTimes", this.getCpuTimes())
+                .append("mult", this.getMult())
+                .append("terminationDates", this.getTerminationDates())
+                .append("rotPart", this.getRotPart())
+                .append("normalModes", this.normalModes).toString();
     }
 }

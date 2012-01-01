@@ -6,6 +6,9 @@ import java.util.List;
 import org.cmayes.hartree.model.InternalMotion;
 
 import com.cmayes.common.chem.InternalMotionType;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Default implementation of an internal motion.
@@ -117,5 +120,44 @@ public class DefaultInternalMotion implements InternalMotion {
     @Override
     public void setWeight(final Double wt) {
         this.weight = wt;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(final Object object) {
+        if (!(object instanceof DefaultInternalMotion)) {
+            return false;
+        }
+        final DefaultInternalMotion rhs = (DefaultInternalMotion) object;
+        return new EqualsBuilder().append(this.weight, rhs.weight)
+                .append(this.name, rhs.name).append(this.value, rhs.value)
+                .append(this.type, rhs.type).append(this.members, rhs.members)
+                .isEquals();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return new HashCodeBuilder(1621625929, 1520039581).append(this.weight)
+                .append(this.name).append(this.value).append(this.type)
+                .append(this.members).toHashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return new ToStringBuilder(this).append("value", this.value)
+                .append("type", this.type).append("name", this.name)
+                .append("weight", this.weight).append("members", this.members)
+                .toString();
     }
 }

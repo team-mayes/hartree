@@ -128,4 +128,14 @@ public interface BaseResult {
      *            The atoms to set.
      */
     void setAtoms(List<Atom> atoms);
+
+    /**
+     * Looks up the atom with the given ID by pulling the atom in the atoms
+     * field by the ID - 1.
+     * 
+     * @param id
+     *            The atom to pull.
+     * @return The atom at the zero-based index equivalent of the ID.
+     */
+    Atom getAtomById(final int id);
 }
