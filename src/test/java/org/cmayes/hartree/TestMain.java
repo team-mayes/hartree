@@ -3,6 +3,7 @@ package org.cmayes.hartree;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.cmayes.hartree.model.NormalModeCalculation;
 import org.junit.Test;
 
 /**
@@ -22,8 +23,8 @@ public class TestMain {
      */
     @Test
     public void testFilePresent() throws Exception {
-        final Main main = new Main();
-        main.doMain("-f", REV4_LOC);
+        final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
+        main.doMain("-f", REV4_LOC, "norm");
         assertThat(main.getFile().getPath(), equalTo(REV4_LOC));
     }
 
@@ -35,7 +36,7 @@ public class TestMain {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testFileMissing() throws Exception {
-        final Main main = new Main();
+        final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
         main.doMain("-f", "badLoc");
     }
 
@@ -47,8 +48,8 @@ public class TestMain {
      */
     @Test
     public void testDirPresent() throws Exception {
-        final Main main = new Main();
-        main.doMain("-d", GAUSS_DIR);
+        final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
+        main.doMain("-d", GAUSS_DIR, "norm");
         assertThat(main.getDirectory().getPath(), equalTo(GAUSS_DIR));
     }
 
@@ -60,11 +61,11 @@ public class TestMain {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testDirNotDir() throws Exception {
-        final Main main = new Main();
+        final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
         main.doMain("-d", REV4_LOC);
         assertThat(main.getDirectory().getPath(), equalTo(GAUSS_DIR));
     }
-    
+
     /**
      * Tests specifying an existing file.
      * 
@@ -73,7 +74,7 @@ public class TestMain {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testDirNotPresent() throws Exception {
-        final Main main = new Main();
+        final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
         main.doMain("-d", "badLoc");
         assertThat(main.getDirectory().getPath(), equalTo(GAUSS_DIR));
     }

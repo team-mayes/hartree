@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cmayes</groupId>
 	<artifactId>hartree</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
@@ -34,13 +34,15 @@
 		<dependency>
 			<groupId>com.cmayes</groupId>
 			<artifactId>cmayes-common</artifactId>
-			<version>0.1.10-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>11.0</version>
 		</dependency>
+		<!-- <dependency> <groupId>com.googlecode.lambdaj</groupId> <artifactId>lambdaj</artifactId> 
+			<version>2.3.3</version> </dependency> -->
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -70,8 +72,30 @@
 
 	<build>
 		<defaultGoal>install</defaultGoal>
-
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.cmayes.hartree.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.4.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr3-maven-plugin</artifactId>

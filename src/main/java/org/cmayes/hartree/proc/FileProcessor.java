@@ -19,4 +19,14 @@ public interface FileProcessor<T> {
      *            The file to process.
      */
     void display(final File processMe);
+
+    /**
+     * Displays all files in the given directory and its children. If the input
+     * is a file, the data is processed singly.
+     * 
+     * @param processDir
+     *            The directory (or file) to process.
+     * @see #display(File)
+     */
+    void displayAll(final File processDir);
 }

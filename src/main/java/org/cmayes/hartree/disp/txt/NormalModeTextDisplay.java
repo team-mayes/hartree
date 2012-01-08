@@ -13,6 +13,7 @@ import org.cmayes.hartree.model.NormalModeCalculation;
 import org.cmayes.hartree.model.NormalModeReport;
 import org.cmayes.hartree.model.NormalModeSummary;
 
+import com.cmayes.common.MediaType;
 import com.google.common.base.Strings;
 
 /**
@@ -21,7 +22,17 @@ import com.google.common.base.Strings;
  * @author cmayes
  */
 public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
-    public static final String HEADSEP = Strings.repeat("-", 10);
+    private static final MediaType TYPE = MediaType.TEXT;
+
+    /**
+     * Returns the media type of the generated display.
+     * 
+     * @return The media type of the generated display.
+     */
+    @Override
+    public MediaType getMediaType() {
+        return TYPE;
+    }
 
     /**
      * {@inheritDoc}
@@ -48,7 +59,15 @@ public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
             printWriter.println();
         }
 
-        printWriter.println("Highest DoF percentages by dihedral (pair: mode# (value)):");
+        if (calc.getNormalModes().size() == 0) {
+            printWriter.println("No normal mode data found.");
+            printWriter.flush();
+            return;
+        }
+
+        printWriter.println("Highest DoF percentages by dihedral:");
+        printWriter.println("    pair   | mode |   %   | freq ");
+        printWriter.println(Strings.repeat("-", 34));
 
         final NormalModeReport normReport = calc.generateReport();
 
@@ -56,11 +75,12 @@ public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
                 .findHighestDihedrals().entrySet()) {
             final DihedralPair dhPair = hiEntry.getKey();
             final NormalMode topMode = hiEntry.getValue();
-            printWriter.printf("        (%3d, %3d) :%3d (%.2f)%s",
-                    dhPair.getLower(), dhPair.getHigher(), calc
-                            .getNormalModes().indexOf(topMode) + 1, normReport
-                            .getSummaries().get(topMode)
-                            .getDihedralPairWeights().get(dhPair), NL);
+            final int modeIdx = calc.getNormalModes().indexOf(topMode);
+            final double pairPercent = normReport.getSummaries().get(topMode)
+                    .getDihedralPairWeights().get(dhPair);
+            printWriter.printf("(%3d, %3d) | %3d  | %5.2f | %.2f%s",
+                    dhPair.getLower(), dhPair.getHigher(), modeIdx + 1,
+                    pairPercent, calc.getFrequencyValues().get(modeIdx), NL);
         }
 
         int i = 1;
@@ -78,8 +98,8 @@ public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
             for (Map.Entry<DihedralPair, Double> dhPair : sum
                     .getDihedralPairWeights().entrySet()) {
                 final DihedralPair key = dhPair.getKey();
-                printWriter.printf("         (%3d, %3d): %.2f%s", key.getLower(),
-                        key.getHigher(), dhPair.getValue(), NL);
+                printWriter.printf("         (%3d, %3d): %.2f%s",
+                        key.getLower(), key.getHigher(), dhPair.getValue(), NL);
             }
             i++;
         }

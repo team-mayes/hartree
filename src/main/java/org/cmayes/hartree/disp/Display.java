@@ -2,6 +2,8 @@ package org.cmayes.hartree.disp;
 
 import java.io.Writer;
 
+import com.cmayes.common.MediaType;
+
 /**
  * Defines a display writer.
  * 
@@ -32,4 +34,11 @@ public interface Display<T> {
      *            The value to display.
      */
     void write(final Writer writer, final String headerInfo, final T valToDisp);
+
+    /**
+     * Returns the media type of the generated display.
+     * 
+     * @return The media type of the generated display.
+     */
+    MediaType getMediaType();
 }
