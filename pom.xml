@@ -9,7 +9,7 @@
 		<dependency>
 			<groupId>com.cmayes</groupId>
 			<artifactId>cmayes-common</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
@@ -41,8 +41,6 @@
 			<artifactId>guava</artifactId>
 			<version>11.0</version>
 		</dependency>
-		<!-- <dependency> <groupId>com.googlecode.lambdaj</groupId> <artifactId>lambdaj</artifactId> 
-			<version>2.3.3</version> </dependency> -->
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -53,7 +51,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>1.9.0-rc1</version>
+			<version>1.9.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

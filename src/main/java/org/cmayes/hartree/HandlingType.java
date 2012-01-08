@@ -13,7 +13,8 @@ import org.cmayes.hartree.model.NormalModeCalculation;
 public enum HandlingType {
     NORMAL_MODE("norm", "Handles normal mode evaluation",
             NormalModeCalculation.class), THERM("therm",
-            "Handles thermo calculations", CalculationResult.class);
+            "Handles thermo calculations", CalculationResult.class), TEST(
+            "test", "Test mode (no handling performed)", Object.class);
 
     private final String commandName;
     private final String description;

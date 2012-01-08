@@ -4,6 +4,7 @@ import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 import static com.cmayes.common.CommonConstants.NL;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,7 @@ public class Main<T> {
     private File outDir;
     private Class<T> targetType;
     private MediaType targetMedia = MediaType.TEXT;
+    private FileProcessor<T> testProcessor;
 
     static {
         HAND_TYPE_MAP.put(HandlingType.THERM.getValueClass(),
@@ -85,7 +87,7 @@ public class Main<T> {
      * @throws IllegalArgumentException
      *             If the file is not readable.
      */
-    @Option(aliases = { "-f" }, name = "--file", usage = "The file to process")
+    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file", usage = "The file to process")
     public void setFile(final File theFile) {
         if (theFile.canRead()) {
             this.file = theFile;
@@ -101,7 +103,7 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(aliases = { "-d" }, name = "--directory", usage = "The base directory of the files to process")
+    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory", usage = "The base directory of the files to process")
     public void setDirectory(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.directory = dir;
@@ -113,13 +115,20 @@ public class Main<T> {
     }
 
     /**
+     * @return the outDir
+     */
+    public File getOutDir() {
+        return outDir;
+    }
+
+    /**
      * Sets the out directory. Attempts to create the directory if it does not
      * exist.
      * 
      * @param dir
      *            The base directory to start from.
      */
-    @Option(aliases = { "-o" }, name = "--outdir", usage = "The output directory for result files")
+    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir", usage = "The output directory for result files")
     public void setOutDir(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.outDir = dir;
@@ -145,14 +154,10 @@ public class Main<T> {
     @SuppressWarnings("rawtypes")
     public static void main(final String... args) {
         try {
-
             new Main().doMain(args);
         } catch (final CmdLineException e) {
-            System.err.println(e.getMessage());
-            System.err.printf("java %s [options...] (%s)%s",
-                    Main.class.getName(), getHandlerNames(), NL);
-            e.getParser().printUsage(System.err);
-            System.err.println();
+            printErrorUsage(System.err, e);
+            System.exit(1);
         } catch (final Exception e) {
             LOGGER.error("Top-level exception caught", e);
             System.err.println(e.getMessage());
@@ -179,21 +184,45 @@ public class Main<T> {
                     "Argument not one of (%s)", getHandlerNames()));
         }
 
-        final HandlingType hType = HandlingType
-                .valueOfCommand(arguments.get(0));
+        HandlingType hType;
+        try {
+            hType = HandlingType.valueOfCommand(arguments.get(0));
+        } catch (final IllegalArgumentException e) {
+            throw new CmdLineException(parser, String.format(
+                    "Invalid argument '%s'", arguments.get(0)), e);
+        }
+
+        if (HandlingType.TEST.equals(hType)) {
+            LOGGER.info("Test mode.  Performing no processing.");
+            return;
+        }
 
         targetType = (Class<T>) hType.getValueClass();
 
-        final FileProcessor<T> proc = new BasicFileProcessor<T>(hType,
-                getLoader(), getDisplay(), outDir);
+        final FileProcessor<T> proc = createProcessor(hType);
         if (file != null) {
             proc.display(file);
         } else if (directory != null) {
             proc.displayAll(directory);
         } else {
-            throw new CmdLineException(parser, "Unknown argument "
-                    + arguments.get(0));
+            throw new CmdLineException(parser,
+                    "No input file or directory specified.");
         }
+    }
+
+    /**
+     * Returns a new {@link FileProcessor} instance.
+     * 
+     * @param hType
+     *            The type of handler.
+     * @return A new FileProcessor instance.
+     */
+    FileProcessor<T> createProcessor(final HandlingType hType) {
+        if (testProcessor != null) {
+            return testProcessor;
+        }
+        return new BasicFileProcessor<T>(hType, getLoader(), getDisplay(),
+                outDir);
     }
 
     /**
@@ -202,7 +231,7 @@ public class Main<T> {
      * @return The loader for the target type.
      */
     @SuppressWarnings("unchecked")
-    private Loader<T> getLoader() {
+    Loader<T> getLoader() {
         return (Loader<T>) asNotNull(HAND_TYPE_MAP.get(targetType),
                 "No loader for type " + targetType.getName());
     }
@@ -213,7 +242,7 @@ public class Main<T> {
      * @return The display for the target type and media.
      */
     @SuppressWarnings("unchecked")
-    private Display<T> getDisplay() {
+    Display<T> getDisplay() {
         return (Display<T>) asNotNull(
                 DISP_TYPE_TBL.get(targetType, targetMedia), String.format(
                         "No display for media %s on type %s", targetMedia,
@@ -221,11 +250,51 @@ public class Main<T> {
     }
 
     /**
+     * Prints a usage message to the given stream using the given exception.
+     * 
+     * @param outs
+     *            The stream to print to.
+     * @param e
+     *            The exception to evaluate.
+     */
+    static void printErrorUsage(final PrintStream outs, final CmdLineException e) {
+        outs.println(e.getMessage());
+        outs.printf("java %s [options...] (%s)%s", Main.class.getName(),
+                getHandlerNames(), NL);
+        outs.println("Available arguments:");
+        printArgs(outs);
+        outs.println("Available options:");
+        e.getParser().printUsage(outs);
+        outs.println();
+    }
+
+    /**
+     * Prints a formatted description of the available handling types.
+     * 
+     * @param outs
+     *            The {@link PrintStream} to print to.
+     */
+    private static void printArgs(final PrintStream outs) {
+        int maxCmd = 0;
+        int maxDesc = 0;
+        for (HandlingType handleType : HandlingType.values()) {
+            maxCmd = Math.max(maxCmd, handleType.getCommandName().length());
+            maxDesc = Math.max(maxDesc, handleType.getDescription().length());
+        }
+        final String argFmt = "%1$-" + maxCmd + "s : " + "%2$-" + maxDesc + "s"
+                + NL;
+        for (HandlingType handleType : HandlingType.values()) {
+            outs.printf(argFmt, handleType.getCommandName(),
+                    handleType.getDescription());
+        }
+    }
+
+    /**
      * Returns the names of the handler commands.
      * 
      * @return The names of the handler commands.
      */
-    private static String getHandlerNames() {
+    static String getHandlerNames() {
         final StringBuffer buf = new StringBuffer();
         boolean isFirst = true;
         for (HandlingType curVal : HandlingType.values()) {
@@ -237,5 +306,16 @@ public class Main<T> {
             buf.append(curVal.getCommandName());
         }
         return buf.toString();
+    }
+
+    /**
+     * Overrides the return for {@link #createProcessor(HandlingType)}. Used for
+     * setting a test processor instance.
+     * 
+     * @param testProc
+     *            the testProcessor to set
+     */
+    public void setTestFileProcessor(final FileProcessor<T> testProc) {
+        this.testProcessor = testProc;
     }
 }
