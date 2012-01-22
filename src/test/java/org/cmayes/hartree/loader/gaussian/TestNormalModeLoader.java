@@ -69,6 +69,17 @@ public class TestNormalModeLoader {
         assertThat(sums.get(calc1.getNormalModes().get(EXAMPLE_SUM_IDX)),
                 equalTo(getSum42()));
     }
+    
+    /**
+     * Test.
+     * 
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testInit2THFm062XnormBadInput() throws Exception {
+        LOADER.load(new FileReader(FILE_DIR_PFX + "init2_THF+m062Xnorm.log"));
+    }
 
     /**
      * Returns a manual configuration for the 42nd normal frequency mode.

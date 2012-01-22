@@ -130,4 +130,15 @@ public class TestCalcResultLoader {
                 + "methanolmp4mp2TooLittleData.log"));
     }
 
+    /**
+     * Test.
+     * 
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testInit2THFm062XnormBadInput() throws Exception {
+        final CalcResultLoader loader = new CalcResultLoader();
+        loader.load(new FileReader(FILE_DIR_PFX + "init2_THF+m062Xnorm.log"));
+    }
 }

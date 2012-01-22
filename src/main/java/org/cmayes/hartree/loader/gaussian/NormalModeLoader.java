@@ -61,6 +61,10 @@ public class NormalModeLoader extends BaseGaussianLoader implements
         InternalMotion curMotion = null;
         @SuppressWarnings("unchecked")
         final List<CommonTree> eventList = ast.getChildren();
+        if (eventList == null) {
+            logger.error("Parse failed: no AST children found");
+            return result;
+        }
         for (CommonTree curNode : eventList) {
             switch (curNode.getType()) {
             case Gaussian09Lexer.EOF:
