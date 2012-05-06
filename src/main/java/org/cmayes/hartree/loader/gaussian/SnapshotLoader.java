@@ -12,13 +12,12 @@ import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
 import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.CalculationResult;
+import org.cmayes.hartree.model.CalculationSnapshot;
 import org.cmayes.hartree.model.InternalMotion;
 import org.cmayes.hartree.model.NormalMode;
-import org.cmayes.hartree.model.NormalModeCalculation;
 import org.cmayes.hartree.model.def.DefaultAtom;
+import org.cmayes.hartree.model.def.DefaultCalculationSnapshot;
 import org.cmayes.hartree.model.def.DefaultInternalMotion;
-import org.cmayes.hartree.model.def.DefaultNormalMode;
-import org.cmayes.hartree.model.def.DefaultNormalModeCalculation;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.cmayes.hartree.parser.gaussian.antlr.NormalModeParser;
 import org.slf4j.Logger;
@@ -28,12 +27,12 @@ import com.cmayes.common.chem.InternalMotionType;
 import com.cmayes.common.exception.EnvironmentException;
 
 /**
- * Fills a CalculationResult from data parsed from the given reader.
+ * Fills a CalculationSnapshot from data parsed from the given reader.
  * 
  * @author cmayes
  */
-public class NormalModeLoader extends BaseGaussianLoader implements
-        Loader<NormalModeCalculation> {
+public class SnapshotLoader extends BaseGaussianLoader implements
+        Loader<CalculationSnapshot> {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -42,8 +41,8 @@ public class NormalModeLoader extends BaseGaussianLoader implements
      * 
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader)
      */
-    public NormalModeCalculation load(final Reader reader) {
-        return extractNormalModeData(extractAst(reader));
+    public CalculationSnapshot load(final Reader reader) {
+        return extractSummaryData(extractAst(reader));
     }
 
     /**
@@ -52,8 +51,8 @@ public class NormalModeLoader extends BaseGaussianLoader implements
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader,
      *      java.lang.String)
      */
-    public NormalModeCalculation load(final Reader reader, String fileName) {
-        NormalModeCalculation result = extractNormalModeData(extractAst(reader));
+    public CalculationSnapshot load(final Reader reader, String fileName) {
+        CalculationSnapshot result = extractSummaryData(extractAst(reader));
         result.setFileName(fileName);
         return result;
     }
@@ -65,8 +64,8 @@ public class NormalModeLoader extends BaseGaussianLoader implements
      *            The AST to traverse.
      * @return The filled result instance.
      */
-    private NormalModeCalculation extractNormalModeData(final CommonTree ast) {
-        final NormalModeCalculation result = new DefaultNormalModeCalculation();
+    private CalculationSnapshot extractSummaryData(final CommonTree ast) {
+        final CalculationSnapshot result = new DefaultCalculationSnapshot();
         int atomColCount = 0;
         Atom curAtom = new DefaultAtom();
         NormalMode curNormal = null;
@@ -114,10 +113,6 @@ public class NormalModeLoader extends BaseGaussianLoader implements
                     curAtom = new DefaultAtom();
                 }
                 break;
-            case Gaussian09Lexer.NORMTAG:
-                curNormal = new DefaultNormalMode();
-                result.getNormalModes().add(curNormal);
-                break;
             case Gaussian09Lexer.NORMOPEN:
                 curMotion = new DefaultInternalMotion();
                 curNormal.getMotions().add(curMotion);
@@ -133,6 +128,9 @@ public class NormalModeLoader extends BaseGaussianLoader implements
                 } else {
                     curMotion.setWeight(toDouble(curNode.getText()));
                 }
+                break;
+            case Gaussian09Lexer.ELECENG:
+                result.setElecEn(toDouble(curNode.getText()));
                 break;
             default:
                 logger.warn(String.format("Unhandled data %s %s",

@@ -100,14 +100,22 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
             }
         }
         try {
-            displayer.write(
-                    writer,
-                    String.format("Normal mode summary for file %s",
-                            processMe.getName()),
-                    parser.load(new FileReader(processMe)));
+            displayer
+                    .write(writer,
+                            parser.load(new FileReader(processMe),
+                                    processMe.getName()));
         } catch (final FileNotFoundException e) {
             throw new EnvironmentException(
                     "File not found while creating reader", e);
+        } finally {
+            displayer.reset();
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    logger.warn("Problems closing writer: " + e.getMessage());
+                }
+            }
         }
     }
 

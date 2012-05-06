@@ -13,6 +13,7 @@ import org.cmayes.hartree.model.NormalModeCalculation;
 import org.cmayes.hartree.model.NormalModeReport;
 import org.cmayes.hartree.model.NormalModeSummary;
 
+import com.cmayes.common.CommonConstants;
 import com.cmayes.common.MediaType;
 import com.google.common.base.Strings;
 
@@ -40,24 +41,12 @@ public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
      * @see org.cmayes.hartree.disp.Display#write(java.io.Writer,
      *      java.lang.Object)
      */
-    public void write(final Writer writer, final NormalModeCalculation calc) {
-        write(writer, null, calc);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.disp.Display#write(java.io.Writer,
-     *      java.lang.Object)
-     */
     @Override
-    public void write(final Writer writer, final String headerInfo,
-            final NormalModeCalculation calc) {
+    public void write(final Writer writer, final NormalModeCalculation calc) {
         final PrintWriter printWriter = new PrintWriter(writer);
-        if (headerInfo != null) {
-            printWriter.println(headerInfo);
-            printWriter.println();
-        }
+        printWriter.printf("Normal mode summary for file %s%s",
+                calc.getFileName(), CommonConstants.NL);
+        printWriter.println();
 
         if (calc.getNormalModes().size() == 0) {
             printWriter.println("No normal mode data found.");
@@ -104,5 +93,15 @@ public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
             i++;
         }
         printWriter.flush();
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.cmayes.hartree.disp.Display#reset()
+     */
+    @Override
+    public void reset() {
+        // This display is stateless
     }
 }

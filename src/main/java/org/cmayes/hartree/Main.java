@@ -1,7 +1,7 @@
 package org.cmayes.hartree;
 
-import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 import static com.cmayes.common.CommonConstants.NL;
+import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -15,6 +15,7 @@ import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.gaussian.CalcResultLoader;
 import org.cmayes.hartree.loader.gaussian.NormalModeLoader;
+import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
 import org.cmayes.hartree.proc.FileProcessor;
 import org.cmayes.hartree.proc.basic.BasicFileProcessor;
 import org.kohsuke.args4j.Argument;
@@ -57,6 +58,8 @@ public class Main<T> {
                 new CalcResultLoader());
         HAND_TYPE_MAP.put(HandlingType.NORMAL_MODE.getValueClass(),
                 new NormalModeLoader());
+        HAND_TYPE_MAP.put(HandlingType.SNAPSHOT.getValueClass(),
+                new SnapshotLoader());
         DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE.getValueClass(),
                 MediaType.TEXT, new NormalModeTextDisplay());
     }

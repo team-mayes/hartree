@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.cmayes.hartree.model.Atom;
-import org.joda.time.Duration;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.cmayes.hartree.model.Atom;
+import org.cmayes.hartree.model.BaseResult;
+import org.joda.time.Duration;
 
 /**
  * Data common to multiple result types.
  * 
  * @author cmayes
  */
-public class BaseCalculationResult {
+public class BaseCalculationResult implements BaseResult {
     private List<Atom> atoms = new ArrayList<Atom>();
     private List<Date> terminationDates = new ArrayList<Date>();
     private List<Duration> cpuTimes = new ArrayList<Duration>();
@@ -24,7 +25,26 @@ public class BaseCalculationResult {
     private Integer mult;
     private List<Double> frequencyValues = new ArrayList<Double>();
     private boolean isSymmetric = true;
+    private String fileName;
 
+    /**
+     * Returns the file name for this calculation (if applicable).
+     * 
+     * @return The file name for this calculation.
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * Sets the file name for this calculation.
+     * 
+     * @param fileName
+     *            The file name for this calculation.
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     /**
      * Looks up the atom with the given ID by pulling the atom in the atoms
@@ -41,7 +61,7 @@ public class BaseCalculationResult {
             throw new IllegalArgumentException("No atom with ID " + id, e);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      * 

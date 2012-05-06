@@ -1,5 +1,6 @@
 package org.cmayes.hartree;
 
+import static com.cmayes.common.CommonConstants.FILE_SEP;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -35,8 +36,11 @@ public class TestMain {
     private static final String NORM_ARG = "norm";
     private static final String TEST_ARG = "test";
     private static final String TEST_OUT = "test_out";
-    private static final String GAUSS_DIR = "src/test/resources/files/g09";
-    private static final String REV4_LOC = GAUSS_DIR + "/GL_THF_rev4.log";
+    private static final String GAUSS_DIR = String.format(
+            "src%stest%sresources%sfiles%sg09", FILE_SEP, FILE_SEP, FILE_SEP,
+            FILE_SEP);
+    private static final String REV4_LOC = String.format("%s%sGL_THF_rev4.log",
+            GAUSS_DIR, FILE_SEP);
 
     /**
      * Tests specifying an existing file.

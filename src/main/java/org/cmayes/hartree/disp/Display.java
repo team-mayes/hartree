@@ -14,6 +14,11 @@ import com.cmayes.common.MediaType;
  */
 public interface Display<T> {
     /**
+     * Resets the state of the display (if any).
+     */
+    void reset();
+
+    /**
      * Writes a single value to the given writer.
      * 
      * @param writer
@@ -22,18 +27,6 @@ public interface Display<T> {
      *            The value to display.
      */
     void write(Writer writer, T valToDisp);
-
-    /**
-     * Writes a single value with header info to the given writer.
-     * 
-     * @param writer
-     *            The writer to write to.
-     * @param headerInfo
-     *            The header info to display (Null for no header).
-     * @param valToDisp
-     *            The value to display.
-     */
-    void write(final Writer writer, final String headerInfo, final T valToDisp);
 
     /**
      * Returns the media type of the generated display.

@@ -138,4 +138,19 @@ public interface BaseResult {
      * @return The atom at the zero-based index equivalent of the ID.
      */
     Atom getAtomById(final int id);
+
+    /**
+     * Returns the file name for this calculation (if applicable).
+     * 
+     * @return The file name for this calculation.
+     */
+    public String getFileName();
+
+    /**
+     * Sets the file name for this calculation.
+     * 
+     * @param fileName
+     *            The file name for this calculation.
+     */
+    public void setFileName(String fileName);
 }

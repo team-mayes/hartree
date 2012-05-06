@@ -26,6 +26,10 @@ import com.cmayes.common.exception.EnvironmentException;
  * 
  * @author cmayes
  */
+/**
+ * @author cmayes
+ * 
+ */
 public class CalcResultLoader extends BaseGaussianLoader implements
         Loader<CalculationResult> {
     /** Logger. */
@@ -38,6 +42,18 @@ public class CalcResultLoader extends BaseGaussianLoader implements
      */
     public CalculationResult load(final Reader reader) {
         return extractCalcThermData(extractAst(reader));
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader,
+     *      java.lang.String)
+     */
+    public CalculationResult load(final Reader reader, String fileName) {
+        CalculationResult result = extractCalcThermData(extractAst(reader));
+        result.setFileName(fileName);
+        return result;
     }
 
     /**
