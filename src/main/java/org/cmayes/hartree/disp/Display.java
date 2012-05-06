@@ -14,9 +14,13 @@ import com.cmayes.common.MediaType;
  */
 public interface Display<T> {
     /**
-     * Resets the state of the display (if any).
+     * Resets the state of the display and writes any closing data to the
+     * writer.
+     * 
+     * @param writer
+     *            The writer to be closed.
      */
-    void reset();
+    void finish(Writer writer);
 
     /**
      * Writes a single value to the given writer.

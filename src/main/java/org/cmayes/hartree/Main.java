@@ -18,6 +18,7 @@ import org.cmayes.hartree.loader.gaussian.CalcResultLoader;
 import org.cmayes.hartree.loader.gaussian.NormalModeLoader;
 import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
 import org.cmayes.hartree.proc.FileProcessor;
+import org.cmayes.hartree.proc.basic.AccumulatingFileProcessor;
 import org.cmayes.hartree.proc.basic.BasicFileProcessor;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -215,13 +216,17 @@ public class Main<T> {
         targetType = (Class<T>) hType.getValueClass();
 
         final FileProcessor<T> proc = createProcessor(hType);
-        if (file != null) {
-            proc.display(file);
-        } else if (directory != null) {
-            proc.displayAll(directory);
-        } else {
-            throw new CmdLineException(parser,
-                    "No input file or directory specified.");
+        try {
+            if (file != null) {
+                proc.display(file);
+            } else if (directory != null) {
+                proc.displayAll(directory);
+            } else {
+                throw new CmdLineException(parser,
+                        "No input file or directory specified.");
+            }
+        } finally {
+            proc.finish();
         }
     }
 
@@ -235,6 +240,10 @@ public class Main<T> {
     FileProcessor<T> createProcessor(final HandlingType hType) {
         if (testProcessor != null) {
             return testProcessor;
+        }
+        if (HandlingType.SNAPSHOT.equals(hType)) {
+            return new AccumulatingFileProcessor<T>(hType, getLoader(),
+                    getDisplay(), outDir);
         }
         return new BasicFileProcessor<T>(hType, getLoader(), getDisplay(),
                 outDir);

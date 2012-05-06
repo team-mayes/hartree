@@ -27,13 +27,14 @@ import com.cmayes.common.exception.EnvironmentException;
  * @param <T>
  *            The type that is returned from file processing.
  */
-public class BasicFileProcessor<T> implements FileProcessor<T> {
+public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Loader<T> parser;
     private final Display<T> displayer;
     private final HandlingType handlingType;
     private File outDir;
+    private Writer accWriter;
 
     /**
      * Creates a processor that will use the given parser and display.
@@ -45,11 +46,12 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      * @param theDisp
      *            The display to use.
      */
-    public BasicFileProcessor(final HandlingType handType,
+    public AccumulatingFileProcessor(final HandlingType handType,
             final Loader<T> theParser, final Display<T> theDisp) {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
+        accWriter = new OutputStreamWriter(System.out);
     }
 
     /**
@@ -66,12 +68,31 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      *            The output directory (may be null to indicate no output
      *            directory).
      */
-    public BasicFileProcessor(final HandlingType handType,
+    public AccumulatingFileProcessor(final HandlingType handType,
             final Loader<T> theParser, final Display<T> theDisp, final File out) {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
         this.outDir = out;
+        if (outDir == null) {
+            accWriter = new OutputStreamWriter(System.out);
+        } else {
+            final File outFile = new File(String.format("%s%s%s-%s.%s", outDir
+                    .getAbsolutePath(), File.separator, "accumulator",
+                    handlingType.getCommandName(), displayer.getMediaType()
+                            .getPrimaryExtension()));
+            try {
+                if (!outFile.exists() && (!outFile.createNewFile())) {
+                    logger.warn("Could not create out file "
+                            + outFile.getAbsolutePath());
+                }
+                accWriter = new FileWriter(outFile);
+            } catch (final IOException e) {
+                throw new EnvironmentException("Problems creating out file "
+                        + outFile, e);
+            }
+        }
+
     }
 
     /**
@@ -80,42 +101,14 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      * @see org.cmayes.hartree.proc.FileProcessor#display(java.io.File)
      */
     public void display(final File processMe) {
-        Writer writer;
-        if (outDir == null) {
-            writer = new OutputStreamWriter(System.out);
-        } else {
-            final File outFile = new File(String.format("%s%s%s-%s.%s",
-                    outDir.getAbsolutePath(), File.separator,
-                    processMe.getName(), handlingType.getCommandName(),
-                    displayer.getMediaType().getPrimaryExtension()));
-            try {
-                if (!outFile.exists() && (!outFile.createNewFile())) {
-                    logger.warn("Could not create out file "
-                            + outFile.getAbsolutePath());
-                }
-                writer = new FileWriter(outFile);
-            } catch (final IOException e) {
-                throw new EnvironmentException("Problems creating out file "
-                        + outFile, e);
-            }
-        }
         try {
             displayer
-                    .write(writer,
+                    .write(accWriter,
                             parser.load(new FileReader(processMe),
                                     processMe.getName()));
         } catch (final FileNotFoundException e) {
             throw new EnvironmentException(
                     "File not found while creating reader", e);
-        } finally {
-            displayer.finish(writer);
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    logger.warn("Problems closing writer: " + e.getMessage());
-                }
-            }
         }
     }
 
@@ -157,6 +150,10 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
 
     @Override
     public void finish() {
-        
+        try {
+            this.accWriter.close();
+        } catch (IOException e) {
+            logger.warn("Problems closing the accumulator", e);
+        }
     }
 }

@@ -29,4 +29,10 @@ public interface FileProcessor<T> {
      * @see #display(File)
      */
     void displayAll(final File processDir);
+
+    /**
+     * Indicate that all processing is done, allowing for output finishing, I/O
+     * cleanup, etc.
+     */
+    void finish();
 }

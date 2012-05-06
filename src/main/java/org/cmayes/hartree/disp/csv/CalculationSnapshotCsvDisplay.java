@@ -121,10 +121,10 @@ public class CalculationSnapshotCsvDisplay implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.disp.Display#reset()
+     * @see org.cmayes.hartree.disp.Display#finish(Writer)
      */
     @Override
-    public void reset() {
+    public void finish(Writer writer) {
         this.isFirst = true;
     }
 }
