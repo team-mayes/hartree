@@ -17,13 +17,11 @@ import org.cmayes.hartree.model.InternalMotion;
 import org.cmayes.hartree.model.NormalMode;
 import org.cmayes.hartree.model.def.DefaultAtom;
 import org.cmayes.hartree.model.def.DefaultCalculationSnapshot;
-import org.cmayes.hartree.model.def.DefaultInternalMotion;
-import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
-import org.cmayes.hartree.parser.gaussian.antlr.NormalModeParser;
+import org.cmayes.hartree.parser.gaussian.antlr.SnapshotLexer;
+import org.cmayes.hartree.parser.gaussian.antlr.SnapshotParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cmayes.common.chem.InternalMotionType;
 import com.cmayes.common.exception.EnvironmentException;
 
 /**
@@ -42,7 +40,7 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader)
      */
     public CalculationSnapshot load(final Reader reader) {
-        return extractSummaryData(extractAst(reader));
+        return extractSnapshotData(extractAst(reader));
     }
 
     /**
@@ -52,7 +50,7 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      *      java.lang.String)
      */
     public CalculationSnapshot load(final Reader reader, String fileName) {
-        CalculationSnapshot result = extractSummaryData(extractAst(reader));
+        CalculationSnapshot result = extractSnapshotData(extractAst(reader));
         result.setFileName(fileName);
         return result;
     }
@@ -64,7 +62,7 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      *            The AST to traverse.
      * @return The filled result instance.
      */
-    private CalculationSnapshot extractSummaryData(final CommonTree ast) {
+    private CalculationSnapshot extractSnapshotData(final CommonTree ast) {
         final CalculationSnapshot result = new DefaultCalculationSnapshot();
         int atomColCount = 0;
         Atom curAtom = new DefaultAtom();
@@ -78,58 +76,24 @@ public class SnapshotLoader extends BaseGaussianLoader implements
         }
         for (CommonTree curNode : eventList) {
             switch (curNode.getType()) {
-            case Gaussian09Lexer.EOF:
+            case SnapshotLexer.EOF:
                 break;
-            case Gaussian09Lexer.CPUTIME:
+            case SnapshotLexer.CPUTIME:
                 result.getCpuTimes().add(processCpuTime(curNode));
                 break;
-            case Gaussian09Lexer.TERM:
+            case SnapshotLexer.TERM:
                 result.getTerminationDates().add(processTermDate(curNode));
                 break;
-            case Gaussian09Lexer.TRANSPART:
-                result.setTransPart(toDouble(curNode.getText()));
-                break;
-            case Gaussian09Lexer.ROTPART:
-                result.setRotPart(toDouble(curNode.getText()));
-                break;
-            case Gaussian09Lexer.MULT:
+            case SnapshotLexer.MULT:
                 result.setMult(toInt(curNode.getText()));
                 break;
-            case Gaussian09Lexer.FREQVAL:
+            case SnapshotLexer.FREQVAL:
                 final Double freqVal = toDouble(curNode.getText());
                 if (freqVal != null) {
                     result.getFrequencyValues().add(freqVal);
                 }
                 break;
-            case Gaussian09Lexer.ASYM:
-                result.setSymmetricTop(false);
-                break;
-            case Gaussian09Lexer.XYZINT:
-            case Gaussian09Lexer.XYZFLOAT:
-                handleAtom(curNode.getText(), curAtom, atomColCount);
-                atomColCount++;
-                if (atomColCount % ATOM_COL_COUNT == 0) {
-                    result.getAtoms().add(curAtom);
-                    curAtom = new DefaultAtom();
-                }
-                break;
-            case Gaussian09Lexer.NORMOPEN:
-                curMotion = new DefaultInternalMotion();
-                curNormal.getMotions().add(curMotion);
-                curMotion.setType(InternalMotionType.valueOfSymbol(curNode
-                        .getText().substring(0, 1)));
-                break;
-            case Gaussian09Lexer.NORMATOM:
-                curMotion.getMembers().add(toInt(curNode.getText()));
-                break;
-            case Gaussian09Lexer.NORMFLOAT:
-                if (curMotion.getValue() == null) {
-                    curMotion.setValue(toDouble(curNode.getText()));
-                } else {
-                    curMotion.setWeight(toDouble(curNode.getText()));
-                }
-                break;
-            case Gaussian09Lexer.ELECENG:
+            case SnapshotLexer.ELECENG:
                 result.setElecEn(toDouble(curNode.getText()));
                 break;
             default:
@@ -150,9 +114,9 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      */
     protected CommonTree extractAst(final Reader reader) {
         try {
-            final Gaussian09Lexer lexer = new Gaussian09Lexer(
+            final SnapshotLexer lexer = new SnapshotLexer(
                     new ANTLRReaderStream(reader));
-            final NormalModeParser parser = new NormalModeParser(
+            final SnapshotParser parser = new SnapshotParser(
                     new CommonTokenStream(lexer));
             return (CommonTree) parser.script().getTree();
         } catch (final IOException e) {

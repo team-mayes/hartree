@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cmayes.hartree.disp.Display;
+import org.cmayes.hartree.disp.csv.CalculationSnapshotCsvDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.gaussian.CalcResultLoader;
@@ -43,6 +44,7 @@ public class Main<T> {
     private static final Map<Class<?>, Loader<?>> HAND_TYPE_MAP = new HashMap<Class<?>, Loader<?>>();
     private static final Table<Class<?>, MediaType, Display<?>> DISP_TYPE_TBL = HashBasedTable
             .create();
+    private static final Map<Class<?>, MediaType> DEF_MEDIA = new HashMap<Class<?>, MediaType>();
     /** Receives leftover command line parameters. */
     @Argument
     private final List<String> arguments = new ArrayList<String>();
@@ -50,18 +52,25 @@ public class Main<T> {
     private File directory;
     private File outDir;
     private Class<T> targetType;
-    private MediaType targetMedia = MediaType.TEXT;
+    private MediaType targetMedia = null;
     private FileProcessor<T> testProcessor;
 
     static {
+        // Assign handlers
         HAND_TYPE_MAP.put(HandlingType.THERM.getValueClass(),
                 new CalcResultLoader());
         HAND_TYPE_MAP.put(HandlingType.NORMAL_MODE.getValueClass(),
                 new NormalModeLoader());
         HAND_TYPE_MAP.put(HandlingType.SNAPSHOT.getValueClass(),
                 new SnapshotLoader());
+        // Set default media types for value classes.
+        DEF_MEDIA.put(HandlingType.NORMAL_MODE.getValueClass(), MediaType.TEXT);
+        DEF_MEDIA.put(HandlingType.SNAPSHOT.getValueClass(), MediaType.CSV);
+        // Establish displays for a combo of value object and media type
         DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE.getValueClass(),
                 MediaType.TEXT, new NormalModeTextDisplay());
+        DISP_TYPE_TBL.put(HandlingType.SNAPSHOT.getValueClass(), MediaType.CSV,
+                new CalculationSnapshotCsvDisplay());
     }
 
     /**
@@ -90,7 +99,8 @@ public class Main<T> {
      * @throws IllegalArgumentException
      *             If the file is not readable.
      */
-    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file", usage = "The file to process")
+    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file",
+            usage = "The file to process")
     public void setFile(final File theFile) {
         if (theFile.canRead()) {
             this.file = theFile;
@@ -106,7 +116,8 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory", usage = "The base directory of the files to process")
+    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory",
+            usage = "The base directory of the files to process")
     public void setDirectory(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.directory = dir;
@@ -131,7 +142,8 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir", usage = "The output directory for result files")
+    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir",
+            usage = "The output directory for result files")
     public void setOutDir(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.outDir = dir;
@@ -246,10 +258,34 @@ public class Main<T> {
      */
     @SuppressWarnings("unchecked")
     Display<T> getDisplay() {
-        return (Display<T>) asNotNull(
-                DISP_TYPE_TBL.get(targetType, targetMedia), String.format(
-                        "No display for media %s on type %s", targetMedia,
-                        targetType.getName()));
+        MediaType tgtMediaType = getTargetMediaType();
+        return (Display<T>) asNotNull(DISP_TYPE_TBL.get(targetType,
+                tgtMediaType), String.format(
+                "No display for media %s on type %s", targetMedia,
+                targetType.getName()));
+    }
+
+    /**
+     * Returns either the user's specified target media type or the default
+     * media type for the target type.
+     * 
+     * @return The media type to display.
+     * @throws IllegalStateException
+     *             If neither targetMedia nor a default mapping for the target
+     *             type are set.
+     */
+    MediaType getTargetMediaType() {
+        if (targetMedia != null) {
+            return targetMedia;
+        }
+        MediaType mediaType = DEF_MEDIA.get(targetType);
+        if (mediaType == null) {
+            throw new IllegalStateException(
+                    String.format(
+                            "No target media type specified and no default configured for type ''",
+                            targetType));
+        }
+        return mediaType;
     }
 
     /**
