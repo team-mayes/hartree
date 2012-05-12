@@ -22,7 +22,7 @@ public class TestSummaryLoader {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
     /** The prefix for file locations. */
-    private static final String FILE_DIR_PFX = "src/test/resources/files/g09/summary/";
+    private static final String FILE_DIR_PFX = "src/test/resources/files/g09/snapshot/";
     private static final SnapshotLoader LOADER = new SnapshotLoader();
     private static CalculationSnapshot calc1;
 
@@ -71,4 +71,27 @@ public class TestSummaryLoader {
         assertThat(calc1.getFrequencyValues().get(0), closeTo(60.7784, .01));
         assertThat(calc1.getFrequencyValues().get(1), closeTo(90.3398, .01));
     }
+    
+    /**
+     * Test.
+     * 
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testFunctional() throws Exception {
+        assertThat(calc1.getFunctional(), equalTo("m062x"));
+    }
+    
+    /**
+     * Test.
+     * 
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testBasisSet() throws Exception {
+        assertThat(calc1.getBasisSet(), equalTo("6-31+g(2df,p)"));
+    }
+
 }

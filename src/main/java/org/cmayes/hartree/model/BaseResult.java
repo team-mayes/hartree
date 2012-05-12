@@ -144,7 +144,7 @@ public interface BaseResult {
      * 
      * @return The file name for this calculation.
      */
-    public String getFileName();
+    String getFileName();
 
     /**
      * Sets the file name for this calculation.
@@ -152,5 +152,102 @@ public interface BaseResult {
      * @param fileName
      *            The file name for this calculation.
      */
-    public void setFileName(String fileName);
+    void setFileName(String fileName);
+
+    /**
+     * @return the functional
+     */
+    String getFunctional();
+
+    /**
+     * @param functional
+     *            the functional to set
+     */
+    void setFunctional(String functional);
+
+    /**
+     * @return the basisSet
+     */
+    String getBasisSet();
+
+    /**
+     * @param basisSet
+     *            the basisSet to set
+     */
+    void setBasisSet(String basisSet);
+
+    /**
+     * Returns the name of the solvent (e.g. water, ethanol, etc.).
+     * 
+     * @return The name of the solvent.
+     */
+    String getSolvent();
+
+    /**
+     * Sets the name of the solvent.
+     * 
+     * @param solvent
+     *            The solvent name to set.
+     */
+    void setSolvent(String solvent);
+
+    /**
+     * Returns the zero-point energy correction in Hartree/Particle.
+     * 
+     * @return The zero-point energy correction in Hartree/Particle
+     */
+    Double getZpeCorrection();
+
+    /**
+     * Sets ZPE correction.
+     * 
+     * @param zpeCorrection
+     *            The value to set.
+     */
+    void setZpeCorrection(Double zpeCorrection);
+
+    /**
+     * Returns the system's charge.
+     * 
+     * @return The system's charge.
+     */
+    Integer getCharge();
+
+    /**
+     * Sets the system's charge.
+     * 
+     * @param charge
+     *            The charge to set.
+     */
+    void setCharge(Integer charge);
+
+    /**
+     * Returns the stoichiometry;
+     * 
+     * @return The stoichiometry.
+     */
+    String getStoichiometry();
+
+    /**
+     * Sets the stoichiometry.
+     * 
+     * @param stoichiometry
+     *            The value to set.
+     */
+    void setStoichiometry(String stoichiometry);
+
+    /**
+     * Returns the total dipole moment in Debyes.
+     * 
+     * @return The total dipole moment in Debyes
+     */
+    Double getDipoleMomentTotal();
+
+    /**
+     * Set the total dipole moment in Debyes.
+     * 
+     * @param dmTotal
+     *            The total to set.
+     */
+    void setDipoleMomentTotal(Double dmTotal);
 }

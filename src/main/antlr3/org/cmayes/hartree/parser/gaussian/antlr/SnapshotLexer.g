@@ -6,7 +6,7 @@ options {
   filter=true;
 }
 
-tokens { TERM; CPUTIME;
+tokens { TERM; CPUTIME; DEFDATA; FUNCSET;
 }
 
 @header {
@@ -17,22 +17,43 @@ tokens { TERM; CPUTIME;
 @members {
     boolean cpuCtx = false;
     boolean termCtx = false;
-    boolean partCtx = false;
-    boolean transCtx = false;
-    boolean rotCtx = false;
     boolean multCtx = false;
-    boolean natomsFound = false;
-    boolean natomsCtx = false;
     boolean freqCtx = false;
     boolean elecEngCtx = false;
-    boolean xyzCtx = false; 
-    boolean normCtx = false; 
-    boolean normParenCtx = false; 
+    boolean defCtx = false;
+    boolean zpeCtx = false;
+    boolean chgCtx = false;
+    boolean stoCtx = false;
+    boolean dipCtx = false;
+    boolean dipTotCtx = false;
 }
+
+// Def block
+
+DEFOPEN: {!defCtx}? SEPDASH WS HASH { defCtx = true; $channel = HIDDEN; };
+FUNCSET: {defCtx}? => ANUM SLASH FORMULA ;
+SOLVENT: {defCtx}? => 'solvent=' WORD;
+DEFCLOSE: {defCtx}? => SEPDASH { defCtx = false; $channel = HIDDEN; };
+
+ZPEOPEN: 'Zero-point correction=' { zpeCtx = true; $channel = HIDDEN; };
+ZPECORR: {zpeCtx}? => FLOAT { zpeCtx = false; };
 
 // Multiplicity
 MULTTAG: 'Multiplicity' { multCtx = true; $channel = HIDDEN; };
 MULT: {multCtx}? => INT { multCtx = false; };
+
+// Charge
+CHARGETAG: 'Charge' WS+ '=' { chgCtx = true; $channel = HIDDEN; };
+CHARGE: {chgCtx}? => INT { chgCtx = false; };
+
+// Stoichiometry
+STOITAG: 'Stoichiometry'{ stoCtx = true; $channel = HIDDEN; };
+STOI: {stoCtx}? => FORMULA { stoCtx = false; };
+
+// Dipole moment
+DIPTAG: 'Dipole moment' { dipCtx = true; $channel = HIDDEN; };
+DIPTOTTAG: {dipCtx}? =>  'Tot=' { dipTotCtx = true; $channel = HIDDEN; };
+DIPTOT: {dipTotCtx}? => FLOAT { dipCtx = false; dipTotCtx = false; };
 
 SCFTAG: 'SCF Done' { elecEngCtx = true; $channel = HIDDEN; };
 ELECENG: {elecEngCtx}? => FLOAT { elecEngCtx = false; };
@@ -54,7 +75,7 @@ CPUINT: {cpuCtx}? => INT ;
 TERMTAG: 'Normal termination of Gaussian 09 at' { termCtx = true; } ;
 TERMINT: {termCtx}? => INT ;
 TERMDATE: {termCtx}? => DATE ;
-TERMEND: {termCtx}? => '.' { termCtx = false; natomsFound = false; } ;
+TERMEND: {termCtx}? => '.' { termCtx = false; } ;
 
 
 
@@ -65,3 +86,7 @@ fragment DATE: LETTER+ WS+ LETTER+ (WS | ':' | INT)+ ;
 fragment LETTER: ('a'..'z' | 'A'..'Z' | '_') ;
 fragment WORD: LETTER+ ;
 fragment WS: (' ' | '\t' | '\n' | '\r' | '\f')+ ;
+fragment SEPDASH: '------' ;
+fragment HASH: '#' ;
+fragment SLASH: '/' ;
+fragment FORMULA: (ANUM | '+' | '-' | '(' | ')' | ',')+ ; 

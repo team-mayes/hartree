@@ -21,4 +21,5 @@ public interface CalculationSnapshot extends BaseResult {
      *            The energy to set.
      */
     void setElecEn(final Double energy);
+
 }

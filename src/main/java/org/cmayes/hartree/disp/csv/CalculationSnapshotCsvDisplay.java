@@ -20,8 +20,9 @@ import com.cmayes.common.exception.EnvironmentException;
 public class CalculationSnapshotCsvDisplay implements
         Display<CalculationSnapshot> {
     private static final String MISSING = "N/A";
-    private String[] headerRow = new String[] { "File Name", "Mult",
-            "Energy (A.U.)", "Freq 1", "Freq 2" };
+    private String[] headerRow = new String[] { "File Name", "Solvent type",
+            "Stoichiometry", "Charge", "Mult", "Functional", "Basis Set",
+            "Energy (A.U.)", "dipole", "ZPE (kcal/mol)", "Freq 1", "Freq 2" };
     private boolean isFirst = true;
 
     /**
@@ -38,6 +39,7 @@ public class CalculationSnapshotCsvDisplay implements
                 csvWriter.writeNext(headerRow);
                 isFirst = false;
             }
+            String charge = valOrMissing(valToDisp.getCharge());
             String mult = valOrMissing(valToDisp.getMult());
             String energy = valOrMissing(valToDisp.getElecEn());
             List<Double> freq = valToDisp.getFrequencyValues();
@@ -53,8 +55,14 @@ public class CalculationSnapshotCsvDisplay implements
             } else {
                 secFreq = valOrMissing(freq.get(2));
             }
-            csvWriter.writeNext(new String[] { valToDisp.getFileName(), mult,
-                    energy, firstFreq, secFreq });
+            String solv = valOrMissing(valToDisp.getSolvent());
+            String zpe = valOrMissing(valToDisp.getZpeCorrection());
+            String stoi = valOrMissing(valToDisp.getStoichiometry());
+            String dip = valOrMissing(valToDisp.getDipoleMomentTotal());
+            csvWriter.writeNext(new String[] { valToDisp.getFileName(), solv,
+                    stoi, charge, mult, valToDisp.getFunctional(),
+                    valToDisp.getBasisSet(), energy, dip, zpe, firstFreq,
+                    secFreq });
         } finally {
             try {
                 csvWriter.flush();

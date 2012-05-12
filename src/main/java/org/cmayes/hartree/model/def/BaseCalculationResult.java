@@ -23,9 +23,34 @@ public class BaseCalculationResult implements BaseResult {
     private Double transPart;
     private Double rotPart;
     private Integer mult;
+    private Integer charge;
     private List<Double> frequencyValues = new ArrayList<Double>();
     private boolean isSymmetric = true;
     private String fileName;
+    private String functional;
+    private String basisSet;
+    private String solvent;
+    private String stoichiometry;
+    private Double zpeCorrection;
+    private Double dipoleMomentTotal;
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.BaseResult#getSolvent()
+     */
+    public String getSolvent() {
+        return solvent;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.BaseResult#setSolvent(java.lang.String)
+     */
+    public void setSolvent(String solvent) {
+        this.solvent = solvent;
+    }
 
     /**
      * Returns the file name for this calculation (if applicable).
@@ -252,5 +277,108 @@ public class BaseCalculationResult implements BaseResult {
                 .append("cpuTimes", this.cpuTimes).append("mult", this.mult)
                 .append("terminationDates", this.terminationDates)
                 .append("rotPart", this.rotPart).toString();
+    }
+
+    /**
+     * @return the functional
+     */
+    public String getFunctional() {
+        return functional;
+    }
+
+    /**
+     * @param functional
+     *            the functional to set
+     */
+    public void setFunctional(String functional) {
+        this.functional = functional;
+    }
+
+    /**
+     * @return the basisSet
+     */
+    public String getBasisSet() {
+        return basisSet;
+    }
+
+    /**
+     * @param basisSet
+     *            the basisSet to set
+     */
+    public void setBasisSet(String basisSet) {
+        this.basisSet = basisSet;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.BaseResult#getZpeCorrection()
+     */
+    public Double getZpeCorrection() {
+        return zpeCorrection;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.BaseResult#setZpeCorrection(java.lang.Double)
+     */
+    public void setZpeCorrection(Double zpeCorrection) {
+        this.zpeCorrection = zpeCorrection;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.BaseResult#getCharge()
+     */
+    public Integer getCharge() {
+        return charge;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.BaseResult#setCharge(java.lang.Integer)
+     */
+    public void setCharge(Integer charge) {
+        this.charge = charge;
+    }
+
+    /**
+     * Returns the stoichiometry;
+     * 
+     * @return The stoichiometry.
+     */
+    public String getStoichiometry() {
+        return stoichiometry;
+    }
+
+    /**
+     * Sets the stoichiometry.
+     * 
+     * @param stoichiometry
+     *            The value to set.
+     */
+    public void setStoichiometry(String stoichiometry) {
+        this.stoichiometry = stoichiometry;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.BaseResult#getDipoleMomentTotal()
+     */
+    public Double getDipoleMomentTotal() {
+        return dipoleMomentTotal;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.BaseResult#setDipoleMomentTotal(java.lang.Double)
+     */
+    public void setDipoleMomentTotal(Double dipoleMomentTotal) {
+        this.dipoleMomentTotal = dipoleMomentTotal;
     }
 }

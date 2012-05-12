@@ -10,12 +10,8 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
-import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.CalculationResult;
 import org.cmayes.hartree.model.CalculationSnapshot;
-import org.cmayes.hartree.model.InternalMotion;
-import org.cmayes.hartree.model.NormalMode;
-import org.cmayes.hartree.model.def.DefaultAtom;
 import org.cmayes.hartree.model.def.DefaultCalculationSnapshot;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotLexer;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotParser;
@@ -64,10 +60,6 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      */
     private CalculationSnapshot extractSnapshotData(final CommonTree ast) {
         final CalculationSnapshot result = new DefaultCalculationSnapshot();
-        int atomColCount = 0;
-        Atom curAtom = new DefaultAtom();
-        NormalMode curNormal = null;
-        InternalMotion curMotion = null;
         @SuppressWarnings("unchecked")
         final List<CommonTree> eventList = ast.getChildren();
         if (eventList == null) {
@@ -95,6 +87,27 @@ public class SnapshotLoader extends BaseGaussianLoader implements
                 break;
             case SnapshotLexer.ELECENG:
                 result.setElecEn(toDouble(curNode.getText()));
+                break;
+            case SnapshotLexer.FUNCSET:
+                String[] funcSetSplit = curNode.getText().split("/");
+                result.setFunctional(funcSetSplit[0]);
+                result.setBasisSet(funcSetSplit[1]);
+                break;
+            case SnapshotLexer.SOLVENT:
+                String[] solvSplit = curNode.getText().split("=");
+                result.setSolvent(solvSplit[1]);
+                break;
+            case SnapshotLexer.ZPECORR:
+                result.setZpeCorrection(toDouble(curNode.getText()));
+                break;
+            case SnapshotLexer.CHARGE:
+                result.setCharge(toInt(curNode.getText()));
+                break;
+            case SnapshotLexer.STOI:
+                result.setStoichiometry(curNode.getText());
+                break;
+            case SnapshotLexer.DIPTOT:
+                result.setDipoleMomentTotal(toDouble(curNode.getText()));
                 break;
             default:
                 logger.warn(String.format("Unhandled data %s %s",
