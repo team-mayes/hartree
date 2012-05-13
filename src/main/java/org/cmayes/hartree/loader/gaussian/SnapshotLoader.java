@@ -10,7 +10,6 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
-import org.cmayes.hartree.model.CalculationResult;
 import org.cmayes.hartree.model.CalculationSnapshot;
 import org.cmayes.hartree.model.def.DefaultCalculationSnapshot;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotLexer;

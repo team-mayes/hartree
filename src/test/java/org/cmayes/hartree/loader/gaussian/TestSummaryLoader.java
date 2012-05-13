@@ -9,8 +9,6 @@ import java.io.FileReader;
 import org.cmayes.hartree.model.CalculationSnapshot;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Tests load cases using different files.
@@ -19,8 +17,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class TestSummaryLoader {
-    /** Logger. */
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     /** The prefix for file locations. */
     private static final String FILE_DIR_PFX = "src/test/resources/files/g09/snapshot/";
     private static final SnapshotLoader LOADER = new SnapshotLoader();
@@ -71,7 +67,7 @@ public class TestSummaryLoader {
         assertThat(calc1.getFrequencyValues().get(0), closeTo(60.7784, .01));
         assertThat(calc1.getFrequencyValues().get(1), closeTo(90.3398, .01));
     }
-    
+
     /**
      * Test.
      * 
@@ -82,7 +78,7 @@ public class TestSummaryLoader {
     public void testFunctional() throws Exception {
         assertThat(calc1.getFunctional(), equalTo("m062x"));
     }
-    
+
     /**
      * Test.
      * 

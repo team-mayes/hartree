@@ -32,7 +32,6 @@ import com.cmayes.common.util.EnvUtils;
  * @author cmayes
  */
 public class TestMain {
-    private static final String THERM_ARG = "therm";
     private static final String NORM_ARG = "norm";
     private static final String TEST_ARG = "test";
     private static final String TEST_OUT = "test_out";

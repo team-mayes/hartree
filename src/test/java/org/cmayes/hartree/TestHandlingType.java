@@ -36,13 +36,4 @@ public class TestHandlingType {
         assertThat(HandlingType.NORMAL_MODE.getDescription(),
                 containsString("normal mode"));
     }
-
-    /**
-     * Tests valueOf.
-     */
-    @Test
-    public void testValueOf() {
-        assertThat(HandlingType.valueOf(HandlingType.THERM.name()),
-                equalTo(HandlingType.THERM));
-    }
 }

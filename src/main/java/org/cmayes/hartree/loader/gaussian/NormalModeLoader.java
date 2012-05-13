@@ -11,7 +11,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
 import org.cmayes.hartree.model.Atom;
-import org.cmayes.hartree.model.CalculationResult;
 import org.cmayes.hartree.model.InternalMotion;
 import org.cmayes.hartree.model.NormalMode;
 import org.cmayes.hartree.model.NormalModeCalculation;
