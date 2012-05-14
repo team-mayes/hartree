@@ -53,16 +53,17 @@ public class CalculationSnapshotCsvDisplay implements
             if (freq == null || freq.size() < 2) {
                 secFreq = MISSING;
             } else {
-                secFreq = valOrMissing(freq.get(2));
+                secFreq = valOrMissing(freq.get(1));
             }
             String solv = valOrMissing(valToDisp.getSolvent());
             String zpe = valOrMissing(valToDisp.getZpeCorrection());
             String stoi = valOrMissing(valToDisp.getStoichiometry());
             String dip = valOrMissing(valToDisp.getDipoleMomentTotal());
-            csvWriter.writeNext(new String[] { valToDisp.getFileName(), solv,
-                    stoi, charge, mult, valToDisp.getFunctional(),
-                    valToDisp.getBasisSet(), energy, dip, zpe, firstFreq,
-                    secFreq });
+            String fname = valOrMissing(valToDisp.getFileName());
+            String func = valOrMissing(valToDisp.getFunctional());
+            String basisSet = valOrMissing(valToDisp.getBasisSet());
+            csvWriter.writeNext(new String[] { fname, solv, stoi, charge, mult,
+                    func, basisSet, energy, dip, zpe, firstFreq, secFreq });
         } finally {
             try {
                 csvWriter.flush();
@@ -83,7 +84,10 @@ public class CalculationSnapshotCsvDisplay implements
      *         null.
      */
     private String valOrMissing(Object val) {
-        return val == null ? MISSING : val.toString();
+        if (val == null || val.toString().isEmpty()) {
+            return MISSING;
+        }
+        return val.toString();
     }
 
     /**

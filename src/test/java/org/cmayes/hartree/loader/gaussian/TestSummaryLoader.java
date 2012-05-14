@@ -9,6 +9,8 @@ import java.io.FileReader;
 import org.cmayes.hartree.model.CalculationSnapshot;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests load cases using different files.
@@ -17,6 +19,9 @@ import org.junit.Test;
  * 
  */
 public class TestSummaryLoader {
+    /** Logger. */
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(TestSummaryLoader.class);
     /** The prefix for file locations. */
     private static final String FILE_DIR_PFX = "src/test/resources/files/g09/snapshot/";
     private static final SnapshotLoader LOADER = new SnapshotLoader();
@@ -32,6 +37,7 @@ public class TestSummaryLoader {
     public static final void setUpClass() throws Exception {
         calc1 = LOADER.load(new FileReader(FILE_DIR_PFX
                 + "glucNa3eO4areacttwater.out"));
+        LOGGER.debug("Calc: " + calc1);
     }
 
     /**
@@ -52,8 +58,30 @@ public class TestSummaryLoader {
      *             When there's a problem.
      */
     @Test
+    public void testCharge() throws Exception {
+        assertThat(calc1.getCharge(), equalTo(1));
+    }
+
+    /**
+     * Test.
+     * 
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
     public void testElecEn() throws Exception {
         assertThat(calc1.getElecEn(), closeTo(-849.236562278, .01));
+    }
+
+    /**
+     * Test.
+     * 
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testZpeCorr() throws Exception {
+        assertThat(calc1.getZpeCorrection(), closeTo(0.200499, .01));
     }
 
     /**
@@ -90,4 +118,25 @@ public class TestSummaryLoader {
         assertThat(calc1.getBasisSet(), equalTo("6-31+g(2df,p)"));
     }
 
+    /**
+     * Test.
+     * 
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testStoi() throws Exception {
+        assertThat(calc1.getStoichiometry(), equalTo("C6H12NaO6(1+)"));
+    }
+
+    /**
+     * Test.
+     * 
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testDipoleMoment() throws Exception {
+        assertThat(calc1.getDipoleMomentTotal(), closeTo(19.6701, .01));
+    }
 }

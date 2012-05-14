@@ -15,8 +15,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
+import org.cmayes.hartree.disp.csv.CalculationSnapshotCsvDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
 import org.cmayes.hartree.loader.gaussian.NormalModeLoader;
+import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
+import org.cmayes.hartree.model.CalculationSnapshot;
 import org.cmayes.hartree.model.NormalModeCalculation;
 import org.cmayes.hartree.proc.FileProcessor;
 import org.junit.Test;
@@ -32,6 +35,7 @@ import com.cmayes.common.util.EnvUtils;
  * @author cmayes
  */
 public class TestMain {
+    private static final String SNAP_ARG = "snap";
     private static final String NORM_ARG = "norm";
     private static final String TEST_ARG = "test";
     private static final String TEST_OUT = "test_out";
@@ -239,5 +243,57 @@ public class TestMain {
     public void testNormNone() throws Exception {
         final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
         main.doMain(NORM_ARG);
+    }
+
+    /**
+     * Tests a call for a SNAPSHOT process without a file or dir.
+     * 
+     * @throws Exception
+     *             When the test throws an exception.
+     */
+    @Test(expected = CmdLineException.class)
+    public void testSnapNone() throws Exception {
+        final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
+        main.doMain(SNAP_ARG);
+    }
+
+    /**
+     * Tests calls for a {@link FileProcessor} for the SNAPSHOT handling type
+     * with a file.
+     * 
+     * @throws Exception
+     *             When the test throws an exception.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testProcessorSnapFile() throws Exception {
+        final Main<CalculationSnapshot> main = new Main<CalculationSnapshot>();
+        final FileProcessor<CalculationSnapshot> fp = mock(FileProcessor.class);
+        main.setTestFileProcessor(fp);
+        main.doMain("-f", REV4_LOC, SNAP_ARG);
+        assertThat(main.getDisplay(),
+                instanceOf(CalculationSnapshotCsvDisplay.class));
+        assertThat(main.getLoader(), instanceOf(SnapshotLoader.class));
+        verify(fp).display(Mockito.any(File.class));
+    }
+
+    /**
+     * Tests calls for a {@link FileProcessor} for the SNAPSHOT handling type
+     * with a directory.
+     * 
+     * @throws Exception
+     *             When the test throws an exception.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testProcessorSDir() throws Exception {
+        final Main<CalculationSnapshot> main = new Main<CalculationSnapshot>();
+        final FileProcessor<CalculationSnapshot> fp = mock(FileProcessor.class);
+        main.setTestFileProcessor(fp);
+        main.doMain("-d", GAUSS_DIR, SNAP_ARG);
+        assertThat(main.getDisplay(),
+                instanceOf(CalculationSnapshotCsvDisplay.class));
+        assertThat(main.getLoader(), instanceOf(SnapshotLoader.class));
+        verify(fp).displayAll(Mockito.any(File.class));
     }
 }
