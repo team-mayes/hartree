@@ -222,7 +222,7 @@ public interface BaseResult {
     void setCharge(Integer charge);
 
     /**
-     * Returns the stoichiometry;
+     * Returns the stoichiometry.
      * 
      * @return The stoichiometry.
      */
@@ -250,4 +250,19 @@ public interface BaseResult {
      *            The total to set.
      */
     void setDipoleMomentTotal(Double dmTotal);
+
+    /**
+     * Returns the Gibbs free energy in Hartrees at 298 degrees Kelvin.
+     * 
+     * @return the gibbs298
+     */
+    Double getGibbs298();
+
+    /**
+     * Sets the Gibbs free energy in Hartrees at 298 degrees Kelvin.
+     * 
+     * @param g298
+     *            the gibbs298 to set
+     */
+    void setGibbs298(final Double g298);
 }

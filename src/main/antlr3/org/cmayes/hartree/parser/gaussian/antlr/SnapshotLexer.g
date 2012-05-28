@@ -26,6 +26,7 @@ tokens { TERM; CPUTIME; DEFDATA; FUNCSET;
     boolean stoCtx = false;
     boolean dipCtx = false;
     boolean dipTotCtx = false;
+    boolean g298Ctx = false;
 }
 
 // Def block
@@ -37,6 +38,9 @@ DEFCLOSE: {defCtx}? => SEPDASH { defCtx = false; $channel = HIDDEN; };
 
 ZPEOPEN: 'Zero-point correction=' { zpeCtx = true; $channel = HIDDEN; };
 ZPECORR: {zpeCtx}? => FLOAT { zpeCtx = false; };
+
+G298OPEN: 'Sum of electronic and thermal Free Energies=' { g298Ctx = true; $channel = HIDDEN; };
+G298: {g298Ctx}? => FLOAT { g298Ctx = false; };
 
 // Multiplicity
 MULTTAG: 'Multiplicity' { multCtx = true; $channel = HIDDEN; };

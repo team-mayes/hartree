@@ -44,8 +44,8 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader,
      *      java.lang.String)
      */
-    public CalculationSnapshot load(final Reader reader, String fileName) {
-        CalculationSnapshot result = extractSnapshotData(extractAst(reader));
+    public CalculationSnapshot load(final Reader reader, final String fileName) {
+        final CalculationSnapshot result = extractSnapshotData(extractAst(reader));
         result.setFileName(fileName);
         return result;
     }
@@ -88,16 +88,19 @@ public class SnapshotLoader extends BaseGaussianLoader implements
                 result.setElecEn(toDouble(curNode.getText()));
                 break;
             case SnapshotLexer.FUNCSET:
-                String[] funcSetSplit = curNode.getText().split("/");
+                final String[] funcSetSplit = curNode.getText().split("/");
                 result.setFunctional(funcSetSplit[0]);
                 result.setBasisSet(funcSetSplit[1]);
                 break;
             case SnapshotLexer.SOLVENT:
-                String[] solvSplit = curNode.getText().split("=");
+                final String[] solvSplit = curNode.getText().split("=");
                 result.setSolvent(solvSplit[1]);
                 break;
             case SnapshotLexer.ZPECORR:
                 result.setZpeCorrection(toDouble(curNode.getText()));
+                break;
+            case SnapshotLexer.G298:
+                result.setGibbs298(toDouble(curNode.getText()));
                 break;
             case SnapshotLexer.CHARGE:
                 result.setCharge(toInt(curNode.getText()));

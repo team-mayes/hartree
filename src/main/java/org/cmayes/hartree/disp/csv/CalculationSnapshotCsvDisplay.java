@@ -22,8 +22,9 @@ public class CalculationSnapshotCsvDisplay implements
     private static final String MISSING = "N/A";
     private String[] headerRow = new String[] { "File Name", "Solvent type",
             "Stoichiometry", "Charge", "Mult", "Functional", "Basis Set",
-            "Energy (A.U.)", "dipole", "ZPE (kcal/mol)", "Freq 1", "Freq 2" };
-    private boolean isFirst = true;
+            "Energy (A.U.)", "dipole", "ZPE (kcal/mol)", "G298 (Hartrees)",
+            "Freq 1", "Freq 2" };
+    private boolean first = true;
 
     /**
      * {@inheritDoc}
@@ -32,20 +33,20 @@ public class CalculationSnapshotCsvDisplay implements
      *      java.lang.Object)
      */
     @Override
-    public void write(Writer writer, CalculationSnapshot valToDisp) {
-        CSVWriter csvWriter = new CSVWriter(writer);
+    public void write(final Writer writer, final CalculationSnapshot valToDisp) {
+        final CSVWriter csvWriter = new CSVWriter(writer);
         try {
-            if (isFirst && headerRow != null) {
+            if (first && headerRow != null) {
                 csvWriter.writeNext(headerRow);
-                isFirst = false;
+                first = false;
             }
-            String charge = valOrMissing(valToDisp.getCharge());
-            String mult = valOrMissing(valToDisp.getMult());
-            String energy = valOrMissing(valToDisp.getElecEn());
-            List<Double> freq = valToDisp.getFrequencyValues();
+            final String charge = valOrMissing(valToDisp.getCharge());
+            final String mult = valOrMissing(valToDisp.getMult());
+            final String energy = valOrMissing(valToDisp.getElecEn());
+            final List<Double> freq = valToDisp.getFrequencyValues();
             String firstFreq;
             String secFreq;
-            if (freq == null || freq.size() == 0) {
+            if (freq == null || freq.isEmpty()) {
                 firstFreq = MISSING;
             } else {
                 firstFreq = valOrMissing(freq.get(0));
@@ -55,19 +56,22 @@ public class CalculationSnapshotCsvDisplay implements
             } else {
                 secFreq = valOrMissing(freq.get(1));
             }
-            String solv = valOrMissing(valToDisp.getSolvent());
-            String zpe = valOrMissing(valToDisp.getZpeCorrection());
-            String stoi = valOrMissing(valToDisp.getStoichiometry());
-            String dip = valOrMissing(valToDisp.getDipoleMomentTotal());
-            String fname = valOrMissing(valToDisp.getFileName());
-            String func = valOrMissing(valToDisp.getFunctional());
-            String basisSet = valOrMissing(valToDisp.getBasisSet());
-            csvWriter.writeNext(new String[] { fname, solv, stoi, charge, mult,
-                    func, basisSet, energy, dip, zpe, firstFreq, secFreq });
+            final String solv = valOrMissing(valToDisp.getSolvent());
+            final String zpe = valOrMissing(valToDisp.getZpeCorrection());
+            final String stoi = valOrMissing(valToDisp.getStoichiometry());
+            final String dip = valOrMissing(valToDisp.getDipoleMomentTotal());
+            final String fname = valOrMissing(valToDisp.getFileName());
+            final String func = valOrMissing(valToDisp.getFunctional());
+            final String basisSet = valOrMissing(valToDisp.getBasisSet());
+            final String g298 = valOrMissing(valToDisp.getGibbs298());
+            csvWriter
+                    .writeNext(new String[] { fname, solv, stoi, charge, mult,
+                            func, basisSet, energy, dip, zpe, g298, firstFreq,
+                            secFreq });
         } finally {
             try {
                 csvWriter.flush();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new EnvironmentException(
                         "Problems writing CSV to writer", e);
             }
@@ -83,7 +87,7 @@ public class CalculationSnapshotCsvDisplay implements
      * @return The value's string value or the missing value of the value is
      *         null.
      */
-    private String valOrMissing(Object val) {
+    private String valOrMissing(final Object val) {
         if (val == null || val.toString().isEmpty()) {
             return MISSING;
         }
@@ -117,7 +121,7 @@ public class CalculationSnapshotCsvDisplay implements
      *            The row to add on the first write or null if no header is
      *            desired.
      */
-    public void setHeaderRow(String[] row) {
+    public void setHeaderRow(final String[] row) {
         this.headerRow = row;
     }
 
@@ -127,7 +131,7 @@ public class CalculationSnapshotCsvDisplay implements
      * @return Whether the first row has been written.
      */
     boolean isFirst() {
-        return isFirst;
+        return first;
     }
 
     /**
@@ -136,7 +140,7 @@ public class CalculationSnapshotCsvDisplay implements
      * @see org.cmayes.hartree.disp.Display#finish(Writer)
      */
     @Override
-    public void finish(Writer writer) {
-        this.isFirst = true;
+    public void finish(final Writer writer) {
+        this.first = true;
     }
 }

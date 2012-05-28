@@ -34,6 +34,7 @@ public class BaseCalculationResult implements BaseResult {
     private String stoichiometry;
     private Double zpeCorrection;
     private Double dipoleMomentTotal;
+    private Double gibbs298;
 
     /**
      * {@inheritDoc}
@@ -49,8 +50,8 @@ public class BaseCalculationResult implements BaseResult {
      * 
      * @see org.cmayes.hartree.model.BaseResult#setSolvent(java.lang.String)
      */
-    public void setSolvent(String solvent) {
-        this.solvent = solvent;
+    public void setSolvent(final String solv) {
+        this.solvent = solv;
     }
 
     /**
@@ -65,11 +66,11 @@ public class BaseCalculationResult implements BaseResult {
     /**
      * Sets the file name for this calculation.
      * 
-     * @param fileName
+     * @param fName
      *            The file name for this calculation.
      */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFileName(final String fName) {
+        this.fileName = fName;
     }
 
     /**
@@ -239,11 +240,11 @@ public class BaseCalculationResult implements BaseResult {
     }
 
     /**
-     * @param functional
+     * @param func
      *            the functional to set
      */
-    public void setFunctional(String functional) {
-        this.functional = functional;
+    public void setFunctional(final String func) {
+        this.functional = func;
     }
 
     /**
@@ -254,11 +255,11 @@ public class BaseCalculationResult implements BaseResult {
     }
 
     /**
-     * @param basisSet
+     * @param bSet
      *            the basisSet to set
      */
-    public void setBasisSet(String basisSet) {
-        this.basisSet = basisSet;
+    public void setBasisSet(final String bSet) {
+        this.basisSet = bSet;
     }
 
     /**
@@ -275,8 +276,8 @@ public class BaseCalculationResult implements BaseResult {
      * 
      * @see org.cmayes.hartree.model.BaseResult#setZpeCorrection(java.lang.Double)
      */
-    public void setZpeCorrection(Double zpeCorrection) {
-        this.zpeCorrection = zpeCorrection;
+    public void setZpeCorrection(final Double zpeCorr) {
+        this.zpeCorrection = zpeCorr;
     }
 
     /**
@@ -293,12 +294,12 @@ public class BaseCalculationResult implements BaseResult {
      * 
      * @see org.cmayes.hartree.model.BaseResult#setCharge(java.lang.Integer)
      */
-    public void setCharge(Integer charge) {
-        this.charge = charge;
+    public void setCharge(final Integer chg) {
+        this.charge = chg;
     }
 
     /**
-     * Returns the stoichiometry;
+     * Returns the stoichiometry.
      * 
      * @return The stoichiometry.
      */
@@ -309,11 +310,11 @@ public class BaseCalculationResult implements BaseResult {
     /**
      * Sets the stoichiometry.
      * 
-     * @param stoichiometry
+     * @param stoi
      *            The value to set.
      */
-    public void setStoichiometry(String stoichiometry) {
-        this.stoichiometry = stoichiometry;
+    public void setStoichiometry(final String stoi) {
+        this.stoichiometry = stoi;
     }
 
     /**
@@ -330,18 +331,40 @@ public class BaseCalculationResult implements BaseResult {
      * 
      * @see org.cmayes.hartree.model.BaseResult#setDipoleMomentTotal(java.lang.Double)
      */
-    public void setDipoleMomentTotal(Double dipoleMomentTotal) {
-        this.dipoleMomentTotal = dipoleMomentTotal;
+    public void setDipoleMomentTotal(final Double dmTotal) {
+        this.dipoleMomentTotal = dmTotal;
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @see org.cmayes.hartree.model.BaseResult#getGibbs298()
+     */
+    @Override
+    public Double getGibbs298() {
+        return gibbs298;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.cmayes.hartree.model.BaseResult#setGibbs298(java.lang.Double)
+     */
+    @Override
+    public void setGibbs298(final Double g298) {
+        this.gibbs298 = g298;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof BaseCalculationResult)) {
             return false;
         }
-        BaseCalculationResult rhs = (BaseCalculationResult) object;
+        final BaseCalculationResult rhs = (BaseCalculationResult) object;
         return new EqualsBuilder().append(this.atoms, rhs.atoms)
                 .append(this.basisSet, rhs.basisSet)
                 .append(this.mult, rhs.mult)
@@ -357,10 +380,13 @@ public class BaseCalculationResult implements BaseResult {
                 .append(this.dipoleMomentTotal, rhs.dipoleMomentTotal)
                 .append(this.fileName, rhs.fileName)
                 .append(this.terminationDates, rhs.terminationDates)
-                .append(this.stoichiometry, rhs.stoichiometry).isEquals();
+                .append(this.stoichiometry, rhs.stoichiometry)
+                .append(this.gibbs298, rhs.gibbs298).isEquals();
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -372,14 +398,17 @@ public class BaseCalculationResult implements BaseResult {
                 .append(this.rotPart).append(this.zpeCorrection)
                 .append(this.dipoleMomentTotal).append(this.fileName)
                 .append(this.terminationDates).append(this.stoichiometry)
-                .toHashCode();
+                .append(this.gibbs298).toHashCode();
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("functional", this.functional)
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("functional", this.functional)
                 .append("charge", this.charge).append("atoms", this.atoms)
                 .append("frequencyValues", this.frequencyValues)
                 .append("cpuTimes", this.cpuTimes).append("mult", this.mult)
@@ -392,6 +421,7 @@ public class BaseCalculationResult implements BaseResult {
                 .append("fileName", this.fileName)
                 .append("dipoleMomentTotal", this.dipoleMomentTotal)
                 .append("solvent", this.solvent)
-                .append("terminationDates", this.terminationDates).toString();
+                .append("terminationDates", this.terminationDates)
+                .append("gibbs298", this.gibbs298).toString();
     }
 }
