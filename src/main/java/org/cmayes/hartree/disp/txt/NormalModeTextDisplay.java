@@ -94,14 +94,14 @@ public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
         }
         printWriter.flush();
     }
-    
+
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.disp.Display#finish(Writer)
      */
     @Override
-    public void finish(Writer writer) {
+    public void finish(final Writer writer) {
         // This display is stateless
     }
 }

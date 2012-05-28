@@ -34,18 +34,22 @@ public class DefaultCalculationSnapshot extends BaseCalculationResult implements
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof DefaultCalculationSnapshot)) {
             return false;
         }
-        DefaultCalculationSnapshot rhs = (DefaultCalculationSnapshot) object;
+        final DefaultCalculationSnapshot rhs = (DefaultCalculationSnapshot) object;
         return new EqualsBuilder().appendSuper(super.equals(object))
                 .append(this.elecEn, rhs.elecEn).isEquals();
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -54,6 +58,8 @@ public class DefaultCalculationSnapshot extends BaseCalculationResult implements
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {

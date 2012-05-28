@@ -51,8 +51,8 @@ public class NormalModeLoader extends BaseGaussianLoader implements
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader,
      *      java.lang.String)
      */
-    public NormalModeCalculation load(final Reader reader, String fileName) {
-        NormalModeCalculation result = extractNormalModeData(extractAst(reader));
+    public NormalModeCalculation load(final Reader reader, final String fileName) {
+        final NormalModeCalculation result = extractNormalModeData(extractAst(reader));
         result.setFileName(fileName);
         return result;
     }

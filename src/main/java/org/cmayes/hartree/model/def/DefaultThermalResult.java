@@ -106,13 +106,15 @@ public class DefaultThermalResult implements ThermalResult {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof DefaultThermalResult)) {
             return false;
         }
-        DefaultThermalResult rhs = (DefaultThermalResult) object;
+        final DefaultThermalResult rhs = (DefaultThermalResult) object;
         return new EqualsBuilder().append(this.enthalpy, rhs.enthalpy)
                 .append(this.entropy, rhs.entropy)
                 .append(this.heatCapacity, rhs.heatCapacity)
@@ -120,6 +122,8 @@ public class DefaultThermalResult implements ThermalResult {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -130,6 +134,8 @@ public class DefaultThermalResult implements ThermalResult {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {

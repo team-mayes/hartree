@@ -9,10 +9,16 @@ import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Prints the token stream from a snapshot lexer.
+ * 
+ * @author cmayes
+ */
 public class SnapshotTokenStreamPrinter extends AntlrTokenStreamPrinter {
     /** Logger. */
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SnapshotTokenStreamPrinter.class);
+
     /**
      * Creates an instance of the lexer. Users may override this method to use a
      * different lexer.
@@ -22,7 +28,7 @@ public class SnapshotTokenStreamPrinter extends AntlrTokenStreamPrinter {
     protected Lexer createLexer() {
         return new SnapshotLexer();
     }
-    
+
     /**
      * Creates an instance of the lexer. Users may override this method to use a
      * different lexer.
@@ -32,9 +38,9 @@ public class SnapshotTokenStreamPrinter extends AntlrTokenStreamPrinter {
     protected String[] getTokenNames() {
         return SnapshotParser.tokenNames;
     }
-    
+
     /**
-     * TODO: Make abstract main?
+     * Runs the stream printer.
      * 
      * @param args
      *            The CLI arguments.

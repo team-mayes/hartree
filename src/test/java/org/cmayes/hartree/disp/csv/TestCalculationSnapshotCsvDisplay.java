@@ -8,23 +8,24 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.cmayes.hartree.model.CalculationSnapshot;
 import org.cmayes.hartree.model.def.DefaultCalculationSnapshot;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.cmayes.common.MediaType;
 
+/**
+ * Tests for {@link CalculationSnapshotCsvDisplay}.
+ * 
+ * @author cmayes
+ */
 public class TestCalculationSnapshotCsvDisplay {
     /** Logger. */
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final String[] HEAD_LINE = { "File Name", "Solvent type",
             "Stoichiometry", "Charge", "Mult", "Functional", "Basis Set",
             "Energy (A.U.)", "dipole", "ZPE (kcal/mol)", "G298 (Hartrees)",
@@ -41,37 +42,58 @@ public class TestCalculationSnapshotCsvDisplay {
             "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A" };
     private CalculationSnapshotCsvDisplay disp;
 
+    /**
+     * Create an instance of the display class before each test.
+     */
     @Before
     public void setUp() {
         disp = new CalculationSnapshotCsvDisplay();
     }
 
+    /**
+     * Tests running against a fully-formed test instance.
+     * 
+     * @throws Exception
+     *             When there is a problem.
+     */
     @Test
     public void testFullData() throws Exception {
-        StringWriter stringWriter = new StringWriter();
+        final StringWriter stringWriter = new StringWriter();
         assertTrue(disp.isFirst());
         disp.write(stringWriter, getTestInst());
         assertFalse(disp.isFirst());
-        CSVReader csvReader = new CSVReader(new StringReader(
+        final CSVReader csvReader = new CSVReader(new StringReader(
                 stringWriter.toString()));
         assertThat(csvReader.readNext(), equalTo(HEAD_LINE));
         assertThat(csvReader.readNext(), equalTo(DATA_LINE));
         assertNull(csvReader.readNext());
     }
 
+    /**
+     * Tests running against an empty test instance.
+     * 
+     * @throws Exception
+     *             When there is a problem.
+     */
     @Test
     public void testEmptyData() throws Exception {
-        StringWriter stringWriter = new StringWriter();
+        final StringWriter stringWriter = new StringWriter();
         assertTrue(disp.isFirst());
         disp.write(stringWriter, new DefaultCalculationSnapshot());
         assertFalse(disp.isFirst());
-        CSVReader csvReader = new CSVReader(new StringReader(
+        final CSVReader csvReader = new CSVReader(new StringReader(
                 stringWriter.toString()));
         assertThat(csvReader.readNext(), equalTo(HEAD_LINE));
         assertThat(csvReader.readNext(), equalTo(EMPTY_LINE));
         assertNull(csvReader.readNext());
     }
 
+    /**
+     * Tests running against a full instance with an alternate header line.
+     * 
+     * @throws Exception
+     *             When there is a problem.
+     */
     @Test
     public void testAltHead() throws Exception {
         assertThat(disp.getMediaType(), equalTo(MediaType.CSV));
@@ -79,17 +101,22 @@ public class TestCalculationSnapshotCsvDisplay {
         assertThat(disp.getHeaderRow(), equalTo(HEAD_LINE));
         disp.setHeaderRow(ALT_HEAD_LINE);
         assertThat(disp.getHeaderRow(), equalTo(ALT_HEAD_LINE));
-        StringWriter stringWriter = new StringWriter();
+        final StringWriter stringWriter = new StringWriter();
         disp.write(stringWriter, getTestInst());
-        CSVReader csvReader = new CSVReader(new StringReader(
+        final CSVReader csvReader = new CSVReader(new StringReader(
                 stringWriter.toString()));
         assertThat(csvReader.readNext(), equalTo(ALT_HEAD_LINE));
         assertThat(csvReader.readNext(), equalTo(DATA_LINE));
         assertNull(csvReader.readNext());
     }
 
+    /**
+     * Creates a test instance to display.
+     * 
+     * @return A test instance.
+     */
     private CalculationSnapshot getTestInst() {
-        DefaultCalculationSnapshot snap = new DefaultCalculationSnapshot();
+        final DefaultCalculationSnapshot snap = new DefaultCalculationSnapshot();
         snap.setFileName("someFileName.txt");
         snap.setSolvent("water");
         snap.setStoichiometry("C6H12NaO6(1+)");

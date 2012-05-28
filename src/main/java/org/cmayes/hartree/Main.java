@@ -97,8 +97,7 @@ public class Main<T> {
      * @throws IllegalArgumentException
      *             If the file is not readable.
      */
-    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file",
-            usage = "The file to process")
+    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file", usage = "The file to process")
     public void setFile(final File theFile) {
         if (theFile.canRead()) {
             this.file = theFile;
@@ -114,8 +113,7 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory",
-            usage = "The base directory of the files to process")
+    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory", usage = "The base directory of the files to process")
     public void setDirectory(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.directory = dir;
@@ -140,8 +138,7 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir",
-            usage = "The output directory for result files")
+    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir", usage = "The output directory for result files")
     public void setOutDir(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.outDir = dir;
@@ -264,7 +261,7 @@ public class Main<T> {
      */
     @SuppressWarnings("unchecked")
     Display<T> getDisplay() {
-        MediaType tgtMediaType = getTargetMediaType();
+        final MediaType tgtMediaType = getTargetMediaType();
         return (Display<T>) asNotNull(DISP_TYPE_TBL.get(targetType,
                 tgtMediaType), String.format(
                 "No display for media %s on type %s", targetMedia,
@@ -284,11 +281,11 @@ public class Main<T> {
         if (targetMedia != null) {
             return targetMedia;
         }
-        MediaType mediaType = DEF_MEDIA.get(targetType);
+        final MediaType mediaType = DEF_MEDIA.get(targetType);
         if (mediaType == null) {
             throw new IllegalStateException(
                     String.format(
-                            "No target media type specified and no default configured for type ''",
+                            "No target media type specified and no default configured for type '%s'",
                             targetType));
         }
         return mediaType;
