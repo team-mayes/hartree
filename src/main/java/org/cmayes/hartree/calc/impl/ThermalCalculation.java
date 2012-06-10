@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.cmayes.hartree.calc.Calculation;
-import org.cmayes.hartree.model.CalculationResult;
+import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.ThermalResult;
 import org.cmayes.hartree.model.def.DefaultThermalResult;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @author cmayes
  */
 public class ThermalCalculation implements
-        Calculation<CalculationResult, List<ThermalResult>> {
+        Calculation<BaseResult, List<ThermalResult>> {
     // Scaling Factors //
     /** 3/2 is peppered throughout, so we just set it once here. */
     private static final double SCALE_RATIO = 3 / 2;
@@ -59,7 +59,7 @@ public class ThermalCalculation implements
      * 
      * @see org.cmayes.hartree.calc.impl.Calculation#calculate(T)
      */
-    public List<ThermalResult> calculate(final CalculationResult calcResult) {
+    public List<ThermalResult> calculate(final BaseResult calcResult) {
         final List<ThermalResult> results = new ArrayList<ThermalResult>();
         final SymAdj symAdj = evalSym(calcResult);
         for (Double curTemp : TEMPS) {
@@ -149,7 +149,7 @@ public class ThermalCalculation implements
      *            The temperature in Kelvin to scale to.
      * @return The scaled value.
      */
-    private double scaleRotPart(final CalculationResult result,
+    private double scaleRotPart(final BaseResult result,
             final SymAdj symAdj, final double tempK) {
         return result.getRotPart()
                 * pow(tempK / KELVIN_25C, symAdj.getFlagAdj());
@@ -166,7 +166,7 @@ public class ThermalCalculation implements
      *            The temperature in Kelvin to scale to.
      * @return The scaled value.
      */
-    private double scaleEntropyTemp(final CalculationResult result,
+    private double scaleEntropyTemp(final BaseResult result,
             final SymAdj symAdj, final double tempK) {
         // Translational
         double scaledVal = GAS_KCAL
@@ -189,7 +189,7 @@ public class ThermalCalculation implements
      *            The result to evaluate.
      * @return The adjustment settings.
      */
-    private SymAdj evalSym(final CalculationResult result) {
+    private SymAdj evalSym(final BaseResult result) {
         // the SCE_adj matrix is to adjust in case there are linear molecules
         // which have a different contribution to rotational energy/Cv/S. See
         // Ochterski.

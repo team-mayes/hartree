@@ -15,11 +15,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
-import org.cmayes.hartree.disp.csv.CalculationSnapshotCsvDisplay;
+import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
 import org.cmayes.hartree.loader.gaussian.NormalModeLoader;
 import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
-import org.cmayes.hartree.model.CalculationSnapshot;
+import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.NormalModeCalculation;
 import org.cmayes.hartree.proc.FileProcessor;
 import org.junit.Test;
@@ -267,12 +267,11 @@ public class TestMain {
     @SuppressWarnings("unchecked")
     @Test
     public void testProcessorSnapFile() throws Exception {
-        final Main<CalculationSnapshot> main = new Main<CalculationSnapshot>();
-        final FileProcessor<CalculationSnapshot> fp = mock(FileProcessor.class);
+        final Main<BaseResult> main = new Main<BaseResult>();
+        final FileProcessor<BaseResult> fp = mock(FileProcessor.class);
         main.setTestFileProcessor(fp);
         main.doMain("-f", REV4_LOC, SNAP_ARG);
-        assertThat(main.getDisplay(),
-                instanceOf(CalculationSnapshotCsvDisplay.class));
+        assertThat(main.getDisplay(), instanceOf(SnapshotCsvDisplay.class));
         assertThat(main.getLoader(), instanceOf(SnapshotLoader.class));
         verify(fp).display(Mockito.any(File.class));
     }
@@ -287,12 +286,11 @@ public class TestMain {
     @SuppressWarnings("unchecked")
     @Test
     public void testProcessorSDir() throws Exception {
-        final Main<CalculationSnapshot> main = new Main<CalculationSnapshot>();
-        final FileProcessor<CalculationSnapshot> fp = mock(FileProcessor.class);
+        final Main<BaseResult> main = new Main<BaseResult>();
+        final FileProcessor<BaseResult> fp = mock(FileProcessor.class);
         main.setTestFileProcessor(fp);
         main.doMain("-d", GAUSS_DIR, SNAP_ARG);
-        assertThat(main.getDisplay(),
-                instanceOf(CalculationSnapshotCsvDisplay.class));
+        assertThat(main.getDisplay(), instanceOf(SnapshotCsvDisplay.class));
         assertThat(main.getLoader(), instanceOf(SnapshotLoader.class));
         verify(fp).displayAll(Mockito.any(File.class));
     }

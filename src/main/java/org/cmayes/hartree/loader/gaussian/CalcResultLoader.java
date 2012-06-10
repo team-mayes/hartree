@@ -11,9 +11,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
 import org.cmayes.hartree.model.Atom;
-import org.cmayes.hartree.model.CalculationResult;
+import org.cmayes.hartree.model.BaseResult;
+import org.cmayes.hartree.model.def.DefaultBaseResult;
 import org.cmayes.hartree.model.def.DefaultAtom;
-import org.cmayes.hartree.model.def.DefaultCalculationResult;
 import org.cmayes.hartree.parser.gaussian.antlr.CalcResultParser;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.cmayes.common.exception.EnvironmentException;
 
 /**
- * Fills a CalculationResult from data parsed from the given reader.
+ * Fills a BaseResult from data parsed from the given reader.
  * 
  * @author cmayes
  */
@@ -31,7 +31,7 @@ import com.cmayes.common.exception.EnvironmentException;
  * 
  */
 public class CalcResultLoader extends BaseGaussianLoader implements
-        Loader<CalculationResult> {
+        Loader<BaseResult> {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -40,7 +40,7 @@ public class CalcResultLoader extends BaseGaussianLoader implements
      * 
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader)
      */
-    public CalculationResult load(final Reader reader) {
+    public BaseResult load(final Reader reader) {
         return extractCalcThermData(extractAst(reader));
     }
 
@@ -50,21 +50,21 @@ public class CalcResultLoader extends BaseGaussianLoader implements
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader,
      *      java.lang.String)
      */
-    public CalculationResult load(final Reader reader, String fileName) {
-        CalculationResult result = extractCalcThermData(extractAst(reader));
+    public BaseResult load(final Reader reader, final String fileName) {
+        final BaseResult result = extractCalcThermData(extractAst(reader));
         result.setFileName(fileName);
         return result;
     }
 
     /**
-     * Fills a {@link CalculationResult} instance with data from the AST.
+     * Fills a {@link BaseResult} instance with data from the AST.
      * 
      * @param ast
      *            The AST to traverse.
      * @return The filled result instance.
      */
-    private CalculationResult extractCalcThermData(final CommonTree ast) {
-        final CalculationResult result = new DefaultCalculationResult();
+    private BaseResult extractCalcThermData(final CommonTree ast) {
+        final BaseResult result = new DefaultBaseResult();
         int atomColCount = 0;
         Atom curAtom = new DefaultAtom();
         @SuppressWarnings("unchecked")

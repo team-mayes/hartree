@@ -26,7 +26,12 @@ term
       ^(TERM $d)
   ;
 
+xyzAtoms
+  :
+  XYZINT XYZINT XYZINT XYZFLOAT XYZFLOAT XYZFLOAT
+  ;
+
 script
   :
-  (FUNCSET? SOLVENT? CHARGE MULT (ELECENG|STOI|DIPTOT)+  (FREQVAL+ | (cputime term)))+ ZPECORR? G298? cputime term EOF
+  (FUNCSET? SOLVENT? CHARGE MULT (xyzAtoms|ELECENG|STOI|DIPTOT)+  (FREQVAL+ | (cputime term)))+ ZPECORR? G298? cputime term EOF
   ;

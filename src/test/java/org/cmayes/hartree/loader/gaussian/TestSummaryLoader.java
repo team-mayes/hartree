@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.FileReader;
 
-import org.cmayes.hartree.model.CalculationSnapshot;
+import org.cmayes.hartree.model.BaseResult;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class TestSummaryLoader {
     /** The prefix for file locations. */
     private static final String FILE_DIR_PFX = "src/test/resources/files/g09/snapshot/";
     private static final SnapshotLoader LOADER = new SnapshotLoader();
-    private static CalculationSnapshot calc1;
+    private static BaseResult calc1;
 
     /**
      * Load test files.

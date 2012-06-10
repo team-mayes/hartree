@@ -17,7 +17,7 @@ import org.joda.time.Duration;
  * 
  * @author cmayes
  */
-public class BaseCalculationResult implements BaseResult {
+public class DefaultBaseResult implements BaseResult {
     private List<Atom> atoms = new ArrayList<Atom>();
     private List<Date> terminationDates = new ArrayList<Date>();
     private List<Duration> cpuTimes = new ArrayList<Duration>();
@@ -35,6 +35,8 @@ public class BaseCalculationResult implements BaseResult {
     private Double zpeCorrection;
     private Double dipoleMomentTotal;
     private Double gibbs298;
+    private Double elecEn;
+    private Integer atomCount;
 
     /**
      * {@inheritDoc}
@@ -337,7 +339,7 @@ public class BaseCalculationResult implements BaseResult {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.model.BaseResult#getGibbs298()
      */
     @Override
@@ -347,7 +349,7 @@ public class BaseCalculationResult implements BaseResult {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.model.BaseResult#setGibbs298(java.lang.Double)
      */
     @Override
@@ -358,30 +360,69 @@ public class BaseCalculationResult implements BaseResult {
     /**
      * {@inheritDoc}
      * 
+     * @see org.cmayes.hartree.model.CalculationResult#getElecEn()
+     */
+    public Double getElecEn() {
+        return elecEn;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.CalculationResult#setElecEn(java.lang.Double)
+     */
+    public void setElecEn(final Double energies) {
+        this.elecEn = energies;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.CalculationResult#getAtomCount()
+     */
+    public Integer getAtomCount() {
+        return atomCount;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.CalculationResult#setAtomCount(java.lang.Integer
+     *      )
+     */
+    public void setAtomCount(final Integer count) {
+        this.atomCount = count;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(final Object object) {
-        if (!(object instanceof BaseCalculationResult)) {
+        if (!(object instanceof DefaultBaseResult)) {
             return false;
         }
-        final BaseCalculationResult rhs = (BaseCalculationResult) object;
+        final DefaultBaseResult rhs = (DefaultBaseResult) object;
         return new EqualsBuilder().append(this.atoms, rhs.atoms)
                 .append(this.basisSet, rhs.basisSet)
                 .append(this.mult, rhs.mult)
+                .append(this.atomCount, rhs.atomCount)
                 .append(this.cpuTimes, rhs.cpuTimes)
                 .append(this.frequencyValues, rhs.frequencyValues)
                 .append(this.isSymmetric, rhs.isSymmetric)
                 .append(this.solvent, rhs.solvent)
                 .append(this.functional, rhs.functional)
+                .append(this.elecEn, rhs.elecEn)
                 .append(this.transPart, rhs.transPart)
+                .append(this.gibbs298, rhs.gibbs298)
                 .append(this.charge, rhs.charge)
                 .append(this.rotPart, rhs.rotPart)
                 .append(this.zpeCorrection, rhs.zpeCorrection)
                 .append(this.dipoleMomentTotal, rhs.dipoleMomentTotal)
                 .append(this.fileName, rhs.fileName)
                 .append(this.terminationDates, rhs.terminationDates)
-                .append(this.stoichiometry, rhs.stoichiometry)
-                .append(this.gibbs298, rhs.gibbs298).isEquals();
+                .append(this.stoichiometry, rhs.stoichiometry).isEquals();
     }
 
     /**
@@ -390,15 +431,16 @@ public class BaseCalculationResult implements BaseResult {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return new HashCodeBuilder(-436298831, 2069419829).append(this.atoms)
-                .append(this.basisSet).append(this.mult).append(this.cpuTimes)
-                .append(this.frequencyValues).append(this.isSymmetric)
-                .append(this.solvent).append(this.functional)
-                .append(this.transPart).append(this.charge)
-                .append(this.rotPart).append(this.zpeCorrection)
-                .append(this.dipoleMomentTotal).append(this.fileName)
-                .append(this.terminationDates).append(this.stoichiometry)
-                .append(this.gibbs298).toHashCode();
+        return new HashCodeBuilder(502944909, -1109370157).append(this.atoms)
+                .append(this.basisSet).append(this.mult).append(this.atomCount)
+                .append(this.cpuTimes).append(this.frequencyValues)
+                .append(this.isSymmetric).append(this.solvent)
+                .append(this.functional).append(this.elecEn)
+                .append(this.transPart).append(this.gibbs298)
+                .append(this.charge).append(this.rotPart)
+                .append(this.zpeCorrection).append(this.dipoleMomentTotal)
+                .append(this.fileName).append(this.terminationDates)
+                .append(this.stoichiometry).toHashCode();
     }
 
     /**
@@ -407,21 +449,22 @@ public class BaseCalculationResult implements BaseResult {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        return new ToStringBuilder(this).append("elecEn", this.elecEn)
                 .append("functional", this.functional)
                 .append("charge", this.charge).append("atoms", this.atoms)
                 .append("frequencyValues", this.frequencyValues)
                 .append("cpuTimes", this.cpuTimes).append("mult", this.mult)
+                .append("atomCount", this.atomCount)
                 .append("rotPart", this.rotPart)
                 .append("transPart", this.transPart)
                 .append("symmetricTop", this.isSymmetricTop())
+                .append("gibbs298", this.gibbs298)
                 .append("zpeCorrection", this.zpeCorrection)
                 .append("stoichiometry", this.stoichiometry)
                 .append("basisSet", this.basisSet)
                 .append("fileName", this.fileName)
                 .append("dipoleMomentTotal", this.dipoleMomentTotal)
                 .append("solvent", this.solvent)
-                .append("terminationDates", this.terminationDates)
-                .append("gibbs298", this.gibbs298).toString();
+                .append("terminationDates", this.terminationDates).toString();
     }
 }

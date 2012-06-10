@@ -27,6 +27,7 @@ tokens { TERM; CPUTIME; DEFDATA; FUNCSET;
     boolean dipCtx = false;
     boolean dipTotCtx = false;
     boolean g298Ctx = false;
+    boolean xyzCtx = false; 
 }
 
 // Def block
@@ -45,6 +46,12 @@ G298: {g298Ctx}? => FLOAT { g298Ctx = false; };
 // Multiplicity
 MULTTAG: 'Multiplicity' { multCtx = true; $channel = HIDDEN; };
 MULT: {multCtx}? => INT { multCtx = false; };
+
+// XYZ coordinates
+XYZTAG: 'Input orientation:' { xyzCtx = true; $channel = HIDDEN; };
+XYZFLOAT: {xyzCtx}? FLOAT ;
+XYZINT: {xyzCtx}? INT ;
+XYZEND: 'Distance matrix (angstroms):' { xyzCtx = false; $channel = HIDDEN; };
 
 // Charge
 CHARGETAG: 'Charge' WS+ '=' { chgCtx = true; $channel = HIDDEN; };

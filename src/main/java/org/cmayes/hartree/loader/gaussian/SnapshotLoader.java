@@ -10,8 +10,11 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
-import org.cmayes.hartree.model.CalculationSnapshot;
-import org.cmayes.hartree.model.def.DefaultCalculationSnapshot;
+import org.cmayes.hartree.model.Atom;
+import org.cmayes.hartree.model.BaseResult;
+import org.cmayes.hartree.model.def.DefaultBaseResult;
+import org.cmayes.hartree.model.def.DefaultAtom;
+import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotLexer;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotParser;
 import org.slf4j.Logger;
@@ -20,12 +23,12 @@ import org.slf4j.LoggerFactory;
 import com.cmayes.common.exception.EnvironmentException;
 
 /**
- * Fills a CalculationSnapshot from data parsed from the given reader.
+ * Fills a BaseResult from data parsed from the given reader.
  * 
  * @author cmayes
  */
 public class SnapshotLoader extends BaseGaussianLoader implements
-        Loader<CalculationSnapshot> {
+        Loader<BaseResult> {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -34,7 +37,7 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      * 
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader)
      */
-    public CalculationSnapshot load(final Reader reader) {
+    public BaseResult load(final Reader reader) {
         return extractSnapshotData(extractAst(reader));
     }
 
@@ -44,8 +47,8 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader,
      *      java.lang.String)
      */
-    public CalculationSnapshot load(final Reader reader, final String fileName) {
-        final CalculationSnapshot result = extractSnapshotData(extractAst(reader));
+    public BaseResult load(final Reader reader, final String fileName) {
+        final BaseResult result = extractSnapshotData(extractAst(reader));
         result.setFileName(fileName);
         return result;
     }
@@ -57,8 +60,10 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      *            The AST to traverse.
      * @return The filled result instance.
      */
-    private CalculationSnapshot extractSnapshotData(final CommonTree ast) {
-        final CalculationSnapshot result = new DefaultCalculationSnapshot();
+    private BaseResult extractSnapshotData(final CommonTree ast) {
+        final BaseResult result = new DefaultBaseResult();
+        int atomColCount = 0;
+        Atom curAtom = new DefaultAtom();
         @SuppressWarnings("unchecked")
         final List<CommonTree> eventList = ast.getChildren();
         if (eventList == null) {
@@ -82,6 +87,15 @@ public class SnapshotLoader extends BaseGaussianLoader implements
                 final Double freqVal = toDouble(curNode.getText());
                 if (freqVal != null) {
                     result.getFrequencyValues().add(freqVal);
+                }
+                break;
+            case Gaussian09Lexer.XYZINT:
+            case Gaussian09Lexer.XYZFLOAT:
+                handleAtom(curNode.getText(), curAtom, atomColCount);
+                atomColCount++;
+                if (atomColCount % ATOM_COL_COUNT == 0) {
+                    result.getAtoms().add(curAtom);
+                    curAtom = new DefaultAtom();
                 }
                 break;
             case SnapshotLexer.ELECENG:

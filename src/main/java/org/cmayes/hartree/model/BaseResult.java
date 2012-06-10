@@ -265,4 +265,34 @@ public interface BaseResult {
      *            the gibbs298 to set
      */
     void setGibbs298(final Double g298);
+
+    /**
+     * Returns electronic energy.
+     * 
+     * @return electronic energy.
+     */
+    Double getElecEn();
+
+    /**
+     * Sets electronic energy.
+     * 
+     * @param energy
+     *            The energy to set.
+     */
+    void setElecEn(final Double energy);
+
+    /**
+     * Returns the number of atoms in this system.
+     * 
+     * @return The number of atoms in this system.
+     */
+    Integer getAtomCount();
+
+    /**
+     * Sets the number of atoms in this system.
+     * 
+     * @param count
+     *            The number to set.
+     */
+    void setAtomCount(final Integer count);
 }

@@ -10,8 +10,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-import org.cmayes.hartree.model.CalculationSnapshot;
-import org.cmayes.hartree.model.def.DefaultCalculationSnapshot;
+import org.cmayes.hartree.model.BaseResult;
+import org.cmayes.hartree.model.def.DefaultBaseResult;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.cmayes.common.MediaType;
 
 /**
- * Tests for {@link CalculationSnapshotCsvDisplay}.
+ * Tests for {@link SnapshotCsvDisplay}.
  * 
  * @author cmayes
  */
@@ -40,14 +40,14 @@ public class TestCalculationSnapshotCsvDisplay {
             "90.3398" };
     private static final String[] EMPTY_LINE = { "N/A", "N/A", "N/A", "N/A",
             "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A" };
-    private CalculationSnapshotCsvDisplay disp;
+    private SnapshotCsvDisplay disp;
 
     /**
      * Create an instance of the display class before each test.
      */
     @Before
     public void setUp() {
-        disp = new CalculationSnapshotCsvDisplay();
+        disp = new SnapshotCsvDisplay();
     }
 
     /**
@@ -79,7 +79,7 @@ public class TestCalculationSnapshotCsvDisplay {
     public void testEmptyData() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         assertTrue(disp.isFirst());
-        disp.write(stringWriter, new DefaultCalculationSnapshot());
+        disp.write(stringWriter, new DefaultBaseResult());
         assertFalse(disp.isFirst());
         final CSVReader csvReader = new CSVReader(new StringReader(
                 stringWriter.toString()));
@@ -115,8 +115,8 @@ public class TestCalculationSnapshotCsvDisplay {
      * 
      * @return A test instance.
      */
-    private CalculationSnapshot getTestInst() {
-        final DefaultCalculationSnapshot snap = new DefaultCalculationSnapshot();
+    private BaseResult getTestInst() {
+        final DefaultBaseResult snap = new DefaultBaseResult();
         snap.setFileName("someFileName.txt");
         snap.setSolvent("water");
         snap.setStoichiometry("C6H12NaO6(1+)");

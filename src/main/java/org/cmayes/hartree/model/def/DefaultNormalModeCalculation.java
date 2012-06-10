@@ -22,7 +22,7 @@ import com.google.common.base.Joiner;
  * 
  * @author cmayes
  */
-public class DefaultNormalModeCalculation extends BaseCalculationResult
+public class DefaultNormalModeCalculation extends DefaultBaseResult
         implements NormalModeCalculation {
     private List<NormalMode> normalModes = new ArrayList<NormalMode>();
 

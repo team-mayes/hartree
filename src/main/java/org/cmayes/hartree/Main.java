@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cmayes.hartree.disp.Display;
-import org.cmayes.hartree.disp.csv.CalculationSnapshotCsvDisplay;
+import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.gaussian.CalcResultLoader;
@@ -42,36 +42,33 @@ import com.google.common.collect.Table;
 public class Main<T> {
     /** Logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-    private static final Map<Class<?>, Loader<?>> HAND_TYPE_MAP = new HashMap<Class<?>, Loader<?>>();
-    private static final Table<Class<?>, MediaType, Display<?>> DISP_TYPE_TBL = HashBasedTable
+    private static final Map<HandlingType, Loader<?>> HAND_TYPE_MAP = new HashMap<HandlingType, Loader<?>>();
+    private static final Table<HandlingType, MediaType, Display<?>> DISP_TYPE_TBL = HashBasedTable
             .create();
-    private static final Map<Class<?>, MediaType> DEF_MEDIA = new HashMap<Class<?>, MediaType>();
+    private static final Map<HandlingType, MediaType> DEF_MEDIA = new HashMap<HandlingType, MediaType>();
     /** Receives leftover command line parameters. */
     @Argument
     private final List<String> arguments = new ArrayList<String>();
     private File file;
     private File directory;
     private File outDir;
-    private Class<T> targetType;
     private MediaType targetMedia = null;
     private FileProcessor<T> testProcessor;
+    private HandlingType hType;
 
     static {
         // Assign handlers
-        HAND_TYPE_MAP.put(HandlingType.NORMAL_MODE.getValueClass(),
-                new NormalModeLoader());
-        HAND_TYPE_MAP.put(HandlingType.SNAPSHOT.getValueClass(),
-                new SnapshotLoader());
-        HAND_TYPE_MAP.put(HandlingType.THERM.getValueClass(),
-                new CalcResultLoader());
+        HAND_TYPE_MAP.put(HandlingType.NORMAL_MODE, new NormalModeLoader());
+        HAND_TYPE_MAP.put(HandlingType.SNAPSHOT, new SnapshotLoader());
+        HAND_TYPE_MAP.put(HandlingType.THERM, new CalcResultLoader());
         // Set default media types for value classes.
-        DEF_MEDIA.put(HandlingType.NORMAL_MODE.getValueClass(), MediaType.TEXT);
-        DEF_MEDIA.put(HandlingType.SNAPSHOT.getValueClass(), MediaType.CSV);
+        DEF_MEDIA.put(HandlingType.NORMAL_MODE, MediaType.TEXT);
+        DEF_MEDIA.put(HandlingType.SNAPSHOT, MediaType.CSV);
         // Establish displays for a combo of value object and media type
-        DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE.getValueClass(),
-                MediaType.TEXT, new NormalModeTextDisplay());
-        DISP_TYPE_TBL.put(HandlingType.SNAPSHOT.getValueClass(), MediaType.CSV,
-                new CalculationSnapshotCsvDisplay());
+        DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE, MediaType.TEXT,
+                new NormalModeTextDisplay());
+        DISP_TYPE_TBL.put(HandlingType.SNAPSHOT, MediaType.CSV,
+                new SnapshotCsvDisplay());
     }
 
     /**
@@ -186,7 +183,6 @@ public class Main<T> {
      * @throws CmdLineException
      *             When there are problems processing the command line.
      */
-    @SuppressWarnings("unchecked")
     public void doMain(final String... args) throws CmdLineException {
         final CmdLineParser parser = new CmdLineParser(this);
 
@@ -197,7 +193,6 @@ public class Main<T> {
                     "Argument not one of (%s)", getHandlerNames()));
         }
 
-        HandlingType hType;
         try {
             hType = HandlingType.valueOfCommand(arguments.get(0));
         } catch (final IllegalArgumentException e) {
@@ -210,9 +205,7 @@ public class Main<T> {
             return;
         }
 
-        targetType = (Class<T>) hType.getValueClass();
-
-        final FileProcessor<T> proc = createProcessor(hType);
+        final FileProcessor<T> proc = createProcessor();
         try {
             if (file != null) {
                 proc.display(file);
@@ -230,11 +223,9 @@ public class Main<T> {
     /**
      * Returns a new {@link FileProcessor} instance.
      * 
-     * @param hType
-     *            The type of handler.
      * @return A new FileProcessor instance.
      */
-    FileProcessor<T> createProcessor(final HandlingType hType) {
+    FileProcessor<T> createProcessor() {
         if (testProcessor != null) {
             return testProcessor;
         }
@@ -253,8 +244,8 @@ public class Main<T> {
      */
     @SuppressWarnings("unchecked")
     Loader<T> getLoader() {
-        return (Loader<T>) asNotNull(HAND_TYPE_MAP.get(targetType),
-                "No loader for type " + targetType.getName());
+        return (Loader<T>) asNotNull(HAND_TYPE_MAP.get(hType),
+                "No loader for type " + hType);
     }
 
     /**
@@ -265,10 +256,9 @@ public class Main<T> {
     @SuppressWarnings("unchecked")
     Display<T> getDisplay() {
         final MediaType tgtMediaType = getTargetMediaType();
-        return (Display<T>) asNotNull(DISP_TYPE_TBL.get(targetType,
-                tgtMediaType), String.format(
-                "No display for media %s on type %s", targetMedia,
-                targetType.getName()));
+        return (Display<T>) asNotNull(DISP_TYPE_TBL.get(hType, tgtMediaType),
+                String.format("No display for media %s on type %s",
+                        targetMedia, hType.name()));
     }
 
     /**
@@ -284,12 +274,12 @@ public class Main<T> {
         if (targetMedia != null) {
             return targetMedia;
         }
-        final MediaType mediaType = DEF_MEDIA.get(targetType);
+        final MediaType mediaType = DEF_MEDIA.get(hType);
         if (mediaType == null) {
             throw new IllegalStateException(
                     String.format(
                             "No target media type specified and no default configured for type '%s'",
-                            targetType));
+                            hType));
         }
         return mediaType;
     }

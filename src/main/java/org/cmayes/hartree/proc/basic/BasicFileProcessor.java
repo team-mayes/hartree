@@ -9,8 +9,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.cmayes.hartree.HandlingType;
+import org.cmayes.hartree.calc.Calculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.proc.FileProcessor;
@@ -32,6 +35,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Loader<T> parser;
     private final Display<T> displayer;
+    private final List<Calculation<T, ? extends T>> calculations;
     private final HandlingType handlingType;
     private File outDir;
 
@@ -50,6 +54,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
+        this.calculations = new ArrayList<Calculation<T,? extends T>>();
     }
 
     /**
@@ -71,6 +76,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
+        this.calculations = new ArrayList<Calculation<T,? extends T>>();
         this.outDir = out;
     }
 
@@ -100,10 +106,9 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
             }
         }
         try {
-            displayer
-                    .write(writer,
-                            parser.load(new FileReader(processMe),
-                                    processMe.getName()));
+            T procResult = applyCalcs(parser.load(new FileReader(processMe),
+                    processMe.getName()));
+            displayer.write(writer, procResult);
         } catch (final FileNotFoundException e) {
             throw new EnvironmentException(
                     "File not found while creating reader", e);
@@ -117,6 +122,20 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * 
+     * @param rawResult
+     * @return
+     */
+    private T applyCalcs(T rawResult) {
+        T procResult = rawResult;
+        for (Calculation<T, ? extends T> curCalc : calculations) {
+            procResult = curCalc.calculate(procResult);
+        }
+        return procResult;
     }
 
     /**
@@ -157,6 +176,6 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
 
     @Override
     public void finish() {
-        
+
     }
 }

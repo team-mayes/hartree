@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.util.List;
 
 import org.cmayes.hartree.disp.Display;
-import org.cmayes.hartree.model.CalculationSnapshot;
+import org.cmayes.hartree.model.BaseResult;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -13,12 +13,11 @@ import com.cmayes.common.MediaType;
 import com.cmayes.common.exception.EnvironmentException;
 
 /**
- * Formats {@link CalculationSnapshot} data as lines in a CSV file.
+ * Formats {@link BaseResult} data as lines in a CSV file.
  * 
  * @author cmayes
  */
-public class CalculationSnapshotCsvDisplay implements
-        Display<CalculationSnapshot> {
+public class SnapshotCsvDisplay implements Display<BaseResult> {
     private static final String MISSING = "N/A";
     private String[] headerRow = new String[] { "File Name", "Solvent type",
             "Stoichiometry", "Charge", "Mult", "Functional", "Basis Set",
@@ -33,7 +32,7 @@ public class CalculationSnapshotCsvDisplay implements
      *      java.lang.Object)
      */
     @Override
-    public void write(final Writer writer, final CalculationSnapshot valToDisp) {
+    public void write(final Writer writer, final BaseResult valToDisp) {
         final CSVWriter csvWriter = new CSVWriter(writer);
         try {
             if (first && headerRow != null) {
