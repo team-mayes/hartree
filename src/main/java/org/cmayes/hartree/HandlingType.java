@@ -2,6 +2,7 @@ package org.cmayes.hartree;
 
 import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 
+import org.cmayes.hartree.model.CalculationResult;
 import org.cmayes.hartree.model.CalculationSnapshot;
 import org.cmayes.hartree.model.NormalModeCalculation;
 
@@ -15,7 +16,8 @@ public enum HandlingType {
             NormalModeCalculation.class), SNAPSHOT("snap",
             "Provides a snapshot of calculation data",
             CalculationSnapshot.class), TEST("test",
-            "Test mode (no handling performed)", Object.class);
+            "Test mode (no handling performed)", Object.class), THERM("therm",
+            "Handles thermo calculations", CalculationResult.class);
 
     private final String commandName;
     private final String description;

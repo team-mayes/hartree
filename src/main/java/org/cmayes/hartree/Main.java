@@ -14,6 +14,7 @@ import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.csv.CalculationSnapshotCsvDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
 import org.cmayes.hartree.loader.Loader;
+import org.cmayes.hartree.loader.gaussian.CalcResultLoader;
 import org.cmayes.hartree.loader.gaussian.NormalModeLoader;
 import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
 import org.cmayes.hartree.proc.FileProcessor;
@@ -61,6 +62,8 @@ public class Main<T> {
                 new NormalModeLoader());
         HAND_TYPE_MAP.put(HandlingType.SNAPSHOT.getValueClass(),
                 new SnapshotLoader());
+        HAND_TYPE_MAP.put(HandlingType.THERM.getValueClass(),
+                new CalcResultLoader());
         // Set default media types for value classes.
         DEF_MEDIA.put(HandlingType.NORMAL_MODE.getValueClass(), MediaType.TEXT);
         DEF_MEDIA.put(HandlingType.SNAPSHOT.getValueClass(), MediaType.CSV);
