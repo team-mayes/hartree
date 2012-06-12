@@ -1,9 +1,9 @@
 package org.cmayes.hartree.model.def;
 
-import org.cmayes.hartree.model.ThermalResult;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.cmayes.hartree.model.ThermalResult;
 
 /**
  * Default implementation of a thermal calculation result.

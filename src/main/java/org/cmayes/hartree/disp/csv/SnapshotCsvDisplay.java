@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.model.BaseResult;
+import org.cmayes.hartree.model.CremerPopleResult;
+import org.cmayes.hartree.model.def.CremerPopleCoordinates;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -19,10 +21,15 @@ import com.cmayes.common.exception.EnvironmentException;
  */
 public class SnapshotCsvDisplay implements Display<BaseResult> {
     private static final String MISSING = "N/A";
-    private String[] headerRow = new String[] { "File Name", "Solvent type",
-            "Stoichiometry", "Charge", "Mult", "Functional", "Basis Set",
-            "Energy (A.U.)", "dipole", "ZPE (kcal/mol)", "G298 (Hartrees)",
-            "Freq 1", "Freq 2" };
+    private String[] headerRow;
+    private final String[] defaultHeaderRow = new String[] { "File Name",
+            "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
+            "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
+            "G298 (Hartrees)", "Freq 1", "Freq 2" };
+    private final String[] cpHeaderRow = new String[] { "File Name",
+            "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
+            "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
+            "G298 (Hartrees)", "Freq 1", "Freq 2", "phi", "theta", "Q" };
     private boolean first = true;
 
     /**
@@ -35,8 +42,8 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
     public void write(final Writer writer, final BaseResult valToDisp) {
         final CSVWriter csvWriter = new CSVWriter(writer);
         try {
-            if (first && headerRow != null) {
-                csvWriter.writeNext(headerRow);
+            if (first) {
+                csvWriter.writeNext(getHeaderRow(valToDisp));
                 first = false;
             }
             final String charge = valOrMissing(valToDisp.getCharge());
@@ -63,10 +70,29 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             final String func = valOrMissing(valToDisp.getFunctional());
             final String basisSet = valOrMissing(valToDisp.getBasisSet());
             final String g298 = valOrMissing(valToDisp.getGibbs298());
-            csvWriter
-                    .writeNext(new String[] { fname, solv, stoi, charge, mult,
-                            func, basisSet, energy, dip, zpe, g298, firstFreq,
-                            secFreq });
+            if (valToDisp instanceof CremerPopleResult) {
+                final CremerPopleCoordinates cpCoords = ((CremerPopleResult) valToDisp)
+                        .getCpCoords();
+                if (cpCoords == null) {
+                    csvWriter
+                            .writeNext(new String[] { fname, solv, stoi,
+                                    charge, mult, func, basisSet, energy, dip,
+                                    zpe, g298, firstFreq, secFreq, MISSING,
+                                    MISSING, MISSING });
+
+                } else {
+                    final String phi = valOrMissing(cpCoords.getPhi());
+                    final String theta = valOrMissing(cpCoords.getTheta());
+                    final String q = valOrMissing(cpCoords.getQ());
+                    csvWriter.writeNext(new String[] { fname, solv, stoi,
+                            charge, mult, func, basisSet, energy, dip, zpe,
+                            g298, firstFreq, secFreq, phi, theta, q });
+                }
+            } else {
+                csvWriter.writeNext(new String[] { fname, solv, stoi, charge,
+                        mult, func, basisSet, energy, dip, zpe, g298,
+                        firstFreq, secFreq });
+            }
         } finally {
             try {
                 csvWriter.flush();
@@ -104,21 +130,40 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
     }
 
     /**
-     * Returns the row that will be added on the first write to this display.
+     * Returns the row that will be added on the first write to this display if
+     * set. If this value is null, a header row appropriate for the write
+     * candidate will be used.
      * 
-     * @return the row that will be added on the first write to this display.
+     * @return the row that will be added on the first write to this display if
+     *         set.
      */
     public String[] getHeaderRow() {
         return headerRow;
     }
 
     /**
-     * Sets the row that will be added on the first write to this display. You
-     * may set this to null if you do not wish to have a header row.
+     * Returns the row that will be added on the first write to this display.
+     * Will return the header row appropriate to the given instance.
+     * 
+     * @param res
+     *            The result to evaluate.
+     * 
+     * @return the row that will be added on the first write to this display.
+     */
+    public String[] getHeaderRow(final BaseResult res) {
+        if (headerRow != null) {
+            return headerRow;
+        } else if (res instanceof CremerPopleResult) {
+            return cpHeaderRow;
+        }
+        return defaultHeaderRow;
+    }
+
+    /**
+     * Sets the row that will be added on the first write to this display.
      * 
      * @param row
-     *            The row to add on the first write or null if no header is
-     *            desired.
+     *            The row to add on the first write.
      */
     public void setHeaderRow(final String[] row) {
         this.headerRow = row;

@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.cmayes.hartree.calc.Calculation;
+import org.cmayes.hartree.calc.impl.CremerPopleCalculation;
+import org.cmayes.hartree.calc.impl.GlucoseRingCalculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
@@ -43,6 +46,7 @@ public class Main<T> {
     /** Logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
     private static final Map<HandlingType, Loader<?>> HAND_TYPE_MAP = new HashMap<HandlingType, Loader<?>>();
+    private static final Map<HandlingType, List<Calculation>> CALC_MAP = new HashMap<HandlingType, List<Calculation>>();
     private static final Table<HandlingType, MediaType, Display<?>> DISP_TYPE_TBL = HashBasedTable
             .create();
     private static final Map<HandlingType, MediaType> DEF_MEDIA = new HashMap<HandlingType, MediaType>();
@@ -52,7 +56,6 @@ public class Main<T> {
     private File file;
     private File directory;
     private File outDir;
-    private MediaType targetMedia = null;
     private FileProcessor<T> testProcessor;
     private HandlingType hType;
 
@@ -60,15 +63,24 @@ public class Main<T> {
         // Assign handlers
         HAND_TYPE_MAP.put(HandlingType.NORMAL_MODE, new NormalModeLoader());
         HAND_TYPE_MAP.put(HandlingType.SNAPSHOT, new SnapshotLoader());
+        HAND_TYPE_MAP.put(HandlingType.CPSNAPSHOT, new SnapshotLoader());
         HAND_TYPE_MAP.put(HandlingType.THERM, new CalcResultLoader());
         // Set default media types for value classes.
         DEF_MEDIA.put(HandlingType.NORMAL_MODE, MediaType.TEXT);
         DEF_MEDIA.put(HandlingType.SNAPSHOT, MediaType.CSV);
+        DEF_MEDIA.put(HandlingType.CPSNAPSHOT, MediaType.CSV);
         // Establish displays for a combo of value object and media type
         DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE, MediaType.TEXT,
                 new NormalModeTextDisplay());
         DISP_TYPE_TBL.put(HandlingType.SNAPSHOT, MediaType.CSV,
                 new SnapshotCsvDisplay());
+        DISP_TYPE_TBL.put(HandlingType.CPSNAPSHOT, MediaType.CSV,
+                new SnapshotCsvDisplay());
+        // Add calcs
+        final ArrayList<Calculation> cpSnapCalcs = new ArrayList<Calculation>();
+        cpSnapCalcs.add(new GlucoseRingCalculation());
+        cpSnapCalcs.add(new CremerPopleCalculation());
+        CALC_MAP.put(HandlingType.CPSNAPSHOT, cpSnapCalcs);
     }
 
     /**
@@ -231,10 +243,20 @@ public class Main<T> {
         }
         if (HandlingType.SNAPSHOT.equals(hType)) {
             return new AccumulatingFileProcessor<T>(hType, getLoader(),
-                    getDisplay(), outDir);
+                    getDisplay(), getCalcs(), outDir);
         }
         return new BasicFileProcessor<T>(hType, getLoader(), getDisplay(),
-                outDir);
+                getCalcs(), outDir);
+    }
+
+    /**
+     * Finds the configured calculations for the current handling type.
+     * 
+     * @return The configured calculations for the current handling type.
+     */
+    private List<Calculation> getCalcs() {
+        List<Calculation> list = CALC_MAP.get(hType);
+        return list == null ? new ArrayList<Calculation>() : list;
     }
 
     /**
@@ -258,7 +280,7 @@ public class Main<T> {
         final MediaType tgtMediaType = getTargetMediaType();
         return (Display<T>) asNotNull(DISP_TYPE_TBL.get(hType, tgtMediaType),
                 String.format("No display for media %s on type %s",
-                        targetMedia, hType.name()));
+                        getTargetMediaType(), hType.name()));
     }
 
     /**
@@ -271,9 +293,9 @@ public class Main<T> {
      *             type are set.
      */
     MediaType getTargetMediaType() {
-        if (targetMedia != null) {
-            return targetMedia;
-        }
+        // if (targetMedia != null) {
+        // return targetMedia;
+        // }
         final MediaType mediaType = DEF_MEDIA.get(hType);
         if (mediaType == null) {
             throw new IllegalStateException(

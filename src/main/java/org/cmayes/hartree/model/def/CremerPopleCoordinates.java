@@ -14,6 +14,31 @@ public class CremerPopleCoordinates {
     private double q;
 
     /**
+     * Zero-arg constructor.
+     */
+    public CremerPopleCoordinates() {
+
+    }
+
+    /**
+     * Creates coordinates with the given values.
+     * 
+     * @param thePhi
+     *            Phi.
+     * @param theTheta
+     *            Theta.
+     * @param theQ
+     *            Magnitude of puckering.
+     */
+    public CremerPopleCoordinates(final double thePhi, final double theTheta,
+            final double theQ) {
+        this.phi = thePhi;
+        this.theta = theTheta;
+        this.q = theQ;
+
+    }
+
+    /**
      * @return the phi
      */
     public double getPhi() {

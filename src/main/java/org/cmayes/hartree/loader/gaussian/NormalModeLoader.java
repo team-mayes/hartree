@@ -10,11 +10,9 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
-import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.InternalMotion;
 import org.cmayes.hartree.model.NormalMode;
 import org.cmayes.hartree.model.NormalModeCalculation;
-import org.cmayes.hartree.model.def.DefaultAtom;
 import org.cmayes.hartree.model.def.DefaultInternalMotion;
 import org.cmayes.hartree.model.def.DefaultNormalMode;
 import org.cmayes.hartree.model.def.DefaultNormalModeCalculation;
@@ -25,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.chem.InternalMotionType;
 import com.cmayes.common.exception.EnvironmentException;
+import com.cmayes.common.model.Atom;
+import com.cmayes.common.model.impl.DefaultAtom;
 
 /**
  * Fills a CalculationResult from data parsed from the given reader.

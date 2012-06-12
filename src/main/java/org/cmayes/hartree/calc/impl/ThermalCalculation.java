@@ -29,8 +29,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author cmayes
  */
-public class ThermalCalculation implements
-        Calculation<BaseResult, List<ThermalResult>> {
+public class ThermalCalculation implements Calculation {
     // Scaling Factors //
     /** 3/2 is peppered throughout, so we just set it once here. */
     private static final double SCALE_RATIO = 3 / 2;
@@ -59,15 +58,15 @@ public class ThermalCalculation implements
      * 
      * @see org.cmayes.hartree.calc.impl.Calculation#calculate(T)
      */
-    public List<ThermalResult> calculate(final BaseResult calcResult) {
+    public Object calculate(final Object calcResult) {
         final List<ThermalResult> results = new ArrayList<ThermalResult>();
-        final SymAdj symAdj = evalSym(calcResult);
+        final SymAdj symAdj = evalSym((BaseResult) calcResult);
         for (Double curTemp : TEMPS) {
-            double entropyTemp = scaleEntropyTemp(calcResult, symAdj, curTemp);
+            double entropyTemp = scaleEntropyTemp((BaseResult) calcResult, symAdj, curTemp);
             double heatCap = scaleHeatCap(symAdj);
             double enthalpy = scaleEnthalpyTemp(symAdj, curTemp);
             double zpeVal = 0;
-            for (double curFreq : calcResult.getFrequencyValues()) {
+            for (double curFreq : ((BaseResult) calcResult).getFrequencyValues()) {
                 if (curFreq < 0) {
                     logger.debug("Skipping negative frequency " + curFreq);
                     continue;
@@ -89,7 +88,8 @@ public class ThermalCalculation implements
                         / CALTH_TO_JOULE / 1000 / HARTREE_TO_KCALTH * zpe;
             }
             final ThermalResult curResult = new DefaultThermalResult(curTemp);
-            curResult.setEnthalpy(zpeVal + calcResult.getElecEn()
+            curResult.setEnthalpy(zpeVal
+                    + ((BaseResult) calcResult).getElecEn()
                     + (GAS_KCAL * curTemp + enthalpy));
             curResult.setEntropy(entropyTemp * 1000);
             curResult.setHeatCapacity((GAS_KCAL + heatCap) * 1000);
@@ -149,8 +149,8 @@ public class ThermalCalculation implements
      *            The temperature in Kelvin to scale to.
      * @return The scaled value.
      */
-    private double scaleRotPart(final BaseResult result,
-            final SymAdj symAdj, final double tempK) {
+    private double scaleRotPart(final BaseResult result, final SymAdj symAdj,
+            final double tempK) {
         return result.getRotPart()
                 * pow(tempK / KELVIN_25C, symAdj.getFlagAdj());
     }

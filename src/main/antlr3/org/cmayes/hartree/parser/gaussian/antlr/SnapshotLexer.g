@@ -28,6 +28,8 @@ tokens { TERM; CPUTIME; DEFDATA; FUNCSET;
     boolean dipTotCtx = false;
     boolean g298Ctx = false;
     boolean xyzCtx = false; 
+    boolean natomsFound = false;
+    boolean natomsCtx = false;
 }
 
 // Def block
@@ -52,6 +54,11 @@ XYZTAG: 'Input orientation:' { xyzCtx = true; $channel = HIDDEN; };
 XYZFLOAT: {xyzCtx}? FLOAT ;
 XYZINT: {xyzCtx}? INT ;
 XYZEND: 'Distance matrix (angstroms):' { xyzCtx = false; $channel = HIDDEN; };
+
+// Number of atoms
+NATOMSTAG: {!natomsFound}? => 'NAtoms' { natomsCtx = true; $channel = HIDDEN; };
+NATOMS: {(natomsCtx && (!natomsFound))}? => INT { natomsFound = true; };
+NACTIVE: {natomsCtx}? => 'NActive'{ natomsCtx = false; $channel = HIDDEN; };
 
 // Charge
 CHARGETAG: 'Charge' WS+ '=' { chgCtx = true; $channel = HIDDEN; };

@@ -2,12 +2,14 @@ package org.cmayes.hartree.model;
 
 import java.util.List;
 
+import com.cmayes.common.model.Atom;
+
 /**
  * Defines a result containing a glucose ring.
  * 
  * @author cmayes
  */
-public interface GlucoseRingResult extends BaseResult {
+public interface GlucoseRingResult {
     /**
      * @return the glucoseRing
      */

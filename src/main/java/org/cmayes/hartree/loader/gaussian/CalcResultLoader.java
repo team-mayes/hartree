@@ -10,16 +10,16 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
-import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.def.DefaultBaseResult;
-import org.cmayes.hartree.model.def.DefaultAtom;
 import org.cmayes.hartree.parser.gaussian.antlr.CalcResultParser;
 import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.exception.EnvironmentException;
+import com.cmayes.common.model.Atom;
+import com.cmayes.common.model.impl.DefaultAtom;
 
 /**
  * Fills a BaseResult from data parsed from the given reader.

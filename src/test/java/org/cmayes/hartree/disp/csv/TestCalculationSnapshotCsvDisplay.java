@@ -98,7 +98,7 @@ public class TestCalculationSnapshotCsvDisplay {
     public void testAltHead() throws Exception {
         assertThat(disp.getMediaType(), equalTo(MediaType.CSV));
 
-        assertThat(disp.getHeaderRow(), equalTo(HEAD_LINE));
+        assertNull(disp.getHeaderRow());
         disp.setHeaderRow(ALT_HEAD_LINE);
         assertThat(disp.getHeaderRow(), equalTo(ALT_HEAD_LINE));
         final StringWriter stringWriter = new StringWriter();

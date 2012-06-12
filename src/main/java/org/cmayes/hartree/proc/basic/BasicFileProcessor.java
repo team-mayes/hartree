@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.cmayes.hartree.HandlingType;
@@ -35,7 +34,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Loader<T> parser;
     private final Display<T> displayer;
-    private final List<Calculation<T, ? extends T>> calculations;
+    private final List<Calculation> calculations;
     private final HandlingType handlingType;
     private File outDir;
 
@@ -48,13 +47,16 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      *            The parser to use.
      * @param theDisp
      *            The display to use.
+     * @param calcs
+     *            The calculations to use.
      */
     public BasicFileProcessor(final HandlingType handType,
-            final Loader<T> theParser, final Display<T> theDisp) {
+            final Loader<T> theParser, final Display<T> theDisp,
+            final List<Calculation> calcs) {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
-        this.calculations = new ArrayList<Calculation<T,? extends T>>();
+        this.calculations = asNotNull(calcs, "Calculations cannot be null.");
     }
 
     /**
@@ -67,16 +69,19 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      *            The parser to use.
      * @param theDisp
      *            The display to use.
+     * @param calcs
+     *            The calculations to use.
      * @param out
      *            The output directory (may be null to indicate no output
      *            directory).
      */
     public BasicFileProcessor(final HandlingType handType,
-            final Loader<T> theParser, final Display<T> theDisp, final File out) {
+            final Loader<T> theParser, final Display<T> theDisp,
+            final List<Calculation> calcs, final File out) {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
-        this.calculations = new ArrayList<Calculation<T,? extends T>>();
+        this.calculations = asNotNull(calcs, "Calculations cannot be null.");
         this.outDir = out;
     }
 
@@ -132,8 +137,8 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      */
     private T applyCalcs(T rawResult) {
         T procResult = rawResult;
-        for (Calculation<T, ? extends T> curCalc : calculations) {
-            procResult = curCalc.calculate(procResult);
+        for (Calculation curCalc : calculations) {
+            procResult = (T) curCalc.calculate((Object) procResult);
         }
         return procResult;
     }

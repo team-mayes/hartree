@@ -7,10 +7,10 @@ import java.util.List;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.BaseResult;
 import org.joda.time.Duration;
+
+import com.cmayes.common.model.Atom;
 
 /**
  * Data common to multiple result types.
@@ -37,6 +37,43 @@ public class DefaultBaseResult implements BaseResult {
     private Double gibbs298;
     private Double elecEn;
     private Integer atomCount;
+
+    /**
+     * Zero-arg constructor.
+     */
+    public DefaultBaseResult() {
+
+    }
+
+    /**
+     * Copy constructor for a base result.
+     * 
+     * TODO: Deeper copy
+     * 
+     * @param baseResult
+     *            The base result to copy.
+     */
+    public DefaultBaseResult(final BaseResult baseResult) {
+        this.atomCount = baseResult.getAtomCount();
+        this.atoms = baseResult.getAtoms();
+        this.basisSet = baseResult.getBasisSet();
+        this.charge = baseResult.getCharge();
+        this.cpuTimes = baseResult.getCpuTimes();
+        this.dipoleMomentTotal = baseResult.getDipoleMomentTotal();
+        this.elecEn = baseResult.getElecEn();
+        this.fileName = baseResult.getFileName();
+        this.frequencyValues = baseResult.getFrequencyValues();
+        this.functional = baseResult.getFunctional();
+        this.gibbs298 = baseResult.getGibbs298();
+        this.isSymmetric = baseResult.isSymmetricTop();
+        this.mult = baseResult.getMult();
+        this.rotPart = baseResult.getRotPart();
+        this.solvent = baseResult.getSolvent();
+        this.stoichiometry = baseResult.getStoichiometry();
+        this.terminationDates = baseResult.getTerminationDates();
+        this.transPart = baseResult.getTransPart();
+        this.zpeCorrection = baseResult.getZpeCorrection();
+    }
 
     /**
      * {@inheritDoc}

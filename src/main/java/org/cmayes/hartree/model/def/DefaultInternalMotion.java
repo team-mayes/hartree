@@ -3,12 +3,12 @@ package org.cmayes.hartree.model.def;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cmayes.hartree.model.InternalMotion;
-
-import com.cmayes.common.chem.InternalMotionType;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.cmayes.hartree.model.InternalMotion;
+
+import com.cmayes.common.chem.InternalMotionType;
 
 /**
  * Default implementation of an internal motion.

@@ -5,12 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.cmayes.hartree.model.Atom;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.chem.AtomicElement;
+import com.cmayes.common.model.Atom;
 
 /**
  * Logic common to Gaussian AST loaders.
@@ -51,13 +51,13 @@ public class BaseGaussianLoader {
             // Atomic type? Skip it; we don't know what it is.
             break;
         case 3:
-            curAtom.setxPos(toDouble(nodeText));
+            curAtom.setX(toDouble(nodeText));
             break;
         case 4:
-            curAtom.setyPos(toDouble(nodeText));
+            curAtom.setY(toDouble(nodeText));
             break;
         case 5:
-            curAtom.setyPos(toDouble(nodeText));
+            curAtom.setZ(toDouble(nodeText));
             break;
         default:
             logger.warn("Unlikely atom mod %d", atomColCount);

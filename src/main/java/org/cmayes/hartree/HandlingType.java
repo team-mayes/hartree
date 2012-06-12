@@ -13,7 +13,9 @@ import org.cmayes.hartree.model.def.DefaultBaseResult;
 public enum HandlingType {
     NORMAL_MODE("norm", "Handles normal mode evaluation",
             NormalModeCalculation.class), SNAPSHOT("snap",
-            "Provides a snapshot of calculation data",
+            "Provides a snapshot of calculation data", DefaultBaseResult.class), CPSNAPSHOT(
+            "cpsnap",
+            "Provides a snapshot of calculation data including Cremer-Pople coordinates",
             DefaultBaseResult.class), TEST("test",
             "Test mode (no handling performed)", Object.class), THERM("therm",
             "Handles thermo calculations", DefaultBaseResult.class);

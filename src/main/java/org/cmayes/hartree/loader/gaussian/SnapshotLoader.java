@@ -2,6 +2,7 @@ package org.cmayes.hartree.loader.gaussian;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRReaderStream;
@@ -10,17 +11,16 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
-import org.cmayes.hartree.model.Atom;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.def.DefaultBaseResult;
-import org.cmayes.hartree.model.def.DefaultAtom;
-import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotLexer;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.exception.EnvironmentException;
+import com.cmayes.common.model.Atom;
+import com.cmayes.common.model.impl.DefaultAtom;
 
 /**
  * Fills a BaseResult from data parsed from the given reader.
@@ -89,8 +89,8 @@ public class SnapshotLoader extends BaseGaussianLoader implements
                     result.getFrequencyValues().add(freqVal);
                 }
                 break;
-            case Gaussian09Lexer.XYZINT:
-            case Gaussian09Lexer.XYZFLOAT:
+            case SnapshotLexer.XYZINT:
+            case SnapshotLexer.XYZFLOAT:
                 handleAtom(curNode.getText(), curAtom, atomColCount);
                 atomColCount++;
                 if (atomColCount % ATOM_COL_COUNT == 0) {
@@ -125,11 +125,22 @@ public class SnapshotLoader extends BaseGaussianLoader implements
             case SnapshotLexer.DIPTOT:
                 result.setDipoleMomentTotal(toDouble(curNode.getText()));
                 break;
+            case SnapshotLexer.NATOMS:
+                result.setAtomCount(toInt(curNode.getText()));
+                break;
             default:
                 logger.warn(String.format("Unhandled data %s %s",
                         curNode.getType(), curNode.getText()));
                 break;
             }
+        }
+
+        if (result.getAtomCount() != null && result.getAtoms() != null
+                && result.getAtoms().size() > result.getAtomCount()) {
+            logger.debug("Atom count: " + result.getAtomCount());
+            final int atomSize = result.getAtoms().size();
+            result.setAtoms(new ArrayList<Atom>(result.getAtoms().subList(
+                    atomSize - result.getAtomCount(), atomSize)));
         }
         return result;
     }
