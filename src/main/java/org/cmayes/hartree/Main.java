@@ -241,7 +241,9 @@ public class Main<T> {
         if (testProcessor != null) {
             return testProcessor;
         }
-        if (HandlingType.SNAPSHOT.equals(hType)) {
+        // TODO: Make a map
+        if (HandlingType.SNAPSHOT.equals(hType)
+                || HandlingType.CPSNAPSHOT.equals(hType)) {
             return new AccumulatingFileProcessor<T>(hType, getLoader(),
                     getDisplay(), getCalcs(), outDir);
         }
