@@ -27,7 +27,7 @@ public class CremerPoplePuckeringCalculation implements Calculation {
     /** Indicates that phi is globbed s.t. any value matches. */
     private static final double PHI_GLOB_VAL = -1.;
     /** The tolerance value for number matching. */
-    private static final double TOLERANCE = 5.;
+    private static final double TOLERANCE = 8.;
     /** If the number is within tolerance of this value, it is set to zero. */
     private static final double TO_ZERO_VAL = 360.;
     /** Logger. */
