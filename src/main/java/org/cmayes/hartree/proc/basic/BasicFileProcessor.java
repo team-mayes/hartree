@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.Writer;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
     private final List<Calculation> calculations;
     private final HandlingType handlingType;
     private File outDir;
+    private PrintStream sysOut = System.out;
 
     /**
      * Creates a processor that will use the given parser and display.
@@ -93,7 +95,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
     public void display(final File processMe) {
         Writer writer;
         if (outDir == null) {
-            writer = new OutputStreamWriter(System.out);
+            writer = new OutputStreamWriter(sysOut);
         } else {
             final File outFile = new File(String.format("%s%s%s-%s.%s",
                     outDir.getAbsolutePath(), File.separator,
@@ -110,8 +112,10 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
                         + outFile, e);
             }
         }
+        FileReader fileReader = null;
         try {
-            T procResult = applyCalcs(parser.load(new FileReader(processMe),
+            fileReader = new FileReader(processMe);
+            T procResult = applyCalcs(parser.load(fileReader,
                     processMe.getName()));
             displayer.write(writer, procResult);
         } catch (final FileNotFoundException e) {
@@ -126,15 +130,23 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
                     logger.warn("Problems closing writer: " + e.getMessage());
                 }
             }
+            if (fileReader != null) {
+                try {
+                    fileReader.close();
+                } catch (IOException e) {
+                    logger.warn("Problems closing reader: " + e.getMessage());
+                }
+            }
         }
     }
 
     /**
-     * 
+     * Applies the set calculations to the files.
      * 
      * @param rawResult
      * @return
      */
+    @SuppressWarnings("unchecked")
     private T applyCalcs(T rawResult) {
         T procResult = rawResult;
         for (Calculation curCalc : calculations) {
@@ -179,6 +191,21 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
         this.outDir = dir;
     }
 
+    /**
+     * Sets the value for the standard out target (mainly intended for testing).
+     * 
+     * @param sysOut
+     *            The stream to use.
+     */
+    public void setSysOut(PrintStream sysOut) {
+        this.sysOut = asNotNull(sysOut, "Print stream is null");
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.proc.FileProcessor#finish()
+     */
     @Override
     public void finish() {
 

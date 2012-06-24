@@ -1,8 +1,12 @@
 package org.cmayes.hartree.model.def;
 
+import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -18,7 +22,7 @@ import com.cmayes.common.model.Atom;
  * @author cmayes
  */
 public class DefaultBaseResult implements BaseResult {
-    private List<Atom> atoms = new ArrayList<Atom>();
+    private Map<Integer, Atom> atomMap = new TreeMap<Integer, Atom>();
     private List<Date> terminationDates = new ArrayList<Date>();
     private List<Duration> cpuTimes = new ArrayList<Duration>();
     private Double transPart;
@@ -55,7 +59,7 @@ public class DefaultBaseResult implements BaseResult {
      */
     public DefaultBaseResult(final BaseResult baseResult) {
         this.atomCount = baseResult.getAtomCount();
-        this.atoms = baseResult.getAtoms();
+        this.atomMap = new TreeMap<Integer, Atom>(baseResult.getAtomMap());
         this.basisSet = baseResult.getBasisSet();
         this.charge = baseResult.getCharge();
         this.cpuTimes = baseResult.getCpuTimes();
@@ -73,6 +77,47 @@ public class DefaultBaseResult implements BaseResult {
         this.terminationDates = baseResult.getTerminationDates();
         this.transPart = baseResult.getTransPart();
         this.zpeCorrection = baseResult.getZpeCorrection();
+    }
+
+    /**
+     * Returns the map of atoms to their IDs.
+     * 
+     * @return The map of atoms to their IDs.
+     */
+    public Map<Integer, Atom> getAtomMap() {
+        return atomMap;
+    }
+
+    /**
+     * Sets the atom map.
+     * 
+     * @param atomMap
+     *            The atom map to set.
+     */
+    public void setAtomMap(Map<Integer, Atom> atomMap) {
+        this.atomMap = new TreeMap<Integer, Atom>(atomMap);
+    }
+
+    /**
+     * Returns a copy of the atom map's values. Note that modifications to the
+     * returned list are not applied to the map's values.
+     * 
+     * @return A list of atoms in this result.
+     */
+    public List<Atom> getAtoms() {
+        return new ArrayList<Atom>(atomMap.values());
+    }
+
+    /**
+     * Adds the atom to the atom map by using its ID as the map's key.
+     * 
+     * @param addMe
+     *            The atom to add.
+     * @throws IllegalArgumentException
+     *             If addMe is null.
+     */
+    public void addAtom(Atom addMe) {
+        this.atomMap.put(asNotNull(addMe, "Atom is null").getId(), addMe);
     }
 
     /**
@@ -119,13 +164,15 @@ public class DefaultBaseResult implements BaseResult {
      * @param id
      *            The atom to pull.
      * @return The atom at the zero-based index equivalent of the ID.
+     * @throws IllegalArgumentException
+     *             If the atom does not exist.
      */
     public Atom getAtomById(final int id) {
-        try {
-            return getAtoms().get(id - 1);
-        } catch (final IndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("No atom with ID " + id, e);
+        Atom atom = atomMap.get(id);
+        if (atom == null) {
+            throw new IllegalArgumentException("No atom with ID " + id);
         }
+        return atom;
     }
 
     /**
@@ -254,21 +301,6 @@ public class DefaultBaseResult implements BaseResult {
      */
     public void setSymmetricTop(final boolean isSymTop) {
         this.isSymmetric = isSymTop;
-    }
-
-    /**
-     * @return the atoms
-     */
-    public List<Atom> getAtoms() {
-        return atoms;
-    }
-
-    /**
-     * @param ats
-     *            the atoms to set
-     */
-    public void setAtoms(final List<Atom> ats) {
-        this.atoms = ats;
     }
 
     /**
@@ -432,17 +464,14 @@ public class DefaultBaseResult implements BaseResult {
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(final Object object) {
+    public boolean equals(Object object) {
         if (!(object instanceof DefaultBaseResult)) {
             return false;
         }
-        final DefaultBaseResult rhs = (DefaultBaseResult) object;
-        return new EqualsBuilder().append(this.atoms, rhs.atoms)
-                .append(this.basisSet, rhs.basisSet)
+        DefaultBaseResult rhs = (DefaultBaseResult) object;
+        return new EqualsBuilder().append(this.basisSet, rhs.basisSet)
                 .append(this.mult, rhs.mult)
                 .append(this.atomCount, rhs.atomCount)
                 .append(this.cpuTimes, rhs.cpuTimes)
@@ -453,6 +482,7 @@ public class DefaultBaseResult implements BaseResult {
                 .append(this.elecEn, rhs.elecEn)
                 .append(this.transPart, rhs.transPart)
                 .append(this.gibbs298, rhs.gibbs298)
+                .append(this.atomMap, rhs.atomMap)
                 .append(this.charge, rhs.charge)
                 .append(this.rotPart, rhs.rotPart)
                 .append(this.zpeCorrection, rhs.zpeCorrection)
@@ -463,32 +493,28 @@ public class DefaultBaseResult implements BaseResult {
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return new HashCodeBuilder(502944909, -1109370157).append(this.atoms)
+        return new HashCodeBuilder(-2069282171, -1063907465)
                 .append(this.basisSet).append(this.mult).append(this.atomCount)
                 .append(this.cpuTimes).append(this.frequencyValues)
                 .append(this.isSymmetric).append(this.solvent)
                 .append(this.functional).append(this.elecEn)
                 .append(this.transPart).append(this.gibbs298)
-                .append(this.charge).append(this.rotPart)
+                .append(this.atomMap).append(this.charge).append(this.rotPart)
                 .append(this.zpeCorrection).append(this.dipoleMomentTotal)
                 .append(this.fileName).append(this.terminationDates)
                 .append(this.stoichiometry).toHashCode();
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
         return new ToStringBuilder(this).append("elecEn", this.elecEn)
                 .append("functional", this.functional)
-                .append("charge", this.charge).append("atoms", this.atoms)
+                .append("charge", this.charge).append("atoms", this.getAtoms())
                 .append("frequencyValues", this.frequencyValues)
                 .append("cpuTimes", this.cpuTimes).append("mult", this.mult)
                 .append("atomCount", this.atomCount)
@@ -502,6 +528,7 @@ public class DefaultBaseResult implements BaseResult {
                 .append("fileName", this.fileName)
                 .append("dipoleMomentTotal", this.dipoleMomentTotal)
                 .append("solvent", this.solvent)
-                .append("terminationDates", this.terminationDates).toString();
+                .append("terminationDates", this.terminationDates)
+                .append("atomMap", this.atomMap).toString();
     }
 }

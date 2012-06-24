@@ -82,10 +82,10 @@ REDMASS: {freqCtx}? => 'Red. masses' { freqCtx = false; $channel = HIDDEN;} ;
 
 // CPU time
 CPUTAG: 'Job cpu time:' { cpuCtx = true; } ;
-CPUDAYS: 'days' ;
-CPUHOURS: 'hours' ;
-CPUMINS: 'minutes' ;
-CPUSECS: 'seconds.' { cpuCtx = false; } ;
+CPUDAYS: {cpuCtx}? => 'days' ;
+CPUHOURS: {cpuCtx}? => 'hours' ;
+CPUMINS: {cpuCtx}? => 'minutes' ;
+CPUSECS: {cpuCtx}? => 'seconds.' { cpuCtx = false; } ;
 CPUFLOAT: {cpuCtx}? => FLOAT ;
 CPUINT: {cpuCtx}? => INT ;
 

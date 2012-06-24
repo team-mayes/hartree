@@ -2,6 +2,7 @@ package org.cmayes.hartree.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.Duration;
 
@@ -117,29 +118,49 @@ public interface BaseResult {
     boolean isSymmetricTop();
 
     /**
-     * Returns the atoms used in the calculation.
-     * 
-     * @return The atoms used in the calculation.
-     */
-    List<Atom> getAtoms();
-
-    /**
-     * Sets the atoms used in the calculation.
-     * 
-     * @param atoms
-     *            The atoms to set.
-     */
-    void setAtoms(List<Atom> atoms);
-
-    /**
      * Looks up the atom with the given ID by pulling the atom in the atoms
      * field by the ID - 1.
      * 
      * @param id
      *            The atom to pull.
      * @return The atom at the zero-based index equivalent of the ID.
+     * @throws IllegalArgumentException
+     *             If the atom does not exist.
      */
     Atom getAtomById(final int id);
+
+    /**
+     * Returns the map of atoms to their IDs.
+     * 
+     * @return The map of atoms to their IDs.
+     */
+    Map<Integer, Atom> getAtomMap();
+
+    /**
+     * Sets the atom map.
+     * 
+     * @param atomMap
+     *            The atom map to set.
+     */
+    void setAtomMap(Map<Integer, Atom> atomMap);
+
+    /**
+     * Returns a copy of the atom map's values. Note that modifications to the
+     * returned list are not applied to the map's values.
+     * 
+     * @return A list of atoms in this result.
+     */
+    List<Atom> getAtoms();
+
+    /**
+     * Adds the atom to the atom map by using its ID as the map's key.
+     * 
+     * @param addMe
+     *            The atom to add.
+     * @throws IllegalArgumentException
+     *             If addMe is null.
+     */
+    public void addAtom(Atom addMe);
 
     /**
      * Returns the file name for this calculation (if applicable).

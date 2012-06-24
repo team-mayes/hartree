@@ -29,7 +29,8 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
     private final String[] cpHeaderRow = new String[] { "File Name",
             "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
             "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
-            "G298 (Hartrees)", "Freq 1", "Freq 2", "phi", "theta", "Q" };
+            "G298 (Hartrees)", "Freq 1", "Freq 2", "phi", "theta", "Q",
+            "Pucker" };
     private boolean first = true;
 
     /**
@@ -74,19 +75,19 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                 final CremerPopleCoordinates cpCoords = ((CremerPopleResult) valToDisp)
                         .getCpCoords();
                 if (cpCoords == null) {
-                    csvWriter
-                            .writeNext(new String[] { fname, solv, stoi,
-                                    charge, mult, func, basisSet, energy, dip,
-                                    zpe, g298, firstFreq, secFreq, MISSING,
-                                    MISSING, MISSING });
+                    csvWriter.writeNext(new String[] { fname, solv, stoi,
+                            charge, mult, func, basisSet, energy, dip, zpe,
+                            g298, firstFreq, secFreq, MISSING, MISSING,
+                            MISSING, MISSING });
 
                 } else {
                     final String phi = valOrMissing(cpCoords.getPhi());
                     final String theta = valOrMissing(cpCoords.getTheta());
                     final String q = valOrMissing(cpCoords.getQ());
+                    final String pucker = valOrMissing(cpCoords.getPucker());
                     csvWriter.writeNext(new String[] { fname, solv, stoi,
                             charge, mult, func, basisSet, energy, dip, zpe,
-                            g298, firstFreq, secFreq, phi, theta, q });
+                            g298, firstFreq, secFreq, phi, theta, q, pucker });
                 }
             } else {
                 csvWriter.writeNext(new String[] { fname, solv, stoi, charge,

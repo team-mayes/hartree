@@ -75,7 +75,7 @@ public class GlucoseRingCalculation implements Calculation {
                 ring.add(oxy);
                 final List<Atom> carbonCopy = new ArrayList<Atom>(carbs);
                 boolean isFound = true;
-                while (isFound) {
+                while (isFound && (ring.size() < ringSize)) {
                     isFound = findNextCarbon(carbonCopy, ring);
                 }
                 if (ring.size() != ringSize) {

@@ -2,7 +2,6 @@ package org.cmayes.hartree.loader.gaussian;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRReaderStream;
@@ -94,7 +93,7 @@ public class SnapshotLoader extends BaseGaussianLoader implements
                 handleAtom(curNode.getText(), curAtom, atomColCount);
                 atomColCount++;
                 if (atomColCount % ATOM_COL_COUNT == 0) {
-                    result.getAtoms().add(curAtom);
+                    result.addAtom(curAtom);
                     curAtom = new DefaultAtom();
                 }
                 break;
@@ -135,13 +134,6 @@ public class SnapshotLoader extends BaseGaussianLoader implements
             }
         }
 
-        if (result.getAtomCount() != null && result.getAtoms() != null
-                && result.getAtoms().size() > result.getAtomCount()) {
-            logger.debug("Atom count: " + result.getAtomCount());
-            final int atomSize = result.getAtoms().size();
-            result.setAtoms(new ArrayList<Atom>(result.getAtoms().subList(
-                    atomSize - result.getAtomCount(), atomSize)));
-        }
         return result;
     }
 

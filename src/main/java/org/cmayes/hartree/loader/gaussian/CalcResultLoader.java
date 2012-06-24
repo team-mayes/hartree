@@ -112,7 +112,7 @@ public class CalcResultLoader extends BaseGaussianLoader implements
                 handleAtom(curNode.getText(), curAtom, atomColCount);
                 atomColCount++;
                 if (atomColCount % ATOM_COL_COUNT == 0) {
-                    result.getAtoms().add(curAtom);
+                    result.addAtom(curAtom);
                     curAtom = new DefaultAtom();
                 }
                 break;

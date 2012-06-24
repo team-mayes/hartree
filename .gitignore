@@ -16,3 +16,4 @@ antlr-generator/
 *.tokens
 bin/
 out/
+hartree.log
