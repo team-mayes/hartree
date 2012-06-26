@@ -24,14 +24,17 @@ import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
 import org.cmayes.hartree.proc.FileProcessor;
 import org.cmayes.hartree.proc.basic.AccumulatingFileProcessor;
 import org.cmayes.hartree.proc.basic.BasicFileProcessor;
+import org.cmayes.hartree.proc.basic.BasicInputFileHandler;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.MediaType;
+import com.cmayes.common.file.ExtensionFilter;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
@@ -55,35 +58,16 @@ public class Main<T> {
     @Argument
     private final List<String> arguments = new ArrayList<String>();
     private File file;
-    private File directory;
+    private File inDir;
     private File outDir;
     private FileProcessor<T> testProcessor;
     private HandlingType hType;
-
-    static {
-        // Assign handlers
-        HAND_TYPE_MAP.put(HandlingType.NORMAL_MODE, new NormalModeLoader());
-        HAND_TYPE_MAP.put(HandlingType.SNAPSHOT, new SnapshotLoader());
-        HAND_TYPE_MAP.put(HandlingType.CPSNAPSHOT, new SnapshotLoader());
-        HAND_TYPE_MAP.put(HandlingType.THERM, new CalcResultLoader());
-        // Set default media types for value classes.
-        DEF_MEDIA.put(HandlingType.NORMAL_MODE, MediaType.TEXT);
-        DEF_MEDIA.put(HandlingType.SNAPSHOT, MediaType.CSV);
-        DEF_MEDIA.put(HandlingType.CPSNAPSHOT, MediaType.CSV);
-        // Establish displays for a combo of value object and media type
-        DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE, MediaType.TEXT,
-                new NormalModeTextDisplay());
-        DISP_TYPE_TBL.put(HandlingType.SNAPSHOT, MediaType.CSV,
-                new SnapshotCsvDisplay());
-        DISP_TYPE_TBL.put(HandlingType.CPSNAPSHOT, MediaType.CSV,
-                new SnapshotCsvDisplay());
-        // Add calcs
-        final ArrayList<Calculation> cpSnapCalcs = new ArrayList<Calculation>();
-        cpSnapCalcs.add(new GlucoseRingCalculation());
-        cpSnapCalcs.add(new CremerPopleCalculation());
-        cpSnapCalcs.add(new CremerPoplePuckeringCalculation());
-        CALC_MAP.put(HandlingType.CPSNAPSHOT, cpSnapCalcs);
-    }
+    @Option(
+            metaVar = "EXTS",
+            aliases = { "-e" },
+            name = "--extensions",
+            usage = "Extensions to include in input directory searches (.log and .out by default)")
+    private String[] inputExtensions = new String[] { ".log", ".out" };
 
     /**
      * Returns the specified file location.
@@ -100,7 +84,7 @@ public class Main<T> {
      * @return The specified directory location.
      */
     File getDirectory() {
-        return directory;
+        return inDir;
     }
 
     /**
@@ -111,7 +95,8 @@ public class Main<T> {
      * @throws IllegalArgumentException
      *             If the file is not readable.
      */
-    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file", usage = "The file to process")
+    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file",
+            usage = "The file to process")
     public void setFile(final File theFile) {
         if (theFile.canRead()) {
             this.file = theFile;
@@ -127,10 +112,11 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory", usage = "The base directory of the files to process")
+    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory",
+            usage = "The base directory of the files to process")
     public void setDirectory(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
-            this.directory = dir;
+            this.inDir = dir;
         } else {
             throw new IllegalArgumentException(String.format(
                     "Directory %s is not readable or is not a directory",
@@ -152,7 +138,8 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir", usage = "The output directory for result files")
+    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir",
+            usage = "The output directory for result files")
     public void setOutDir(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.outDir = dir;
@@ -223,8 +210,8 @@ public class Main<T> {
         try {
             if (file != null) {
                 proc.display(file);
-            } else if (directory != null) {
-                proc.displayAll(directory);
+            } else if (inDir != null) {
+                proc.displayAll(inDir);
             } else {
                 throw new CmdLineException(parser,
                         "No input file or directory specified.");
@@ -249,8 +236,10 @@ public class Main<T> {
             return new AccumulatingFileProcessor<T>(hType, getLoader(),
                     getDisplay(), getCalcs(), outDir);
         }
+
         return new BasicFileProcessor<T>(hType, getLoader(), getDisplay(),
-                getCalcs(), outDir);
+                getCalcs(), new BasicInputFileHandler(new ExtensionFilter(
+                        inputExtensions), inDir, outDir));
     }
 
     /**
@@ -378,5 +367,33 @@ public class Main<T> {
      */
     public void setTestFileProcessor(final FileProcessor<T> testProc) {
         this.testProcessor = testProc;
+    }
+
+    static {
+        // Assign handlers
+        HAND_TYPE_MAP.put(HandlingType.NORMAL_MODE, new NormalModeLoader());
+        HAND_TYPE_MAP.put(HandlingType.SNAPSHOT, new SnapshotLoader());
+        HAND_TYPE_MAP.put(HandlingType.CPSNAPSHOT, new SnapshotLoader());
+        HAND_TYPE_MAP.put(HandlingType.THERM, new CalcResultLoader());
+        // Set default media types for value classes.
+        DEF_MEDIA.put(HandlingType.NORMAL_MODE, MediaType.TEXT);
+        DEF_MEDIA.put(HandlingType.SNAPSHOT, MediaType.CSV);
+        DEF_MEDIA.put(HandlingType.CPSNAPSHOT, MediaType.CSV);
+        // Establish displays for a combo of value object and media type
+        DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE, MediaType.TEXT,
+                new NormalModeTextDisplay());
+        DISP_TYPE_TBL.put(HandlingType.SNAPSHOT, MediaType.CSV,
+                new SnapshotCsvDisplay());
+        DISP_TYPE_TBL.put(HandlingType.CPSNAPSHOT, MediaType.CSV,
+                new SnapshotCsvDisplay());
+        // Add calcs
+        final ArrayList<Calculation> cpSnapCalcs = new ArrayList<Calculation>();
+        cpSnapCalcs.add(new GlucoseRingCalculation());
+        cpSnapCalcs.add(new CremerPopleCalculation());
+        cpSnapCalcs.add(new CremerPoplePuckeringCalculation());
+        CALC_MAP.put(HandlingType.CPSNAPSHOT, cpSnapCalcs);
+        // Register string array handler for CLI options.
+        CmdLineParser.registerHandler(String[].class,
+                StringArrayOptionHandler.class);
     }
 }

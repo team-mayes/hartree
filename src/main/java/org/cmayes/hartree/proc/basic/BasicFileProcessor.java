@@ -5,10 +5,7 @@ import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.io.Writer;
 import java.util.List;
 
@@ -17,6 +14,7 @@ import org.cmayes.hartree.calc.Calculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.proc.FileProcessor;
+import org.cmayes.hartree.proc.InputFileHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +35,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
     private final Display<T> displayer;
     private final List<Calculation> calculations;
     private final HandlingType handlingType;
-    private File outDir;
-    private PrintStream sysOut = System.out;
+    private final InputFileHandler inputFileHandler;
 
     /**
      * Creates a processor that will use the given parser and display.
@@ -54,66 +51,26 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      */
     public BasicFileProcessor(final HandlingType handType,
             final Loader<T> theParser, final Display<T> theDisp,
-            final List<Calculation> calcs) {
+            final List<Calculation> calcs, InputFileHandler handler) {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
         this.calculations = asNotNull(calcs, "Calculations cannot be null.");
-    }
-
-    /**
-     * Creates a processor that will use the given parser and display and will
-     * write into the given output directory if the value is not null.
-     * 
-     * @param handType
-     *            The handling type.
-     * @param theParser
-     *            The parser to use.
-     * @param theDisp
-     *            The display to use.
-     * @param calcs
-     *            The calculations to use.
-     * @param out
-     *            The output directory (may be null to indicate no output
-     *            directory).
-     */
-    public BasicFileProcessor(final HandlingType handType,
-            final Loader<T> theParser, final Display<T> theDisp,
-            final List<Calculation> calcs, final File out) {
-        this.handlingType = asNotNull(handType, "Handler type is null");
-        this.parser = asNotNull(theParser, "Parser is null");
-        this.displayer = asNotNull(theDisp, "Display is null");
-        this.calculations = asNotNull(calcs, "Calculations cannot be null.");
-        this.outDir = out;
+        this.inputFileHandler = asNotNull(handler, "Input file handler is null");
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.proc.FileProcessor#display(java.io.File)
      */
     public void display(final File processMe) {
-        Writer writer;
-        if (outDir == null) {
-            writer = new OutputStreamWriter(sysOut);
-        } else {
-            final File outFile = new File(String.format("%s%s%s-%s.%s",
-                    outDir.getAbsolutePath(), File.separator,
-                    processMe.getName(), handlingType.getCommandName(),
-                    displayer.getMediaType().getPrimaryExtension()));
-            try {
-                if (!outFile.exists() && (!outFile.createNewFile())) {
-                    logger.warn("Could not create out file "
-                            + outFile.getAbsolutePath());
-                }
-                writer = new FileWriter(outFile);
-            } catch (final IOException e) {
-                throw new EnvironmentException("Problems creating out file "
-                        + outFile, e);
-            }
-        }
+        Writer writer = null;
+
         FileReader fileReader = null;
         try {
+            writer = inputFileHandler.createOutWriter(processMe, handlingType
+                    .getCommandName(), displayer.getMediaType()
+                    .getPrimaryExtension());
             fileReader = new FileReader(processMe);
             T procResult = applyCalcs(parser.load(fileReader,
                     processMe.getName()));
@@ -166,39 +123,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      */
     @Override
     public void displayAll(final File processDir) {
-        if (processDir.isDirectory()) {
-            final String[] children = processDir.list();
-            for (int i = 0; i < children.length; i++) {
-                displayAll(new File(processDir, children[i]));
-            }
-        } else {
-            display(processDir);
-        }
-    }
-
-    /**
-     * @return the outDir
-     */
-    public File getOutDir() {
-        return outDir;
-    }
-
-    /**
-     * @param dir
-     *            the outDir to set
-     */
-    public void setOutDir(final File dir) {
-        this.outDir = dir;
-    }
-
-    /**
-     * Sets the value for the standard out target (mainly intended for testing).
-     * 
-     * @param sysOut
-     *            The stream to use.
-     */
-    public void setSysOut(PrintStream sysOut) {
-        this.sysOut = asNotNull(sysOut, "Print stream is null");
+        inputFileHandler.handle(processDir, this);
     }
 
     /**

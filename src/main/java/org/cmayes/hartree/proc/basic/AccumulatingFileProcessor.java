@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -38,6 +39,7 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
     private final HandlingType handlingType;
     private File outDir;
     private Writer accWriter;
+    private FilenameFilter extensionFilter;
 
     /**
      * Creates a processor that will use the given parser and display.

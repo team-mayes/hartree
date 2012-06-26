@@ -11,7 +11,6 @@ import java.io.File;
  *            The type of data produced by the file processor.
  */
 public interface FileProcessor<T> {
-
     /**
      * Process a single file.
      * 
