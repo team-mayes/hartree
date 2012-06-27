@@ -21,7 +21,7 @@ import com.cmayes.common.file.AcceptAllFilter;
 import com.cmayes.common.file.ExtensionFilter;
 
 /**
- * 
+ * Handles file type filtering and output file naming.
  * 
  * @author cmayes
  */
@@ -85,7 +85,7 @@ public class BasicInputFileHandler implements InputFileHandler {
 
         File outFile = new File(tgtOutDir, String.format("%s-%s.%s",
                 processFileName(inFile.getName()), cmdName, outExt));
- 
+
         try {
             if (outFile.exists() || !outFile.createNewFile()) {
                 logger.warn("Could not create out file "
