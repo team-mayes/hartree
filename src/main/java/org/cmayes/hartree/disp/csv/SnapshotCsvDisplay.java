@@ -32,6 +32,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             "G298 (Hartrees)", "Freq 1", "Freq 2", "phi", "theta", "Q",
             "Pucker" };
     private boolean first = true;
+    private volatile boolean writeMulti = false;
 
     /**
      * {@inheritDoc}
@@ -187,5 +188,25 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
     @Override
     public void finish(final Writer writer) {
         this.first = true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.cmayes.hartree.disp.Display#isWriteMulti()
+     */
+    @Override
+    public boolean isWriteMulti() {
+        return this.writeMulti;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.cmayes.hartree.disp.Display#setWriteMulti(boolean)
+     */
+    @Override
+    public void setWriteMulti(boolean wMulti) {
+        this.writeMulti = wMulti;
     }
 }

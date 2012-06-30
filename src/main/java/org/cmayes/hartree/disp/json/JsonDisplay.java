@@ -8,11 +8,26 @@ import org.cmayes.hartree.disp.Display;
 import com.cmayes.common.MediaType;
 import com.cmayes.common.exception.EnvironmentException;
 import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class JsonDisplay implements Display<Object> {
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
+
+    private boolean first = true;
+
+    private volatile boolean writeMulti = false;
+
+    public JsonDisplay() {
+        objectMapper = new ObjectMapper();
+        // We close our writers in the FileProcessors.
+        objectMapper.getJsonFactory().disable(
+                JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        // Enable pretty printing.
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
     /**
      * {@inheritDoc}
@@ -20,9 +35,16 @@ public class JsonDisplay implements Display<Object> {
      * @see org.cmayes.hartree.disp.Display#finish(java.io.Writer)
      */
     @Override
-    public void finish(Writer writer) {
-        // TODO Auto-generated method stub
-
+    public void finish(final Writer writer) {
+        if (writeMulti) {
+            try {
+                writer.write("]");
+            } catch (IOException e) {
+                throw new EnvironmentException(
+                        "Problems writing JSON closing value ", e);
+            }
+        }
+        first = true;
     }
 
     /**
@@ -32,8 +54,16 @@ public class JsonDisplay implements Display<Object> {
      *      java.lang.Object)
      */
     @Override
-    public void write(Writer writer, Object valToDisp) {
+    public void write(final Writer writer, final Object valToDisp) {
         try {
+            if (first) {
+                writer.write("[");
+                first = false;
+            } else {
+                if (writeMulti) {
+                    writer.write(",");
+                }
+            }
             objectMapper.writeValue(writer, valToDisp);
         } catch (JsonGenerationException e) {
             throw new EnvironmentException("Problems writing JSON for value "
@@ -57,4 +87,22 @@ public class JsonDisplay implements Display<Object> {
         return MediaType.JSON;
     }
 
+    /**
+     * Returns whether this display expects multiple objects to be written.
+     * 
+     * @return Whether this display expects multiple objects to be written.
+     */
+    public boolean isWriteMulti() {
+        return writeMulti;
+    }
+
+    /**
+     * Sets whether this display expects multiple objects to be written.
+     * 
+     * @param writeMulti
+     *            Whether to expect multiple objects to be written.
+     */
+    public void setWriteMulti(boolean writeMulti) {
+        this.writeMulti = writeMulti;
+    }
 }

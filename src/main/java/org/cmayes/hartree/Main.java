@@ -16,6 +16,7 @@ import org.cmayes.hartree.calc.impl.CremerPoplePuckeringCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseRingCalculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
+import org.cmayes.hartree.disp.json.JsonDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.gaussian.CalcResultLoader;
@@ -62,6 +63,9 @@ public class Main<T> {
     private File outDir;
     private FileProcessor<T> testProcessor;
     private HandlingType hType;
+    @Option(metaVar = "MEDIA", aliases = { "-m" }, name = "--mediatype",
+            usage = "The media type to use instead of the default.")
+    private MediaType targetMedia;
     @Option(
             metaVar = "EXTS",
             aliases = { "-e" },
@@ -271,6 +275,9 @@ public class Main<T> {
     @SuppressWarnings("unchecked")
     Display<T> getDisplay() {
         final MediaType tgtMediaType = getTargetMediaType();
+        if (MediaType.JSON.equals(tgtMediaType)) {
+            return (Display<T>) (Object) new JsonDisplay();
+        }
         return (Display<T>) asNotNull(DISP_TYPE_TBL.get(hType, tgtMediaType),
                 String.format("No display for media %s on type %s",
                         getTargetMediaType(), hType.name()));
@@ -286,9 +293,9 @@ public class Main<T> {
      *             type are set.
      */
     MediaType getTargetMediaType() {
-        // if (targetMedia != null) {
-        // return targetMedia;
-        // }
+        if (targetMedia != null) {
+            return targetMedia;
+        }
         final MediaType mediaType = DEF_MEDIA.get(hType);
         if (mediaType == null) {
             throw new IllegalStateException(

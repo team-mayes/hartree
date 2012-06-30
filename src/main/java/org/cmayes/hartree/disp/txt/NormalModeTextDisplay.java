@@ -24,6 +24,28 @@ import com.google.common.base.Strings;
  */
 public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
     private static final MediaType TYPE = MediaType.TEXT;
+    
+    private volatile boolean writeMulti = false;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.cmayes.hartree.disp.Display#isWriteMulti()
+     */
+    @Override
+    public boolean isWriteMulti() {
+        return this.writeMulti;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.cmayes.hartree.disp.Display#setWriteMulti(boolean)
+     */
+    @Override
+    public void setWriteMulti(boolean wMulti) {
+        this.writeMulti = wMulti;
+    }
 
     /**
      * Returns the media type of the generated display.

@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -39,7 +38,6 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
     private final HandlingType handlingType;
     private File outDir;
     private Writer accWriter;
-    private FilenameFilter extensionFilter;
 
     /**
      * Creates a processor that will use the given parser and display.
@@ -59,6 +57,7 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
+        this.displayer.setWriteMulti(true);
         accWriter = new OutputStreamWriter(System.out);
         this.calculations = asNotNull(calcs, "Calculations cannot be null.");
     }
@@ -85,6 +84,7 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
+        this.displayer.setWriteMulti(true);
         this.calculations = asNotNull(calcs, "Calculations cannot be null.");
         this.outDir = out;
         if (outDir == null) {
@@ -125,11 +125,13 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
     }
 
     /**
-     * 
+     * Applies the configured calculations.
      * 
      * @param rawResult
-     * @return
+     *            The result to process.
+     * @return The processed result.
      */
+    @SuppressWarnings("unchecked")
     private T applyCalcs(T rawResult) {
         T procResult = rawResult;
         for (Calculation curCalc : calculations) {
@@ -177,6 +179,7 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
     @Override
     public void finish() {
         try {
+            displayer.finish(this.accWriter);
             this.accWriter.close();
         } catch (IOException e) {
             logger.warn("Problems closing the accumulator", e);

@@ -38,4 +38,19 @@ public interface Display<T> {
      * @return The media type of the generated display.
      */
     MediaType getMediaType();
+    
+    /**
+     * Returns whether this display expects multiple objects to be written.
+     * 
+     * @return Whether this display expects multiple objects to be written.
+     */
+    public boolean isWriteMulti();
+
+    /**
+     * Sets whether this display expects multiple objects to be written.
+     * 
+     * @param writeMulti
+     *            Whether to expect multiple objects to be written.
+     */
+    public void setWriteMulti(boolean writeMulti);
 }
