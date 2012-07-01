@@ -13,7 +13,7 @@ import com.cmayes.common.model.Atom;
  * 
  * @author cmayes
  */
-public interface BaseResult {
+public interface BaseResult extends FileNameResult {
     /**
      * Returns the multiplicity of the molecules.
      * 
@@ -161,21 +161,6 @@ public interface BaseResult {
      *             If addMe is null.
      */
     public void addAtom(Atom addMe);
-
-    /**
-     * Returns the file name for this calculation (if applicable).
-     * 
-     * @return The file name for this calculation.
-     */
-    String getFileName();
-
-    /**
-     * Sets the file name for this calculation.
-     * 
-     * @param fileName
-     *            The file name for this calculation.
-     */
-    void setFileName(String fileName);
 
     /**
      * @return the functional

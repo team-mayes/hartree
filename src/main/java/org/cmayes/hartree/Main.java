@@ -55,6 +55,8 @@ public class Main<T> {
     private static final Table<HandlingType, MediaType, Display<?>> DISP_TYPE_TBL = HashBasedTable
             .create();
     private static final Map<HandlingType, MediaType> DEF_MEDIA = new HashMap<HandlingType, MediaType>();
+    private static final Map<HandlingType, ProcType> DEF_PROC = new HashMap<HandlingType, ProcType>();
+
     /** Receives leftover command line parameters. */
     @Argument
     private final List<String> arguments = new ArrayList<String>();
@@ -66,6 +68,9 @@ public class Main<T> {
     @Option(metaVar = "MEDIA", aliases = { "-m" }, name = "--mediatype",
             usage = "The media type to use instead of the default.")
     private MediaType targetMedia;
+    @Option(metaVar = "PROC", aliases = { "-p" }, name = "--proctype",
+            usage = "The processor type to use instead of the default.")
+    private ProcType targetProc;
     @Option(
             metaVar = "EXTS",
             aliases = { "-e" },
@@ -234,16 +239,26 @@ public class Main<T> {
         if (testProcessor != null) {
             return testProcessor;
         }
-        // TODO: Make a map
-        if (HandlingType.SNAPSHOT.equals(hType)
-                || HandlingType.CPSNAPSHOT.equals(hType)) {
-            return new AccumulatingFileProcessor<T>(hType, getLoader(),
-                    getDisplay(), getCalcs(), outDir);
+        ProcType proc = DEF_PROC.get(hType);
+        if (targetProc != null) {
+            proc = targetProc;
+        }
+        if (proc == null) {
+            throw new IllegalStateException(
+                    String.format(
+                            "No target processor specified and no default configured for type '%s'",
+                            hType));
         }
 
-        return new BasicFileProcessor<T>(hType, getLoader(), getDisplay(),
-                getCalcs(), new BasicInputFileHandler(new ExtensionFilter(
-                        inputExtensions), inDir, outDir));
+        if (ProcType.ACCUM.equals(proc)) {
+            return new AccumulatingFileProcessor<T>(hType, getLoader(),
+                    getDisplay(), getCalcs(), outDir);
+        } else if (ProcType.BASIC.equals(proc)) {
+            return new BasicFileProcessor<T>(hType, getLoader(), getDisplay(),
+                    getCalcs(), new BasicInputFileHandler(new ExtensionFilter(
+                            inputExtensions), inDir, outDir));
+        }
+        throw new IllegalArgumentException("Unhandled processor type " + proc);
     }
 
     /**
@@ -386,6 +401,13 @@ public class Main<T> {
         DEF_MEDIA.put(HandlingType.NORMAL_MODE, MediaType.TEXT);
         DEF_MEDIA.put(HandlingType.SNAPSHOT, MediaType.CSV);
         DEF_MEDIA.put(HandlingType.CPSNAPSHOT, MediaType.CSV);
+        // Assign processors
+        DEF_PROC.put(HandlingType.NORMAL_MODE, ProcType.BASIC);
+        DEF_PROC.put(HandlingType.SNAPSHOT, ProcType.ACCUM);
+        DEF_PROC.put(HandlingType.CPSNAPSHOT, ProcType.ACCUM);
+        HAND_TYPE_MAP.put(HandlingType.SNAPSHOT, new SnapshotLoader());
+        HAND_TYPE_MAP.put(HandlingType.CPSNAPSHOT, new SnapshotLoader());
+        HAND_TYPE_MAP.put(HandlingType.THERM, new CalcResultLoader());
         // Establish displays for a combo of value object and media type
         DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE, MediaType.TEXT,
                 new NormalModeTextDisplay());
@@ -402,5 +424,10 @@ public class Main<T> {
         // Register string array handler for CLI options.
         CmdLineParser.registerHandler(String[].class,
                 StringArrayOptionHandler.class);
+    }
+
+    /** The processor type to use. */
+    private static enum ProcType {
+        BASIC, ACCUM;
     }
 }

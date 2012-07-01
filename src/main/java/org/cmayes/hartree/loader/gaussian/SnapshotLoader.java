@@ -41,18 +41,6 @@ public class SnapshotLoader extends BaseGaussianLoader implements
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader,
-     *      java.lang.String)
-     */
-    public BaseResult load(final Reader reader, final String fileName) {
-        final BaseResult result = extractSnapshotData(extractAst(reader));
-        result.setFileName(fileName);
-        return result;
-    }
-
-    /**
      * Fills a {@link CalculationResult} instance with data from the AST.
      * 
      * @param ast

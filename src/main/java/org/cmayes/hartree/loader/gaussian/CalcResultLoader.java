@@ -45,18 +45,6 @@ public class CalcResultLoader extends BaseGaussianLoader implements
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader,
-     *      java.lang.String)
-     */
-    public BaseResult load(final Reader reader, final String fileName) {
-        final BaseResult result = extractCalcThermData(extractAst(reader));
-        result.setFileName(fileName);
-        return result;
-    }
-
-    /**
      * Fills a {@link BaseResult} instance with data from the AST.
      * 
      * @param ast
