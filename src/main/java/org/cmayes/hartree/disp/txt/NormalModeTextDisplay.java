@@ -24,7 +24,6 @@ import com.google.common.base.Strings;
  */
 public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
     private static final MediaType TYPE = MediaType.TEXT;
-    
     private volatile boolean writeMulti = false;
 
     /**

@@ -2,6 +2,7 @@ package org.cmayes.hartree;
 
 import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 
+import org.cmayes.hartree.model.LowestEnergyMapper;
 import org.cmayes.hartree.model.NormalModeCalculation;
 import org.cmayes.hartree.model.def.DefaultBaseResult;
 
@@ -18,7 +19,10 @@ public enum HandlingType {
             "Provides a snapshot of calculation data including Cremer-Pople coordinates",
             DefaultBaseResult.class), TEST("test",
             "Test mode (no handling performed)", Object.class), THERM("therm",
-            "Handles thermo calculations", DefaultBaseResult.class);
+            "Handles thermo calculations", DefaultBaseResult.class), LOWEN(
+            "lowen",
+            "creates Gaussian input files for the lowest energy in the input files",
+            LowestEnergyMapper.class);
 
     private final String commandName;
     private final String description;

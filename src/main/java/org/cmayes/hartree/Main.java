@@ -17,9 +17,11 @@ import org.cmayes.hartree.calc.impl.GlucoseRingCalculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
 import org.cmayes.hartree.disp.json.JsonDisplay;
+import org.cmayes.hartree.disp.txt.LowestEnergyTemplateDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.gaussian.CalcResultLoader;
+import org.cmayes.hartree.loader.gaussian.LowestEnergyLoader;
 import org.cmayes.hartree.loader.gaussian.NormalModeLoader;
 import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
 import org.cmayes.hartree.proc.FileProcessor;
@@ -65,17 +67,11 @@ public class Main<T> {
     private File outDir;
     private FileProcessor<T> testProcessor;
     private HandlingType hType;
-    @Option(metaVar = "MEDIA", aliases = { "-m" }, name = "--mediatype",
-            usage = "The media type to use instead of the default.")
+    @Option(metaVar = "MEDIA", aliases = { "-m" }, name = "--mediatype", usage = "The media type to use instead of the default.")
     private MediaType targetMedia;
-    @Option(metaVar = "PROC", aliases = { "-p" }, name = "--proctype",
-            usage = "The processor type to use instead of the default.")
+    @Option(metaVar = "PROC", aliases = { "-p" }, name = "--proctype", usage = "The processor type to use instead of the default.")
     private ProcType targetProc;
-    @Option(
-            metaVar = "EXTS",
-            aliases = { "-e" },
-            name = "--extensions",
-            usage = "Extensions to include in input directory searches (.log and .out by default)")
+    @Option(metaVar = "EXTS", aliases = { "-e" }, name = "--extensions", usage = "Extensions to include in input directory searches (.log and .out by default)")
     private String[] inputExtensions = new String[] { ".log", ".out" };
 
     /**
@@ -104,8 +100,7 @@ public class Main<T> {
      * @throws IllegalArgumentException
      *             If the file is not readable.
      */
-    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file",
-            usage = "The file to process")
+    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file", usage = "The file to process")
     public void setFile(final File theFile) {
         if (theFile.canRead()) {
             this.file = theFile;
@@ -121,8 +116,7 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory",
-            usage = "The base directory of the files to process")
+    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory", usage = "The base directory of the files to process")
     public void setDirectory(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.inDir = dir;
@@ -147,8 +141,7 @@ public class Main<T> {
      * @param dir
      *            The base directory to start from.
      */
-    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir",
-            usage = "The output directory for result files")
+    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir", usage = "The output directory for result files")
     public void setOutDir(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.outDir = dir;
@@ -397,17 +390,17 @@ public class Main<T> {
         HAND_TYPE_MAP.put(HandlingType.SNAPSHOT, new SnapshotLoader());
         HAND_TYPE_MAP.put(HandlingType.CPSNAPSHOT, new SnapshotLoader());
         HAND_TYPE_MAP.put(HandlingType.THERM, new CalcResultLoader());
+        HAND_TYPE_MAP.put(HandlingType.LOWEN, new LowestEnergyLoader());
         // Set default media types for value classes.
         DEF_MEDIA.put(HandlingType.NORMAL_MODE, MediaType.TEXT);
         DEF_MEDIA.put(HandlingType.SNAPSHOT, MediaType.CSV);
         DEF_MEDIA.put(HandlingType.CPSNAPSHOT, MediaType.CSV);
+        DEF_MEDIA.put(HandlingType.LOWEN, MediaType.TEXT);
         // Assign processors
         DEF_PROC.put(HandlingType.NORMAL_MODE, ProcType.BASIC);
+        DEF_PROC.put(HandlingType.LOWEN, ProcType.BASIC);
         DEF_PROC.put(HandlingType.SNAPSHOT, ProcType.ACCUM);
         DEF_PROC.put(HandlingType.CPSNAPSHOT, ProcType.ACCUM);
-        HAND_TYPE_MAP.put(HandlingType.SNAPSHOT, new SnapshotLoader());
-        HAND_TYPE_MAP.put(HandlingType.CPSNAPSHOT, new SnapshotLoader());
-        HAND_TYPE_MAP.put(HandlingType.THERM, new CalcResultLoader());
         // Establish displays for a combo of value object and media type
         DISP_TYPE_TBL.put(HandlingType.NORMAL_MODE, MediaType.TEXT,
                 new NormalModeTextDisplay());
@@ -415,6 +408,8 @@ public class Main<T> {
                 new SnapshotCsvDisplay());
         DISP_TYPE_TBL.put(HandlingType.CPSNAPSHOT, MediaType.CSV,
                 new SnapshotCsvDisplay());
+        DISP_TYPE_TBL.put(HandlingType.LOWEN, MediaType.TEXT,
+                new LowestEnergyTemplateDisplay());
         // Add calcs
         final ArrayList<Calculation> cpSnapCalcs = new ArrayList<Calculation>();
         cpSnapCalcs.add(new GlucoseRingCalculation());
