@@ -20,4 +20,14 @@ public interface GlucoseRingResult {
      *            the glucoseRing to set
      */
     void setGlucoseRing(final List<Atom> ring);
+
+    /**
+     * @return The distance between the oxygen and the first carbon.
+     */
+    double getFirstCarbonDistance();
+
+    /**
+     * @return The distance between the oxygen and the last carbon.
+     */
+    double getLastCarbonDistance();
 }

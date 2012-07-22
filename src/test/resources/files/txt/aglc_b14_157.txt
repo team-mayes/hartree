@@ -1,4 +1,4 @@
-%chk=/scratch/hmayes/aglucose/aglc_b14_157.chk
+%chk=/scratch/hmayes/aglucose/XXXXXX.chk
 %mem=10GB
 %nproc=8
 # opt(modredundant) m062x/6-31G(d) scf=xqc nosymm
@@ -30,7 +30,6 @@ H   -15.616281   -2.454297   -25.541027
 H   -16.373025   -0.854895   -25.590941
 O   -17.280700   -2.418105   -26.636120
 H   -17.799199   -1.766366   -27.131743
-
 
 D 7 1 8 12 F
 D 1 8 12 16 F

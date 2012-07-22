@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.cmayes.hartree.calc.Calculation;
 import org.cmayes.hartree.model.BaseResult;
+import org.cmayes.hartree.model.GlucoseRingResult;
 import org.cmayes.hartree.model.def.CpCalculationSnapshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class GlucoseRingCalculation implements Calculation {
     @Override
     public Object calculate(final Object rawInput) {
         if (rawInput instanceof BaseResult) {
-            final CpCalculationSnapshot cpSnap = new CpCalculationSnapshot(
+            final GlucoseRingResult cpSnap = new CpCalculationSnapshot(
                     (BaseResult) rawInput);
             final List<Atom> atoms = ((BaseResult) rawInput).getAtoms();
             if (atoms == null) {

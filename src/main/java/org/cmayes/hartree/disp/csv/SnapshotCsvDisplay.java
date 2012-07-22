@@ -30,7 +30,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
             "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
             "G298 (Hartrees)", "Freq 1", "Freq 2", "phi", "theta", "Q",
-            "Pucker" };
+            "Pucker", "FirstCarb (A)", "LastCarb (A)" };
     private boolean first = true;
     private volatile boolean writeMulti = false;
 
@@ -42,6 +42,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
      */
     @Override
     public void write(final Writer writer, final BaseResult valToDisp) {
+        @SuppressWarnings("resource")
         final CSVWriter csvWriter = new CSVWriter(writer);
         try {
             if (first) {
@@ -73,22 +74,27 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             final String basisSet = valOrMissing(valToDisp.getBasisSet());
             final String g298 = valOrMissing(valToDisp.getGibbs298());
             if (valToDisp instanceof CremerPopleResult) {
-                final CremerPopleCoordinates cpCoords = ((CremerPopleResult) valToDisp)
-                        .getCpCoords();
+                final CremerPopleResult cpResult = (CremerPopleResult) valToDisp;
+                final CremerPopleCoordinates cpCoords = cpResult.getCpCoords();
                 if (cpCoords == null) {
                     csvWriter.writeNext(new String[] { fname, solv, stoi,
                             charge, mult, func, basisSet, energy, dip, zpe,
                             g298, firstFreq, secFreq, MISSING, MISSING,
-                            MISSING, MISSING });
+                            MISSING, MISSING, MISSING, MISSING });
 
                 } else {
                     final String phi = valOrMissing(cpCoords.getPhi());
                     final String theta = valOrMissing(cpCoords.getTheta());
                     final String q = valOrMissing(cpCoords.getQ());
                     final String pucker = valOrMissing(cpCoords.getPucker());
+                    final String firstCarb = valOrMissing(cpResult
+                            .getFirstCarbonDistance());
+                    final String lastCarb = valOrMissing(cpResult
+                            .getFirstCarbonDistance());
                     csvWriter.writeNext(new String[] { fname, solv, stoi,
                             charge, mult, func, basisSet, energy, dip, zpe,
-                            g298, firstFreq, secFreq, phi, theta, q, pucker });
+                            g298, firstFreq, secFreq, phi, theta, q, pucker,
+                            firstCarb, lastCarb });
                 }
             } else {
                 csvWriter.writeNext(new String[] { fname, solv, stoi, charge,
@@ -192,7 +198,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.disp.Display#isWriteMulti()
      */
     @Override
@@ -202,7 +208,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.disp.Display#setWriteMulti(boolean)
      */
     @Override

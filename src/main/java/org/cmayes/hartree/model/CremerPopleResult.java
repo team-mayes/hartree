@@ -7,7 +7,7 @@ import org.cmayes.hartree.model.def.CremerPopleCoordinates;
  * 
  * @author cmayes
  */
-public interface CremerPopleResult {
+public interface CremerPopleResult extends GlucoseRingResult {
     /**
      * @return the cpCoords
      */

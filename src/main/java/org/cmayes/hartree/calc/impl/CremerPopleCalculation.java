@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.cmayes.hartree.calc.Calculation;
+import org.cmayes.hartree.model.GlucoseRingResult;
 import org.cmayes.hartree.model.def.CpCalculationSnapshot;
 import org.cmayes.hartree.model.def.CremerPopleCoordinates;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class CremerPopleCalculation implements Calculation {
         if (rawInput instanceof CpCalculationSnapshot) {
             final CpCalculationSnapshot cpSnap = new CpCalculationSnapshot(
                     (CpCalculationSnapshot) rawInput);
-            final List<Atom> gRing = ((CpCalculationSnapshot) rawInput)
+            final List<Atom> gRing = ((GlucoseRingResult) rawInput)
                     .getGlucoseRing();
             if (gRing == null) {
                 logger.warn(String.format(
