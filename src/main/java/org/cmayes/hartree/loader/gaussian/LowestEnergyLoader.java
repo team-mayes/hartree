@@ -2,6 +2,7 @@ package org.cmayes.hartree.loader.gaussian;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRReaderStream;
@@ -10,8 +11,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.loader.ParseException;
-import org.cmayes.hartree.model.BaseResult;
-import org.cmayes.hartree.model.def.DefaultBaseResult;
+import org.cmayes.hartree.model.LowestEnergyMapper;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotLexer;
 import org.cmayes.hartree.parser.gaussian.antlr.SnapshotParser;
 import org.slf4j.Logger;
@@ -22,12 +22,12 @@ import com.cmayes.common.model.Atom;
 import com.cmayes.common.model.impl.DefaultAtom;
 
 /**
- * Fills a {@link BaseResult} with data parsed from the given reader.
+ * Fills a {@link LowestEnergyMapper} with data parsed from the given reader.
  * 
  * @author cmayes
  */
-public class SnapshotLoader extends BaseGaussianLoader implements
-        Loader<BaseResult> {
+public class LowestEnergyLoader extends BaseGaussianLoader implements
+        Loader<LowestEnergyMapper> {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -36,21 +36,22 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      * 
      * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader)
      */
-    public BaseResult load(final Reader reader) {
+    public LowestEnergyMapper load(final Reader reader) {
         return extractSnapshotData(extractAst(reader));
     }
 
     /**
-     * Fills a {@link BaseResult} instance with data from the AST.
+     * Fills a {@link LowestEnergyMapper} instance with data from the AST.
      * 
      * @param ast
      *            The AST to traverse.
      * @return The filled result instance.
      */
-    private BaseResult extractSnapshotData(final CommonTree ast) {
-        final BaseResult result = new DefaultBaseResult();
+    private LowestEnergyMapper extractSnapshotData(final CommonTree ast) {
+        final LowestEnergyMapper result = new LowestEnergyMapper();
         int atomColCount = 0;
         Atom curAtom = new DefaultAtom();
+        List<Atom> curAtomList = new ArrayList<Atom>();
         @SuppressWarnings("unchecked")
         final List<CommonTree> eventList = ast.getChildren();
         if (eventList == null) {
@@ -61,62 +62,22 @@ public class SnapshotLoader extends BaseGaussianLoader implements
             switch (curNode.getType()) {
             case SnapshotLexer.EOF:
                 break;
-            case SnapshotLexer.CPUTIME:
-                result.getCpuTimes().add(processCpuTime(curNode));
-                break;
-            case SnapshotLexer.TERM:
-                result.getTerminationDates().add(processTermDate(curNode));
-                break;
-            case SnapshotLexer.MULT:
-                result.setMult(toInt(curNode.getText()));
-                break;
-            case SnapshotLexer.FREQVAL:
-                final Double freqVal = toDouble(curNode.getText());
-                if (freqVal != null) {
-                    result.getFrequencyValues().add(freqVal);
-                }
-                break;
             case SnapshotLexer.XYZINT:
             case SnapshotLexer.XYZFLOAT:
                 handleAtom(curNode.getText(), curAtom, atomColCount);
                 atomColCount++;
                 if (atomColCount % ATOM_COL_COUNT == 0) {
-                    result.addAtom(curAtom);
+                    curAtomList.add(curAtom);
                     curAtom = new DefaultAtom();
                 }
                 break;
             case SnapshotLexer.ELECENG:
-                result.setElecEn(toDouble(curNode.getText()));
-                break;
-            case SnapshotLexer.FUNCSET:
-                final String[] funcSetSplit = curNode.getText().split("/");
-                result.setFunctional(funcSetSplit[0]);
-                result.setBasisSet(funcSetSplit[1]);
-                break;
-            case SnapshotLexer.SOLVENT:
-                final String[] solvSplit = curNode.getText().split("=");
-                result.setSolvent(solvSplit[1]);
-                break;
-            case SnapshotLexer.ZPECORR:
-                result.setZpeCorrection(toDouble(curNode.getText()));
-                break;
-            case SnapshotLexer.G298:
-                result.setGibbs298(toDouble(curNode.getText()));
-                break;
-            case SnapshotLexer.CHARGE:
-                result.setCharge(toInt(curNode.getText()));
-                break;
-            case SnapshotLexer.STOI:
-                result.setStoichiometry(curNode.getText());
-                break;
-            case SnapshotLexer.DIPTOT:
-                result.setDipoleMomentTotal(toDouble(curNode.getText()));
-                break;
-            case SnapshotLexer.NATOMS:
-                result.setAtomCount(toInt(curNode.getText()));
+                result.add(toDouble(curNode.getText()), curAtomList);
+                curAtomList = new ArrayList<Atom>();
                 break;
             default:
-                logger.warn(String.format("Unhandled data %s %s",
+                logger.debug(String.format(
+                        "Stuff not used in lowest energy fills %s %s",
                         curNode.getType(), curNode.getText()));
                 break;
             }
