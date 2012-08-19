@@ -22,12 +22,12 @@ public interface GlucoseRingResult {
     void setGlucoseRing(final List<Atom> ring);
 
     /**
-     * @return The distance between the oxygen and the first carbon.
+     * @return the carbonDistances
      */
-    double getFirstCarbonDistance();
+    List<Double> getCarbonDistances();
 
     /**
-     * @return The distance between the oxygen and the last carbon.
+     * @return the oxygenDistances
      */
-    double getLastCarbonDistance();
+    List<Double> getOxygenDistances();
 }

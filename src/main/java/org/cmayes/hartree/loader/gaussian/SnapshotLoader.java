@@ -52,7 +52,7 @@ public class SnapshotLoader extends BaseGaussianLoader implements
      */
     private BaseResult extractSnapshotData(final String srcName,
             final CommonTree ast) {
-        final BaseResult result = new DefaultBaseResult();
+        final BaseResult result = new DefaultBaseResult(srcName);
         int atomColCount = 0;
         Atom curAtom = new DefaultAtom();
         @SuppressWarnings("unchecked")

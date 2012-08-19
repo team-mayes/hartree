@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class TestSummaryLoader {
+    private static final double ERR_MARGIN = .01;
     /** Logger. */
     private static final Logger LOGGER = LoggerFactory
             .getLogger(TestSummaryLoader.class);
@@ -70,7 +71,7 @@ public class TestSummaryLoader {
      */
     @Test
     public void testElecEn() throws Exception {
-        assertThat(calc1.getElecEn(), closeTo(-849.236562278, .01));
+        assertThat(calc1.getElecEn(), closeTo(-849.236562278, ERR_MARGIN));
     }
 
     /**
@@ -81,7 +82,7 @@ public class TestSummaryLoader {
      */
     @Test
     public void testZpeCorr() throws Exception {
-        assertThat(calc1.getZpeCorrection(), closeTo(0.200499, .01));
+        assertThat(calc1.getZpeCorrection(), closeTo(0.200499, ERR_MARGIN));
     }
 
     /**
@@ -92,8 +93,8 @@ public class TestSummaryLoader {
      */
     @Test
     public void testFreqVals() throws Exception {
-        assertThat(calc1.getFrequencyValues().get(0), closeTo(60.7784, .01));
-        assertThat(calc1.getFrequencyValues().get(1), closeTo(90.3398, .01));
+        assertThat(calc1.getFrequencyValues().get(0), closeTo(60.7784, ERR_MARGIN));
+        assertThat(calc1.getFrequencyValues().get(1), closeTo(90.3398, ERR_MARGIN));
     }
 
     /**
@@ -137,6 +138,6 @@ public class TestSummaryLoader {
      */
     @Test
     public void testDipoleMoment() throws Exception {
-        assertThat(calc1.getDipoleMomentTotal(), closeTo(19.6701, .01));
+        assertThat(calc1.getDipoleMomentTotal(), closeTo(19.6701, ERR_MARGIN));
     }
 }

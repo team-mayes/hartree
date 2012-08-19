@@ -2,6 +2,8 @@ package org.cmayes.hartree.disp.csv;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.cmayes.hartree.disp.Display;
@@ -13,6 +15,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.cmayes.common.MediaType;
 import com.cmayes.common.exception.EnvironmentException;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ObjectArrays;
 
 /**
  * Formats {@link BaseResult} data as lines in a CSV file.
@@ -30,7 +34,8 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
             "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
             "G298 (Hartrees)", "Freq 1", "Freq 2", "phi", "theta", "Q",
-            "Pucker", "FirstCarb (A)", "LastCarb (A)" };
+            "Pucker", "R1 (A)", "R2 (A)", "R3 (A)", "R4 (A)", "R5 (A)",
+            "R6 (A)", "O1 (A)", "O2 (A)", "O3 (A)", "O4 (A)", "O6 (A)" };
     private boolean first = true;
     private volatile boolean writeMulti = false;
 
@@ -80,21 +85,25 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                     csvWriter.writeNext(new String[] { fname, solv, stoi,
                             charge, mult, func, basisSet, energy, dip, zpe,
                             g298, firstFreq, secFreq, MISSING, MISSING,
-                            MISSING, MISSING, MISSING, MISSING });
+                            MISSING, MISSING, MISSING, MISSING, MISSING,
+                            MISSING, MISSING, MISSING, MISSING, MISSING,
+                            MISSING, MISSING, MISSING });
 
                 } else {
                     final String phi = valOrMissing(cpCoords.getPhi());
                     final String theta = valOrMissing(cpCoords.getTheta());
                     final String q = valOrMissing(cpCoords.getQ());
                     final String pucker = valOrMissing(cpCoords.getPucker());
-                    final String firstCarb = valOrMissing(cpResult
-                            .getFirstCarbonDistance());
-                    final String lastCarb = valOrMissing(cpResult
-                            .getFirstCarbonDistance());
-                    csvWriter.writeNext(new String[] { fname, solv, stoi,
+                    final String[] baseLine = new String[] { fname, solv, stoi,
                             charge, mult, func, basisSet, energy, dip, zpe,
-                            g298, firstFreq, secFreq, phi, theta, q, pucker,
-                            firstCarb, lastCarb });
+                            g298, firstFreq, secFreq, phi, theta, q, pucker };
+                    final String[] withCarbs = ObjectArrays.concat(baseLine,
+                            valListOrMissing(cpResult.getCarbonDistances(), 6),
+                            String.class);
+                    final String[] withOxys = ObjectArrays.concat(withCarbs,
+                            valListOrMissing(cpResult.getOxygenDistances(), 5),
+                            String.class);
+                    csvWriter.writeNext(withOxys);
                 }
             } else {
                 csvWriter.writeNext(new String[] { fname, solv, stoi, charge,
@@ -109,6 +118,31 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                         "Problems writing CSV to writer", e);
             }
         }
+    }
+
+    /**
+     * Extracts the values from the given collection and returns an array filled
+     * with the non-null values or the MISSING value.
+     * 
+     * @param valCol
+     *            The collection to evaluate.
+     * @param expectedSize
+     *            The size of the array to return.
+     * @return An array filled by the given collection.
+     */
+    private String[] valListOrMissing(final Collection<?> valCol,
+            final int expectedSize) {
+        final String[] arrayList = new String[expectedSize];
+        Arrays.fill(arrayList, MISSING);
+        if (valCol == null) {
+            return arrayList;
+        }
+        int i = 0;
+        for (Object val : Iterables.limit(valCol, expectedSize)) {
+            arrayList[i] = valOrMissing(val);
+            i++;
+        }
+        return arrayList;
     }
 
     /**
@@ -212,7 +246,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
      * @see org.cmayes.hartree.disp.Display#setWriteMulti(boolean)
      */
     @Override
-    public void setWriteMulti(boolean wMulti) {
+    public void setWriteMulti(final boolean wMulti) {
         this.writeMulti = wMulti;
     }
 }

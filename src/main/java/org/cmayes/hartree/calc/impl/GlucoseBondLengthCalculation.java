@@ -36,14 +36,19 @@ public class GlucoseBondLengthCalculation implements Calculation {
             try {
                 fillCarbons(cpSnap);
             } catch (final NotFoundException e) {
-                logger.warn("Could not find all carbon lengths for atoms "
+                logger.warn("Could not find all carbon lengths for source "
                         + cpSnap.getSourceName(), e);
             } catch (final IllegalStateException e) {
-                logger.warn("Could not find all carbon lengths for atoms "
-                        + cpSnap, e);
+                logger.warn("Could not find all carbon lengths for source "
+                        + cpSnap.getSourceName(), e);
             }
 
-            fillOxygens(cpSnap);
+            try {
+                fillOxygens(cpSnap);
+            } catch (final NotFoundException e) {
+                logger.warn("Could not find all oxygen lengths for atoms "
+                        + cpSnap.getSourceName(), e);
+            }
             return cpSnap;
         } else {
             throw new IllegalArgumentException(String.format(
@@ -91,7 +96,7 @@ public class GlucoseBondLengthCalculation implements Calculation {
         otherAtoms.removeAll(glucoseRing);
         final List<Double> oxyLens = new ArrayList<Double>();
         // Starting at idx 1 to skip oxygen
-        for (int i = 1; i < glucoseRing.size(); i++) {
+        for (int i = 1; i < glucoseRing.size() - 1; i++) {
             final Atom curCarb = glucoseRing.get(i);
             oxyLens.add(findOxyLen(curCarb, otherAtoms));
         }
