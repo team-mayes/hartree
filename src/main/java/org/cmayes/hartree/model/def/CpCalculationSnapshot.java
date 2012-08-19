@@ -21,6 +21,8 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     private static final int LAST_CARBON_IDX = 5;
     private static final int FULL_RING_SIZE = 6;
     private List<Atom> glucoseRing = new ArrayList<Atom>();
+    private List<Double> carbonDistances = new ArrayList<Double>();
+    private List<Double> oxygenDistances = new ArrayList<Double>();
     private CremerPopleCoordinates cpCoords;
 
     /**
@@ -111,5 +113,33 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
         }
         return ChemUtils.vectorForAtom(glucoseRing.get(0)).distance(
                 ChemUtils.vectorForAtom(glucoseRing.get(LAST_CARBON_IDX)));
+    }
+
+    /**
+     * @return the carbonDistances
+     */
+    public List<Double> getCarbonDistances() {
+        return carbonDistances;
+    }
+
+    /**
+     * @param carbonDistances the carbonDistances to set
+     */
+    public void setCarbonDistances(List<Double> carbonDistances) {
+        this.carbonDistances = carbonDistances;
+    }
+
+    /**
+     * @return the oxygenDistances
+     */
+    public List<Double> getOxygenDistances() {
+        return oxygenDistances;
+    }
+
+    /**
+     * @param oxygenDistances the oxygenDistances to set
+     */
+    public void setOxygenDistances(List<Double> oxygenDistances) {
+        this.oxygenDistances = oxygenDistances;
     }
 }

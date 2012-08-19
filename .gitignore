@@ -17,3 +17,4 @@ antlr-generator/
 bin/
 out/
 hartree.log
+data/

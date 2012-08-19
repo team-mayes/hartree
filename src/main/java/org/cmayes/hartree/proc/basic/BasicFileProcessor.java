@@ -13,7 +13,6 @@ import org.cmayes.hartree.HandlingType;
 import org.cmayes.hartree.calc.Calculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.loader.Loader;
-import org.cmayes.hartree.model.FileNameResult;
 import org.cmayes.hartree.proc.FileProcessor;
 import org.cmayes.hartree.proc.InputFileHandler;
 import org.slf4j.Logger;
@@ -73,11 +72,8 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
                     .getCommandName(), displayer.getMediaType()
                     .getPrimaryExtension());
             fileReader = new FileReader(processMe);
-            T procResult = applyCalcs(parser.load(fileReader));
-
-            if (procResult instanceof FileNameResult) {
-                ((FileNameResult) procResult).setFileName(processMe.getName());
-            }
+            T procResult = applyCalcs(parser.load(processMe.getName(),
+                    fileReader));
             displayer.write(writer, procResult);
         } catch (final FileNotFoundException e) {
             throw new EnvironmentException(

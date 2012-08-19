@@ -31,7 +31,7 @@ public class DefaultBaseResult implements BaseResult {
     private Integer charge;
     private List<Double> frequencyValues = new ArrayList<Double>();
     private boolean isSymmetric = true;
-    private String fileName;
+    private String sourceName;
     private String functional;
     private String basisSet;
     private String solvent;
@@ -50,6 +50,16 @@ public class DefaultBaseResult implements BaseResult {
     }
 
     /**
+     * Creates the base result with the given source identifier.
+     * 
+     * @param srcName
+     *            Identifier for the data's source.
+     */
+    public DefaultBaseResult(final String srcName) {
+        sourceName = srcName;
+    }
+
+    /**
      * Copy constructor for a base result.
      * 
      * TODO: Deeper copy
@@ -65,7 +75,7 @@ public class DefaultBaseResult implements BaseResult {
         this.cpuTimes = baseResult.getCpuTimes();
         this.dipoleMomentTotal = baseResult.getDipoleMomentTotal();
         this.elecEn = baseResult.getElecEn();
-        this.fileName = baseResult.getFileName();
+        this.sourceName = baseResult.getSourceName();
         this.frequencyValues = baseResult.getFrequencyValues();
         this.functional = baseResult.getFunctional();
         this.gibbs298 = baseResult.getGibbs298();
@@ -143,8 +153,8 @@ public class DefaultBaseResult implements BaseResult {
      * 
      * @return The file name for this calculation.
      */
-    public String getFileName() {
-        return fileName;
+    public String getSourceName() {
+        return sourceName;
     }
 
     /**
@@ -153,8 +163,8 @@ public class DefaultBaseResult implements BaseResult {
      * @param fName
      *            The file name for this calculation.
      */
-    public void setFileName(final String fName) {
-        this.fileName = fName;
+    public void setSourceName(final String fName) {
+        this.sourceName = fName;
     }
 
     /**
@@ -487,7 +497,7 @@ public class DefaultBaseResult implements BaseResult {
                 .append(this.rotPart, rhs.rotPart)
                 .append(this.zpeCorrection, rhs.zpeCorrection)
                 .append(this.dipoleMomentTotal, rhs.dipoleMomentTotal)
-                .append(this.fileName, rhs.fileName)
+                .append(this.sourceName, rhs.sourceName)
                 .append(this.terminationDates, rhs.terminationDates)
                 .append(this.stoichiometry, rhs.stoichiometry).isEquals();
     }
@@ -504,7 +514,7 @@ public class DefaultBaseResult implements BaseResult {
                 .append(this.transPart).append(this.gibbs298)
                 .append(this.atomMap).append(this.charge).append(this.rotPart)
                 .append(this.zpeCorrection).append(this.dipoleMomentTotal)
-                .append(this.fileName).append(this.terminationDates)
+                .append(this.sourceName).append(this.terminationDates)
                 .append(this.stoichiometry).toHashCode();
     }
 
@@ -525,7 +535,7 @@ public class DefaultBaseResult implements BaseResult {
                 .append("zpeCorrection", this.zpeCorrection)
                 .append("stoichiometry", this.stoichiometry)
                 .append("basisSet", this.basisSet)
-                .append("fileName", this.fileName)
+                .append("fileName", this.sourceName)
                 .append("dipoleMomentTotal", this.dipoleMomentTotal)
                 .append("solvent", this.solvent)
                 .append("terminationDates", this.terminationDates)

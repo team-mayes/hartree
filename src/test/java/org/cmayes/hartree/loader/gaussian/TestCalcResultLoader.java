@@ -28,7 +28,8 @@ public class TestCalcResultLoader {
     public void testThf() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
         logger.debug("Result: "
-                + loader.load(new FileReader(FILE_DIR_PFX + "GL_THF_rev4.log")));
+                + loader.load("GL_THF_rev4.log", new FileReader(FILE_DIR_PFX
+                        + "GL_THF_rev4.log")));
     }
 
     /**
@@ -40,7 +41,8 @@ public class TestCalcResultLoader {
     @Test
     public void testGasRad2() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX + "init_gas_rad2_3.out"));
+        loader.load("init_gas_rad2_3.out", new FileReader(FILE_DIR_PFX
+                + "init_gas_rad2_3.out"));
     }
 
     /**
@@ -52,7 +54,8 @@ public class TestCalcResultLoader {
     @Test
     public void testThfFail() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX + "init_THF+negFAIL.log"));
+        loader.load("init_THF+negFAIL.log", new FileReader(FILE_DIR_PFX
+                + "init_THF+negFAIL.log"));
     }
 
     /**
@@ -64,7 +67,8 @@ public class TestCalcResultLoader {
     @Test
     public void testWater() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX + "init_water+pos4.log"));
+        loader.load("init_water+pos4.log", new FileReader(FILE_DIR_PFX
+                + "init_water+pos4.log"));
     }
 
     /**
@@ -76,7 +80,8 @@ public class TestCalcResultLoader {
     @Test
     public void testCamAgain() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX + "init2thfTS+camAgain3.log"));
+        loader.load("init2thfTS+camAgain3.log", new FileReader(FILE_DIR_PFX
+                + "init2thfTS+camAgain3.log"));
     }
 
     /**
@@ -88,8 +93,8 @@ public class TestCalcResultLoader {
     @Test
     public void test8spTooLittleData() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX
-                + "levoglucosan8spTooLittleData.log"));
+        loader.load("levoglucosan8spTooLittleData.log", new FileReader(
+                FILE_DIR_PFX + "levoglucosan8spTooLittleData.log"));
     }
 
     /**
@@ -101,7 +106,8 @@ public class TestCalcResultLoader {
     @Test
     public void testGasm062x() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX + "m-glucose_gasm062x.out"));
+        loader.load("m-glucose_gasm062x.out", new FileReader(FILE_DIR_PFX
+                + "m-glucose_gasm062x.out"));
     }
 
     /**
@@ -113,8 +119,8 @@ public class TestCalcResultLoader {
     @Test
     public void testWaterm062x() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX
-                + "m-glucose_waterm062xspTooLittleData.out"));
+        loader.load("m-glucose_waterm062xspTooLittleData.out", new FileReader(
+                FILE_DIR_PFX + "m-glucose_waterm062xspTooLittleData.out"));
     }
 
     /**
@@ -126,8 +132,8 @@ public class TestCalcResultLoader {
     @Test
     public void testMp4mp2TooLittleData() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX
-                + "methanolmp4mp2TooLittleData.log"));
+        loader.load("methanolmp4mp2TooLittleData.log", new FileReader(
+                FILE_DIR_PFX + "methanolmp4mp2TooLittleData.log"));
     }
 
     /**
@@ -139,6 +145,7 @@ public class TestCalcResultLoader {
     @Test
     public void testInit2THFm062XnormBadInput() throws Exception {
         final CalcResultLoader loader = new CalcResultLoader();
-        loader.load(new FileReader(FILE_DIR_PFX + "init2_THF+m062Xnorm.log"));
+        loader.load("init2_THF+m062Xnorm.log", new FileReader(FILE_DIR_PFX
+                + "init2_THF+m062Xnorm.log"));
     }
 }

@@ -34,28 +34,33 @@ public class LowestEnergyLoader extends BaseGaussianLoader implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.loader.Loader#load(java.io.Reader)
+     * @see org.cmayes.hartree.loader.Loader#load(String, java.io.Reader)
      */
-    public LowestEnergyMapper load(final Reader reader) {
-        return extractSnapshotData(extractAst(reader));
+    public LowestEnergyMapper load(final String srcName, final Reader reader) {
+        return extractSnapshotData(srcName, extractAst(srcName, reader));
     }
 
     /**
      * Fills a {@link LowestEnergyMapper} instance with data from the AST.
      * 
+     * @param srcName
+     *            The identifier for the source of the data.
      * @param ast
      *            The AST to traverse.
+     * 
      * @return The filled result instance.
      */
-    private LowestEnergyMapper extractSnapshotData(final CommonTree ast) {
-        final LowestEnergyMapper result = new LowestEnergyMapper();
+    private LowestEnergyMapper extractSnapshotData(final String srcName,
+            final CommonTree ast) {
+        final LowestEnergyMapper result = new LowestEnergyMapper(srcName);
         int atomColCount = 0;
         Atom curAtom = new DefaultAtom();
         List<Atom> curAtomList = new ArrayList<Atom>();
         @SuppressWarnings("unchecked")
         final List<CommonTree> eventList = ast.getChildren();
         if (eventList == null) {
-            logger.error("Parse failed: no AST children found");
+            logger.error("Parse failed: no AST children found for source "
+                    + srcName);
             return result;
         }
         for (CommonTree curNode : eventList) {
@@ -89,11 +94,14 @@ public class LowestEnergyLoader extends BaseGaussianLoader implements
     /**
      * Parses the data from the reader into an abstract syntax tree.
      * 
+     * @param srcName
+     *            The identifier for the source of the data.
      * @param reader
      *            The source of the data to parse.
+     * 
      * @return The abstract syntax tree pulled from the reader.
      */
-    protected CommonTree extractAst(final Reader reader) {
+    protected CommonTree extractAst(final String srcName, final Reader reader) {
         try {
             final SnapshotLexer lexer = new SnapshotLexer(
                     new ANTLRReaderStream(reader));
@@ -101,9 +109,10 @@ public class LowestEnergyLoader extends BaseGaussianLoader implements
                     new CommonTokenStream(lexer));
             return (CommonTree) parser.script().getTree();
         } catch (final IOException e) {
-            throw new EnvironmentException("Problems reading file", e);
+            throw new EnvironmentException("Problems reading from " + srcName,
+                    e);
         } catch (final RecognitionException e) {
-            throw new ParseException("Problems parsing file", e);
+            throw new ParseException("Problems parsing data from " + srcName, e);
         }
     }
 }

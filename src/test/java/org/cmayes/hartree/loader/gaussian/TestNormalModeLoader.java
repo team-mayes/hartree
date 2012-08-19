@@ -36,8 +36,8 @@ public class TestNormalModeLoader {
      */
     @BeforeClass
     public static final void setUpClass() throws Exception {
-        calc1 = LOADER.load(new FileReader(FILE_DIR_PFX
-                + "glucose5m062xEtOHnorm.log"));
+        calc1 = LOADER.load("glucose5m062xEtOHnorm.log", new FileReader(
+                FILE_DIR_PFX + "glucose5m062xEtOHnorm.log"));
     }
 
     /**
@@ -69,7 +69,7 @@ public class TestNormalModeLoader {
         assertThat(sums.get(calc1.getNormalModes().get(EXAMPLE_SUM_IDX)),
                 equalTo(getSum42()));
     }
-    
+
     /**
      * Test.
      * 
@@ -78,7 +78,8 @@ public class TestNormalModeLoader {
      */
     @Test
     public void testInit2THFm062XnormBadInput() throws Exception {
-        LOADER.load(new FileReader(FILE_DIR_PFX + "init2_THF+m062Xnorm.log"));
+        LOADER.load("init2_THF+m062Xnorm.log", new FileReader(FILE_DIR_PFX
+                + "init2_THF+m062Xnorm.log"));
     }
 
     /**

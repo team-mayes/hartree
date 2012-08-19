@@ -69,7 +69,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             final String zpe = valOrMissing(valToDisp.getZpeCorrection());
             final String stoi = valOrMissing(valToDisp.getStoichiometry());
             final String dip = valOrMissing(valToDisp.getDipoleMomentTotal());
-            final String fname = valOrMissing(valToDisp.getFileName());
+            final String fname = valOrMissing(valToDisp.getSourceName());
             final String func = valOrMissing(valToDisp.getFunctional());
             final String basisSet = valOrMissing(valToDisp.getBasisSet());
             final String g298 = valOrMissing(valToDisp.getGibbs298());

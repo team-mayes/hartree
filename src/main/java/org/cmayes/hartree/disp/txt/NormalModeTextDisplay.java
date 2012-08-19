@@ -66,7 +66,7 @@ public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
     public void write(final Writer writer, final NormalModeCalculation calc) {
         final PrintWriter printWriter = new PrintWriter(writer);
         printWriter.printf("Normal mode summary for file %s%s",
-                calc.getFileName(), CommonConstants.NL);
+                calc.getSourceName(), CommonConstants.NL);
         printWriter.println();
 
         if (calc.getNormalModes().size() == 0) {

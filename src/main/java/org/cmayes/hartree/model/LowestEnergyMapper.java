@@ -20,10 +20,46 @@ import com.cmayes.common.model.Atom;
  * 
  * @author cmayes
  */
-public class LowestEnergyMapper {
+public class LowestEnergyMapper implements NamedSource {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final List<EnergyAtoms> energyAtoms = new ArrayList<LowestEnergyMapper.EnergyAtoms>();
+    private String sourceName;
+
+    /**
+     * Zero-arg constructor.
+     */
+    public LowestEnergyMapper() {
+
+    }
+
+    /**
+     * New mapper with the given source name.
+     * 
+     * @param srcName
+     *            The source name.
+     */
+    public LowestEnergyMapper(final String srcName) {
+        this.sourceName = srcName;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.NamedSource#getSourceName()
+     */
+    public String getSourceName() {
+        return this.sourceName;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.model.NamedSource#setSourceName(java.lang.String)
+     */
+    public void setSourceName(final String srcName) {
+        this.sourceName = srcName;
+    }
 
     /**
      * Adds the energy and atoms to the list.

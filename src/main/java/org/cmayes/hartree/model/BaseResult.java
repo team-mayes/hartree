@@ -13,7 +13,7 @@ import com.cmayes.common.model.Atom;
  * 
  * @author cmayes
  */
-public interface BaseResult extends FileNameResult {
+public interface BaseResult extends NamedSource {
     /**
      * Returns the multiplicity of the molecules.
      * 

@@ -35,8 +35,8 @@ public class TestSummaryLoader {
      */
     @BeforeClass
     public static final void setUpClass() throws Exception {
-        calc1 = LOADER.load(new FileReader(FILE_DIR_PFX
-                + "glucNa3eO4areacttwater.out"));
+        calc1 = LOADER.load("glucNa3eO4areacttwater.out", new FileReader(
+                FILE_DIR_PFX + "glucNa3eO4areacttwater.out"));
         LOGGER.debug("Calc: " + calc1);
     }
 

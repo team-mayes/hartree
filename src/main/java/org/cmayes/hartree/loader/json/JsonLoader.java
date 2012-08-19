@@ -21,7 +21,7 @@ public class JsonLoader<T> implements Loader<T> {
     }
 
     @Override
-    public T load(Reader reader) {
+    public T load(String srcName, Reader reader) {
         try {
             return classReader.readValue(reader);
         } catch (JsonGenerationException e) {

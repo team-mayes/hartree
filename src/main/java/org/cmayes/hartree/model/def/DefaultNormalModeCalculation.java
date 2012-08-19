@@ -22,9 +22,26 @@ import com.google.common.base.Joiner;
  * 
  * @author cmayes
  */
-public class DefaultNormalModeCalculation extends DefaultBaseResult
-        implements NormalModeCalculation {
+public class DefaultNormalModeCalculation extends DefaultBaseResult implements
+        NormalModeCalculation {
     private List<NormalMode> normalModes = new ArrayList<NormalMode>();
+
+    /**
+     * Zero-arg constructor.
+     */
+    public DefaultNormalModeCalculation() {
+
+    }
+
+    /**
+     * Creates a named calc.
+     * 
+     * @param srcName
+     *            The identifier.
+     */
+    public DefaultNormalModeCalculation(final String srcName) {
+        super(srcName);
+    }
 
     /**
      * {@inheritDoc}

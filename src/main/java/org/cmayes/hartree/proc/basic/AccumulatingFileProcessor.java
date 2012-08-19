@@ -15,7 +15,7 @@ import org.cmayes.hartree.HandlingType;
 import org.cmayes.hartree.calc.Calculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.loader.Loader;
-import org.cmayes.hartree.model.FileNameResult;
+import org.cmayes.hartree.model.NamedSource;
 import org.cmayes.hartree.proc.FileProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,11 +116,8 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
      */
     public void display(final File processMe) {
         try {
-            final T procResult = applyCalcs(parser.load(new FileReader(
-                    processMe)));
-            if (procResult instanceof FileNameResult) {
-                ((FileNameResult) procResult).setFileName(processMe.getName());
-            }
+            final T procResult = applyCalcs(parser.load(processMe.getName(),
+                    new FileReader(processMe)));
             displayer.write(accWriter, procResult);
         } catch (final FileNotFoundException e) {
             throw new EnvironmentException(

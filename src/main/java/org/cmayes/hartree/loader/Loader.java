@@ -18,8 +18,11 @@ public interface Loader<T> {
     /**
      * Parses the data from the reader, returning the handled result type.
      * 
+     * @param srcName
+     *            The name identifying the source (file name, URL, etc.).
      * @param reader
      *            The reader to process.
+     * 
      * @return An instance of the handled result type filled with data from the
      *         reader.
      * @throws EnvironmentException
@@ -27,5 +30,5 @@ public interface Loader<T> {
      * @throws ParseException
      *             If there is a problem parsing data from the reader.
      */
-    T load(Reader reader);
+    T load(String srcName, Reader reader);
 }

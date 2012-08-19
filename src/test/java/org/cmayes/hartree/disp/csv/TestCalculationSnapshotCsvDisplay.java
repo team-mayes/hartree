@@ -117,7 +117,7 @@ public class TestCalculationSnapshotCsvDisplay {
      */
     private BaseResult getTestInst() {
         final DefaultBaseResult snap = new DefaultBaseResult();
-        snap.setFileName("someFileName.txt");
+        snap.setSourceName("someFileName.txt");
         snap.setSolvent("water");
         snap.setStoichiometry("C6H12NaO6(1+)");
         snap.setElecEn(-849.236562347);
