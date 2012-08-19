@@ -117,10 +117,10 @@ public class TestCalculationSnapshotCsvDisplay {
         try {
             assertThat(csvReader.readNext(), equalTo(ALT_HEAD_LINE));
             assertThat(csvReader.readNext(), equalTo(DATA_LINE));
+            assertNull(csvReader.readNext());
         } finally {
             csvReader.close();
         }
-        assertNull(csvReader.readNext());
     }
 
     /**
