@@ -44,7 +44,7 @@ public interface Display<T> {
      * 
      * @return Whether this display expects multiple objects to be written.
      */
-    public boolean isWriteMulti();
+    boolean isWriteMulti();
 
     /**
      * Sets whether this display expects multiple objects to be written.
@@ -52,5 +52,5 @@ public interface Display<T> {
      * @param writeMulti
      *            Whether to expect multiple objects to be written.
      */
-    public void setWriteMulti(boolean writeMulti);
+    void setWriteMulti(boolean writeMulti);
 }

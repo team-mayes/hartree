@@ -15,7 +15,6 @@ import org.cmayes.hartree.HandlingType;
 import org.cmayes.hartree.calc.Calculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.loader.Loader;
-import org.cmayes.hartree.model.NamedSource;
 import org.cmayes.hartree.proc.FileProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,7 +132,7 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
      * @return The processed result.
      */
     @SuppressWarnings("unchecked")
-    private T applyCalcs(T rawResult) {
+    private T applyCalcs(final T rawResult) {
         T procResult = rawResult;
         for (Calculation curCalc : calculations) {
             procResult = (T) curCalc.calculate((Object) procResult);
@@ -182,7 +181,7 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
         try {
             displayer.finish(this.accWriter);
             this.accWriter.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.warn("Problems closing the accumulator", e);
         }
     }

@@ -160,7 +160,7 @@ public interface BaseResult extends NamedSource {
      * @throws IllegalArgumentException
      *             If addMe is null.
      */
-    public void addAtom(Atom addMe);
+    void addAtom(Atom addMe);
 
     /**
      * @return the functional

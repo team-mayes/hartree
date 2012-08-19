@@ -48,15 +48,18 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      *            The display to use.
      * @param calcs
      *            The calculations to use.
+     * @param fileHandler
+     *            The handler to use for files.
      */
     public BasicFileProcessor(final HandlingType handType,
             final Loader<T> theParser, final Display<T> theDisp,
-            final List<Calculation> calcs, InputFileHandler handler) {
+            final List<Calculation> calcs, final InputFileHandler fileHandler) {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
         this.calculations = asNotNull(calcs, "Calculations cannot be null.");
-        this.inputFileHandler = asNotNull(handler, "Input file handler is null");
+        this.inputFileHandler = asNotNull(fileHandler,
+                "Input file handler is null");
     }
 
     /**
@@ -72,7 +75,7 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
                     .getCommandName(), displayer.getMediaType()
                     .getPrimaryExtension());
             fileReader = new FileReader(processMe);
-            T procResult = applyCalcs(parser.load(processMe.getName(),
+            final T procResult = applyCalcs(parser.load(processMe.getName(),
                     fileReader));
             displayer.write(writer, procResult);
         } catch (final FileNotFoundException e) {
@@ -83,14 +86,14 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     logger.warn("Problems closing writer: " + e.getMessage());
                 }
             }
             if (fileReader != null) {
                 try {
                     fileReader.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     logger.warn("Problems closing reader: " + e.getMessage());
                 }
             }
@@ -101,10 +104,11 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      * Applies the set calculations to the files.
      * 
      * @param rawResult
-     * @return
+     *            The result to process.
+     * @return The result of applying the calculations.
      */
     @SuppressWarnings("unchecked")
-    private T applyCalcs(T rawResult) {
+    private T applyCalcs(final T rawResult) {
         T procResult = rawResult;
         for (Calculation curCalc : calculations) {
             procResult = (T) curCalc.calculate((Object) procResult);

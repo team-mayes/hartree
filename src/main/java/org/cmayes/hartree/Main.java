@@ -261,7 +261,7 @@ public class Main<T> {
      * @return The configured calculations for the current handling type.
      */
     private List<Calculation> getCalcs() {
-        List<Calculation> list = CALC_MAP.get(hType);
+        final List<Calculation> list = CALC_MAP.get(hType);
         return list == null ? new ArrayList<Calculation>() : list;
     }
 

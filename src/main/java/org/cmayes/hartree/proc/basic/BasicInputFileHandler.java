@@ -35,7 +35,7 @@ public class BasicInputFileHandler implements InputFileHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
-     * Zero-arg constructor that uses an
+     * Zero-arg constructor that uses an accept all filter.
      */
     public BasicInputFileHandler() {
         this.fileFilter = new AcceptAllFilter();
@@ -43,7 +43,18 @@ public class BasicInputFileHandler implements InputFileHandler {
         this.outDir = null;
     }
 
-    public BasicInputFileHandler(FilenameFilter filter, File in, File out) {
+    /**
+     * Creates a handler using the given filter, source, and destination.
+     * 
+     * @param filter
+     *            The filter for the file names.
+     * @param in
+     *            The source.
+     * @param out
+     *            The target.
+     */
+    public BasicInputFileHandler(final FilenameFilter filter, final File in,
+            final File out) {
         this.fileFilter = asNotNull(filter, "Filter is null");
         this.inDir = in;
         this.outDir = out;
@@ -56,7 +67,8 @@ public class BasicInputFileHandler implements InputFileHandler {
      *      org.cmayes.hartree.proc.FileProcessor)
      */
     @Override
-    public void handle(final File processDir, FileProcessor<?> fileProcessor) {
+    public void handle(final File processDir,
+            final FileProcessor<?> fileProcessor) {
         if (processDir.isDirectory()) {
             final String[] children = processDir.list(fileFilter);
             for (int i = 0; i < children.length; i++) {
@@ -74,16 +86,17 @@ public class BasicInputFileHandler implements InputFileHandler {
      *      String, String)
      */
     @Override
-    public Writer createOutWriter(File inFile, String cmdName, String outExt) {
+    public Writer createOutWriter(final File inFile, final String cmdName,
+            final String outExt) {
         if (outDir == null) {
             return new OutputStreamWriter(sysOut);
         }
-        File tgtOutDir = processTgtOutDir(inFile);
+        final File tgtOutDir = processTgtOutDir(inFile);
         if (tgtOutDir.exists() || !tgtOutDir.mkdirs()) {
             logger.warn("Could not create out dir " + tgtOutDir);
         }
 
-        File outFile = new File(tgtOutDir, String.format("%s-%s.%s",
+        final File outFile = new File(tgtOutDir, String.format("%s-%s.%s",
                 processFileName(inFile.getName()), cmdName, outExt));
 
         try {
@@ -103,9 +116,10 @@ public class BasicInputFileHandler implements InputFileHandler {
      * extensions.
      * 
      * @param inFile
-     * @return
+     *            The input file to process.
+     * @return The base name of the file minus a known extension.
      */
-    private String processFileName(String inFile) {
+    private String processFileName(final String inFile) {
         if (fileFilter instanceof ExtensionFilter) {
             for (String ext : ((ExtensionFilter) fileFilter).getExtList()) {
                 if (inFile.endsWith(ext)) {
@@ -124,11 +138,11 @@ public class BasicInputFileHandler implements InputFileHandler {
      *            The file to process.
      * @return The base output directory.
      */
-    private File processTgtOutDir(File inFile) {
+    private File processTgtOutDir(final File inFile) {
         if (inDir == null) {
             return outDir;
         }
-        String parentInDir = asNotNull(inFile, "inFile is null")
+        final String parentInDir = asNotNull(inFile, "inFile is null")
                 .getAbsoluteFile().getParent();
         if (parentInDir == null) {
             return outDir;
@@ -144,10 +158,10 @@ public class BasicInputFileHandler implements InputFileHandler {
     /**
      * Sets the stream used for system.out (mainly for testing).
      * 
-     * @param sysOut
+     * @param out
      *            The stream to use for testing.
      */
-    public void setSysOut(PrintStream sysOut) {
-        this.sysOut = sysOut;
+    public void setSysOut(final PrintStream out) {
+        this.sysOut = out;
     }
 }

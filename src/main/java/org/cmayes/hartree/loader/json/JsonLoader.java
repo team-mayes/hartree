@@ -7,26 +7,38 @@ import org.cmayes.hartree.loader.Loader;
 
 import com.cmayes.common.exception.EnvironmentException;
 import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
+/**
+ * Loads data from a JSON document into an instance of the given target class.
+ * 
+ * @author cmayes
+ * 
+ * @param <T>
+ *            The class to target.
+ */
 public class JsonLoader<T> implements Loader<T> {
     private final ObjectReader classReader;
 
-    public JsonLoader(Class<T> targetClass) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * Creates a loader for the given class.
+     * 
+     * @param targetClass
+     *            The class to instantiate and fill.
+     */
+    public JsonLoader(final Class<T> targetClass) {
+        final ObjectMapper objectMapper = new ObjectMapper();
         classReader = objectMapper.reader(targetClass);
     }
 
     @Override
-    public T load(String srcName, Reader reader) {
+    public T load(final String srcName, final Reader reader) {
         try {
             return classReader.readValue(reader);
-        } catch (JsonGenerationException e) {
+        } catch (final JsonGenerationException e) {
             throw new EnvironmentException("Problems reading JSON ", e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new EnvironmentException("Problems reading JSON ", e);
         }
     }

@@ -64,9 +64,14 @@ public class TestCalculationSnapshotCsvDisplay {
         assertFalse(disp.isFirst());
         final CSVReader csvReader = new CSVReader(new StringReader(
                 stringWriter.toString()));
-        assertThat(csvReader.readNext(), equalTo(HEAD_LINE));
-        assertThat(csvReader.readNext(), equalTo(DATA_LINE));
-        assertNull(csvReader.readNext());
+        try {
+            assertThat(csvReader.readNext(), equalTo(HEAD_LINE));
+            assertThat(csvReader.readNext(), equalTo(DATA_LINE));
+            assertNull(csvReader.readNext());
+        } finally {
+            csvReader.close();
+        }
+
     }
 
     /**
@@ -83,9 +88,13 @@ public class TestCalculationSnapshotCsvDisplay {
         assertFalse(disp.isFirst());
         final CSVReader csvReader = new CSVReader(new StringReader(
                 stringWriter.toString()));
-        assertThat(csvReader.readNext(), equalTo(HEAD_LINE));
-        assertThat(csvReader.readNext(), equalTo(EMPTY_LINE));
-        assertNull(csvReader.readNext());
+        try {
+            assertThat(csvReader.readNext(), equalTo(HEAD_LINE));
+            assertThat(csvReader.readNext(), equalTo(EMPTY_LINE));
+            assertNull(csvReader.readNext());
+        } finally {
+            csvReader.close();
+        }
     }
 
     /**
@@ -105,8 +114,12 @@ public class TestCalculationSnapshotCsvDisplay {
         disp.write(stringWriter, getTestInst());
         final CSVReader csvReader = new CSVReader(new StringReader(
                 stringWriter.toString()));
-        assertThat(csvReader.readNext(), equalTo(ALT_HEAD_LINE));
-        assertThat(csvReader.readNext(), equalTo(DATA_LINE));
+        try {
+            assertThat(csvReader.readNext(), equalTo(ALT_HEAD_LINE));
+            assertThat(csvReader.readNext(), equalTo(DATA_LINE));
+        } finally {
+            csvReader.close();
+        }
         assertNull(csvReader.readNext());
     }
 

@@ -95,21 +95,23 @@ public class CremerPopleCoordinates {
     }
 
     /**
-     * @param pucker
+     * @param puc
      *            The pucker to set.
      */
-    public void setPucker(String pucker) {
-        this.pucker = pucker;
+    public void setPucker(final String puc) {
+        this.pucker = puc;
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof CremerPopleCoordinates)) {
             return false;
         }
-        CremerPopleCoordinates rhs = (CremerPopleCoordinates) object;
+        final CremerPopleCoordinates rhs = (CremerPopleCoordinates) object;
         return new EqualsBuilder().appendSuper(super.equals(object))
                 .append(this.theta, rhs.theta).append(this.q, rhs.q)
                 .append(this.pucker, rhs.pucker).append(this.phi, rhs.phi)
@@ -117,6 +119,8 @@ public class CremerPopleCoordinates {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -127,6 +131,8 @@ public class CremerPopleCoordinates {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {

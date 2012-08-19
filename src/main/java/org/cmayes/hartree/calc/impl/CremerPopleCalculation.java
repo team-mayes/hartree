@@ -14,12 +14,17 @@ import org.slf4j.LoggerFactory;
 import com.cmayes.common.model.Atom;
 import com.cmayes.common.util.ChemUtils;
 
+/**
+ * Calculates the Cremer-Pople coordinates for the given data instance.
+ * 
+ * @author cmayes
+ */
 public class CremerPopleCalculation implements Calculation {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public Object calculate(Object rawInput) {
+    public Object calculate(final Object rawInput) {
         if (rawInput instanceof CpCalculationSnapshot) {
             final CpCalculationSnapshot cpSnap = new CpCalculationSnapshot(
                     (CpCalculationSnapshot) rawInput);
@@ -39,11 +44,14 @@ public class CremerPopleCalculation implements Calculation {
     }
 
     /**
+     * Calculate the Cremer-Pople coordinates for the given ring.
+     * 
      * @param gRing
-     * @return
+     *            The glucose ring to evaluate.
+     * @return The Cremer-Pople coordinates for the given ring.
      */
-    private CremerPopleCoordinates findCoords(List<Atom> gRing) {
-        List<Vector3D> ringVecs = new ArrayList<Vector3D>();
+    private CremerPopleCoordinates findCoords(final List<Atom> gRing) {
+        final List<Vector3D> ringVecs = new ArrayList<Vector3D>();
         for (Atom atom : gRing) {
             ringVecs.add(ChemUtils.vectorForAtom(atom));
         }
@@ -67,7 +75,7 @@ public class CremerPopleCalculation implements Calculation {
 
         n = new Vector3D(1 / n.getNorm(), n);
 
-        List<Double> z = new ArrayList<Double>();
+        final List<Double> z = new ArrayList<Double>();
         for (Vector3D cenVec : cenVecs) {
             z.add(Vector3D.dotProduct(cenVec, n));
         }
@@ -129,7 +137,14 @@ public class CremerPopleCalculation implements Calculation {
         return new CremerPopleCoordinates(phi, theta, bigQ);
     }
 
-    private List<Vector3D> center(List<Vector3D> ringVecs) {
+    /**
+     * Centers the given glucose ring.
+     * 
+     * @param ringVecs
+     *            The ring to center.
+     * @return The centered ring coordinates.
+     */
+    private List<Vector3D> center(final List<Vector3D> ringVecs) {
         Vector3D center = new Vector3D(0, 0, 0);
 
         for (Vector3D ringVec : ringVecs) {

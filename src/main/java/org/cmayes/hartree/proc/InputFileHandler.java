@@ -3,7 +3,6 @@ package org.cmayes.hartree.proc;
 import java.io.File;
 import java.io.Writer;
 
-
 /**
  * Handles the bulk traversal starting with the given file or directory. Each
  * encountered file is then displayed using the given FileProcessor.
@@ -17,6 +16,8 @@ public interface InputFileHandler {
      * 
      * @param processDir
      *            The directory (or file) to process.
+     * @param fileProcessor
+     *            The processor to use when handling files in the target dir.
      * @see FileProcessor#display(File)
      */
     void handle(final File processDir, FileProcessor<?> fileProcessor);
@@ -26,8 +27,10 @@ public interface InputFileHandler {
      * 
      * @param inFile
      *            The filename to process.
-     * @param cmdName TODO
-     * @param outExt TODO
+     * @param cmdName
+     *            TODO
+     * @param outExt
+     *            TODO
      * @return A target writer for the given input file.
      */
     Writer createOutWriter(File inFile, String cmdName, String outExt);

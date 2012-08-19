@@ -42,7 +42,7 @@ public class NormalModeTextDisplay implements Display<NormalModeCalculation> {
      * @see org.cmayes.hartree.disp.Display#setWriteMulti(boolean)
      */
     @Override
-    public void setWriteMulti(boolean wMulti) {
+    public void setWriteMulti(final boolean wMulti) {
         this.writeMulti = wMulti;
     }
 

@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * Displays the given object as JSON.
+ * 
+ * @author cmayes
+ */
 public class JsonDisplay implements Display<Object> {
     private final ObjectMapper objectMapper;
 
@@ -20,6 +25,9 @@ public class JsonDisplay implements Display<Object> {
 
     private volatile boolean writeMulti = false;
 
+    /**
+     * Zero-arg constructor.
+     */
     public JsonDisplay() {
         objectMapper = new ObjectMapper();
         // We close our writers in the FileProcessors.
@@ -39,7 +47,7 @@ public class JsonDisplay implements Display<Object> {
         if (writeMulti) {
             try {
                 writer.write("]");
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new EnvironmentException(
                         "Problems writing JSON closing value ", e);
             }
@@ -65,13 +73,13 @@ public class JsonDisplay implements Display<Object> {
                 }
             }
             objectMapper.writeValue(writer, valToDisp);
-        } catch (JsonGenerationException e) {
+        } catch (final JsonGenerationException e) {
             throw new EnvironmentException("Problems writing JSON for value "
                     + valToDisp, e);
-        } catch (JsonMappingException e) {
+        } catch (final JsonMappingException e) {
             throw new EnvironmentException("Problems writing JSON for value "
                     + valToDisp, e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new EnvironmentException("Problems writing JSON for value "
                     + valToDisp, e);
         }
@@ -99,10 +107,10 @@ public class JsonDisplay implements Display<Object> {
     /**
      * Sets whether this display expects multiple objects to be written.
      * 
-     * @param writeMulti
+     * @param multi
      *            Whether to expect multiple objects to be written.
      */
-    public void setWriteMulti(boolean writeMulti) {
-        this.writeMulti = writeMulti;
+    public void setWriteMulti(final boolean multi) {
+        this.writeMulti = multi;
     }
 }

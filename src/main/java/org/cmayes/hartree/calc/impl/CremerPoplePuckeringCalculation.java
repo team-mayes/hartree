@@ -21,6 +21,11 @@ import com.cmayes.common.util.EnvUtils;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+/**
+ * Calculates the puckering for the given Cremer-Pople result.
+ * 
+ * @author cmayes
+ */
 public class CremerPoplePuckeringCalculation implements Calculation {
     private static final String PHI_GLOB = "*";
     private static final String CP_CODES_CSV_FNAME = "CPcodes.csv";
@@ -35,6 +40,9 @@ public class CremerPoplePuckeringCalculation implements Calculation {
     /** Table of theta, phi, and pucker code. */
     private final Table<Double, Double, String> cpTable;
 
+    /**
+     * Zero-arg constructor.
+     */
     public CremerPoplePuckeringCalculation() {
         cpTable = getCpTable();
     }
@@ -46,11 +54,11 @@ public class CremerPoplePuckeringCalculation implements Calculation {
      * @see org.cmayes.hartree.calc.Calculation#calculate(java.lang.Object)
      */
     @Override
-    public Object calculate(Object rawInput) {
+    public Object calculate(final Object rawInput) {
         if (rawInput instanceof CpCalculationSnapshot) {
             final CpCalculationSnapshot cpSnap = new CpCalculationSnapshot(
                     (CpCalculationSnapshot) rawInput);
-            CremerPopleCoordinates cpCoords = cpSnap.getCpCoords();
+            final CremerPopleCoordinates cpCoords = cpSnap.getCpCoords();
             if (cpCoords == null) {
                 logger.warn(String.format(
                         "No CP coordinates for CP Pucker calc: '%s'", rawInput));
@@ -64,15 +72,22 @@ public class CremerPoplePuckeringCalculation implements Calculation {
         }
     }
 
+    /**
+     * Reads in the Cremer-Pople puckering characterization table from a file in
+     * the project.
+     * 
+     * @return A table describing the parameters for different Cremer-Pople
+     *         puckering states.
+     */
     private Table<Double, Double, String> getCpTable() {
-        Table<Double, Double, String> table = HashBasedTable.create();
+        final Table<Double, Double, String> table = HashBasedTable.create();
         CSVReader reader = null;
         try {
             reader = new CSVReader(asNotNull(
                     EnvUtils.getResourceReader(CP_CODES_CSV_FNAME),
                     String.format("Couldn't read CP codes file '%s'",
                             CP_CODES_CSV_FNAME)));
-            String[] headerRow = reader.readNext();
+            final String[] headerRow = reader.readNext();
             if (headerRow == null) {
                 throw new InvalidDataException("No header row in file "
                         + CP_CODES_CSV_FNAME);
@@ -92,7 +107,7 @@ public class CremerPoplePuckeringCalculation implements Calculation {
                             + CP_CODES_CSV_FNAME);
                     curTheta = asNotNull(line[thetaIdx],
                             "Null value for theta in " + CP_CODES_CSV_FNAME);
-                } catch (IndexOutOfBoundsException e) {
+                } catch (final IndexOutOfBoundsException e) {
                     throw new InvalidDataException(
                             String.format(
                                     "The report line for %s in %s is too short (%d elements)",
@@ -101,7 +116,7 @@ public class CremerPoplePuckeringCalculation implements Calculation {
                 }
                 addRow(table, curCode, curPhi, curTheta);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new EnvironmentException("Problems reading "
                     + CP_CODES_CSV_FNAME, e);
         } finally {
@@ -109,7 +124,7 @@ public class CremerPoplePuckeringCalculation implements Calculation {
                 if (reader != null) {
                     reader.close();
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new EnvironmentException("Problems reading "
                         + CP_CODES_CSV_FNAME, e);
             }
@@ -133,23 +148,23 @@ public class CremerPoplePuckeringCalculation implements Calculation {
      * @throws InvalidDataException
      *             If phi or theta do not parse to a double.
      */
-    private void addRow(Table<Double, Double, String> table, String curCode,
-            String curPhi, String curTheta) {
+    private void addRow(final Table<Double, Double, String> table,
+            final String curCode, final String curPhi, final String curTheta) {
         double phi;
         if (curPhi.equals(PHI_GLOB)) {
             phi = PHI_GLOB_VAL;
         } else {
             try {
                 phi = Double.valueOf(curPhi);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 throw new InvalidDataException(String.format(
                         "Phi value '%s' does not parse to a double", curPhi), e);
             }
         }
         try {
-            double theta = Double.valueOf(curTheta);
+            final double theta = Double.valueOf(curTheta);
             table.put(theta, phi, curCode);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new InvalidDataException(String.format(
                     "Theta value '%s' does not parse to a double", curTheta), e);
         }
@@ -162,7 +177,7 @@ public class CremerPoplePuckeringCalculation implements Calculation {
      *            The coordinates to match.
      * @return The pucker code or null if nothing matches.
      */
-    private String findPuckerCode(CremerPopleCoordinates cpCoords) {
+    private String findPuckerCode(final CremerPopleCoordinates cpCoords) {
         double cpTheta = cpCoords.getTheta();
         if (diffMatches(TO_ZERO_VAL, cpTheta)) {
             cpTheta = 0;
@@ -194,8 +209,8 @@ public class CremerPoplePuckeringCalculation implements Calculation {
      *            The second number to check.
      * @return Whether the two numbers are close enough to match.
      */
-    private boolean diffMatches(double val1, double val2) {
-        double abs = Math.abs(val1 - val2);
+    private boolean diffMatches(final double val1, final double val2) {
+        final double abs = Math.abs(val1 - val2);
         return abs <= TOLERANCE;
     }
 
@@ -206,11 +221,11 @@ public class CremerPoplePuckeringCalculation implements Calculation {
      *            The header row to search.
      * @param colName
      *            The column name to search for.
-     * @return
+     * @return The index of the given column name.
      * @throws NotFoundException
      *             If the column name is not found in the header.
      */
-    private int findIdx(String[] headerRow, String colName) {
+    private int findIdx(final String[] headerRow, final String colName) {
         for (int i = 0; i < headerRow.length; i++) {
             if (headerRow[i].equalsIgnoreCase(colName)) {
                 return i;

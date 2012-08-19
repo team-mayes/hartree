@@ -101,11 +101,11 @@ public class DefaultBaseResult implements BaseResult {
     /**
      * Sets the atom map.
      * 
-     * @param atomMap
+     * @param atoms
      *            The atom map to set.
      */
-    public void setAtomMap(Map<Integer, Atom> atomMap) {
-        this.atomMap = new TreeMap<Integer, Atom>(atomMap);
+    public void setAtomMap(final Map<Integer, Atom> atoms) {
+        this.atomMap = new TreeMap<Integer, Atom>(atoms);
     }
 
     /**
@@ -126,7 +126,7 @@ public class DefaultBaseResult implements BaseResult {
      * @throws IllegalArgumentException
      *             If addMe is null.
      */
-    public void addAtom(Atom addMe) {
+    public void addAtom(final Atom addMe) {
         this.atomMap.put(asNotNull(addMe, "Atom is null").getId(), addMe);
     }
 
@@ -178,7 +178,7 @@ public class DefaultBaseResult implements BaseResult {
      *             If the atom does not exist.
      */
     public Atom getAtomById(final int id) {
-        Atom atom = atomMap.get(id);
+        final Atom atom = atomMap.get(id);
         if (atom == null) {
             throw new IllegalArgumentException("No atom with ID " + id);
         }
@@ -474,13 +474,15 @@ public class DefaultBaseResult implements BaseResult {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof DefaultBaseResult)) {
             return false;
         }
-        DefaultBaseResult rhs = (DefaultBaseResult) object;
+        final DefaultBaseResult rhs = (DefaultBaseResult) object;
         return new EqualsBuilder().append(this.basisSet, rhs.basisSet)
                 .append(this.mult, rhs.mult)
                 .append(this.atomCount, rhs.atomCount)
@@ -503,6 +505,8 @@ public class DefaultBaseResult implements BaseResult {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -519,6 +523,8 @@ public class DefaultBaseResult implements BaseResult {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
