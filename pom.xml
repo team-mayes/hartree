@@ -8,7 +8,7 @@
 		<dependency>
 			<groupId>com.cmayes</groupId>
 			<artifactId>cmayes-common</artifactId>
-			<version>1.0.8</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
@@ -102,7 +102,7 @@
 			<plugin>
 				<groupId>org.dstovall</groupId>
 				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.4.4</version>
+				<version>1.4.5</version>
 				<executions>
 					<execution>
 						<goals>
@@ -144,11 +144,4 @@
 			<url>http://localhost:8080/archiva/repository/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>onejar-maven-plugin.googlecode.com</id>
-			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
-		</pluginRepository>
-	</pluginRepositories>
 </project>
