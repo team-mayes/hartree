@@ -9,7 +9,7 @@
 		<dependency>
 			<groupId>com.cmayes</groupId>
 			<artifactId>cmayes-common</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
