@@ -108,6 +108,9 @@ public class SnapshotLoader extends BaseGaussianLoader implements
             case SnapshotLexer.G298:
                 result.setGibbs298(toDouble(curNode.getText()));
                 break;
+            case SnapshotLexer.H298:
+                result.setEnthalpy298(toDouble(curNode.getText()));
+                break;
             case SnapshotLexer.CHARGE:
                 result.setCharge(toInt(curNode.getText()));
                 break;

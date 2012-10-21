@@ -39,6 +39,7 @@ public class DefaultBaseResult implements BaseResult {
     private Double zpeCorrection;
     private Double dipoleMomentTotal;
     private Double gibbs298;
+    private Double enthalpy298;
     private Double elecEn;
     private Integer atomCount;
 
@@ -79,6 +80,7 @@ public class DefaultBaseResult implements BaseResult {
         this.frequencyValues = baseResult.getFrequencyValues();
         this.functional = baseResult.getFunctional();
         this.gibbs298 = baseResult.getGibbs298();
+        this.enthalpy298 = baseResult.getEnthalpy298();
         this.isSymmetric = baseResult.isSymmetricTop();
         this.mult = baseResult.getMult();
         this.rotPart = baseResult.getRotPart();
@@ -474,6 +476,21 @@ public class DefaultBaseResult implements BaseResult {
     }
 
     /**
+     * @return the enthalpy298
+     */
+    public Double getEnthalpy298() {
+        return enthalpy298;
+    }
+
+    /**
+     * @param enthalpy
+     *            the enthalpy298 to set
+     */
+    public void setEnthalpy298(final Double enthalpy) {
+        this.enthalpy298 = enthalpy;
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * @see java.lang.Object#equals(Object)
@@ -494,6 +511,7 @@ public class DefaultBaseResult implements BaseResult {
                 .append(this.elecEn, rhs.elecEn)
                 .append(this.transPart, rhs.transPart)
                 .append(this.gibbs298, rhs.gibbs298)
+                .append(this.enthalpy298, rhs.enthalpy298)
                 .append(this.atomMap, rhs.atomMap)
                 .append(this.charge, rhs.charge)
                 .append(this.rotPart, rhs.rotPart)
@@ -516,7 +534,8 @@ public class DefaultBaseResult implements BaseResult {
                 .append(this.isSymmetric).append(this.solvent)
                 .append(this.functional).append(this.elecEn)
                 .append(this.transPart).append(this.gibbs298)
-                .append(this.atomMap).append(this.charge).append(this.rotPart)
+                .append(this.enthalpy298).append(this.atomMap)
+                .append(this.charge).append(this.rotPart)
                 .append(this.zpeCorrection).append(this.dipoleMomentTotal)
                 .append(this.sourceName).append(this.terminationDates)
                 .append(this.stoichiometry).toHashCode();
@@ -538,6 +557,7 @@ public class DefaultBaseResult implements BaseResult {
                 .append("transPart", this.transPart)
                 .append("symmetricTop", this.isSymmetricTop())
                 .append("gibbs298", this.gibbs298)
+                .append("enthalpy298", this.enthalpy298)
                 .append("zpeCorrection", this.zpeCorrection)
                 .append("stoichiometry", this.stoichiometry)
                 .append("basisSet", this.basisSet)

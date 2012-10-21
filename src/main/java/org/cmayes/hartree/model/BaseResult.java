@@ -27,7 +27,7 @@ public interface BaseResult extends NamedSource {
      * @param multVal
      *            The multiplicity value to set.
      */
-    void setMult(final Integer multVal);
+    void setMult(Integer multVal);
 
     /**
      * Returns the rotational partition value.
@@ -42,7 +42,7 @@ public interface BaseResult extends NamedSource {
      * @param rotationalPart
      *            The rotational value to set.
      */
-    void setRotPart(final Double rotationalPart);
+    void setRotPart(Double rotationalPart);
 
     /**
      * Returns the translational partition value.
@@ -57,7 +57,7 @@ public interface BaseResult extends NamedSource {
      * @param translationalPart
      *            The translational partition value to set.
      */
-    void setTransPart(final Double translationalPart);
+    void setTransPart(Double translationalPart);
 
     /**
      * Returns the frequency values for each degree of freedom.
@@ -72,7 +72,7 @@ public interface BaseResult extends NamedSource {
      * @param freqValues
      *            The frequency values to set.
      */
-    void setFrequencyValues(final List<Double> freqValues);
+    void setFrequencyValues(List<Double> freqValues);
 
     /**
      * Return the termination dates for each step of the calculation.
@@ -87,7 +87,7 @@ public interface BaseResult extends NamedSource {
      * @param termDates
      *            The dates to set.
      */
-    void setTerminationDates(final List<Date> termDates);
+    void setTerminationDates(List<Date> termDates);
 
     /**
      * Return the durations for each step of the calculation.
@@ -102,7 +102,7 @@ public interface BaseResult extends NamedSource {
      * @param durations
      *            The durations to set.
      */
-    void setCpuTimes(final List<Duration> durations);
+    void setCpuTimes(List<Duration> durations);
 
     /**
      * @param isSymTop
@@ -127,7 +127,7 @@ public interface BaseResult extends NamedSource {
      * @throws IllegalArgumentException
      *             If the atom does not exist.
      */
-    Atom getAtomById(final int id);
+    Atom getAtomById(int id);
 
     /**
      * Returns the map of atoms to their IDs.
@@ -272,7 +272,7 @@ public interface BaseResult extends NamedSource {
      * @param g298
      *            the gibbs298 to set
      */
-    void setGibbs298(final Double g298);
+    void setGibbs298(Double g298);
 
     /**
      * Returns electronic energy.
@@ -287,7 +287,7 @@ public interface BaseResult extends NamedSource {
      * @param energy
      *            The energy to set.
      */
-    void setElecEn(final Double energy);
+    void setElecEn(Double energy);
 
     /**
      * Returns the number of atoms in this system.
@@ -302,5 +302,16 @@ public interface BaseResult extends NamedSource {
      * @param count
      *            The number to set.
      */
-    void setAtomCount(final Integer count);
+    void setAtomCount(Integer count);
+
+    /**
+     * @return the enthalpy298
+     */
+    Double getEnthalpy298();
+
+    /**
+     * @param enthalpy298
+     *            the enthalpy298 to set
+     */
+    void setEnthalpy298(Double enthalpy298);
 }

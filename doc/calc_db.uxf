@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="11.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.custom.EER_Entity</type>
+    <coordinates>
+      <x>360</x>
+      <y>140</y>
+      <w>100</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>project
+--
+id
+name
+description</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.EER_Entity</type>
+    <coordinates>
+      <x>600</x>
+      <y>140</y>
+      <w>170</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>calc_summary
+--
+(fields)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>430</x>
+      <y>110</y>
+      <w>190</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..n
+m2=1..1
+&lt;Calc for project</panel_attributes>
+    <additional_attributes>30;50;170;50</additional_attributes>
+  </element>
+</diagram>

@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.cmayes.hartree.calc.Calculation;
+import org.cmayes.hartree.calc.impl.CartesianCremerPoplePuckeringCalculation;
 import org.cmayes.hartree.calc.impl.CremerPopleCalculation;
-import org.cmayes.hartree.calc.impl.CremerPoplePuckeringCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseBondLengthCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseRingCalculation;
 import org.cmayes.hartree.disp.Display;
@@ -416,7 +416,7 @@ public class Main<T> {
         cpSnapCalcs.add(new GlucoseRingCalculation());
         cpSnapCalcs.add(new GlucoseBondLengthCalculation());
         cpSnapCalcs.add(new CremerPopleCalculation());
-        cpSnapCalcs.add(new CremerPoplePuckeringCalculation());
+        cpSnapCalcs.add(new CartesianCremerPoplePuckeringCalculation());
         CALC_MAP.put(HandlingType.CPSNAPSHOT, cpSnapCalcs);
         // Register string array handler for CLI options.
         CmdLineParser.registerHandler(String[].class,

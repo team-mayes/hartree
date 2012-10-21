@@ -29,13 +29,14 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
     private final String[] defaultHeaderRow = new String[] { "File Name",
             "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
             "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
-            "G298 (Hartrees)", "Freq 1", "Freq 2" };
+            "G298 (Hartrees)", "H298 (Hartrees)", "Freq 1", "Freq 2" };
     private final String[] cpHeaderRow = new String[] { "File Name",
             "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
             "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
-            "G298 (Hartrees)", "Freq 1", "Freq 2", "phi", "theta", "Q",
-            "Pucker", "R1 (A)", "R2 (A)", "R3 (A)", "R4 (A)", "R5 (A)",
-            "R6 (A)", "O1 (A)", "O2 (A)", "O3 (A)", "O4 (A)", "O6 (A)" };
+            "H298 (Hartrees)", "G298 (Hartrees)", "Freq 1", "Freq 2", "phi",
+            "theta", "Q", "Pucker", "R1 (A)", "R2 (A)", "R3 (A)", "R4 (A)",
+            "R5 (A)", "R6 (A)", "O1 (A)", "O2 (A)", "O3 (A)", "O4 (A)",
+            "O6 (A)" };
     private boolean first = true;
     private volatile boolean writeMulti = false;
 
@@ -78,13 +79,14 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             final String func = valOrMissing(valToDisp.getFunctional());
             final String basisSet = valOrMissing(valToDisp.getBasisSet());
             final String g298 = valOrMissing(valToDisp.getGibbs298());
+            final String h298 = valOrMissing(valToDisp.getEnthalpy298());
             if (valToDisp instanceof CremerPopleResult) {
                 final CremerPopleResult cpResult = (CremerPopleResult) valToDisp;
                 final CremerPopleCoordinates cpCoords = cpResult.getCpCoords();
                 if (cpCoords == null) {
                     csvWriter.writeNext(new String[] { fname, solv, stoi,
                             charge, mult, func, basisSet, energy, dip, zpe,
-                            g298, firstFreq, secFreq, MISSING, MISSING,
+                            h298, g298, firstFreq, secFreq, MISSING, MISSING,
                             MISSING, MISSING, MISSING, MISSING, MISSING,
                             MISSING, MISSING, MISSING, MISSING, MISSING,
                             MISSING, MISSING, MISSING });
@@ -96,7 +98,8 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                     final String pucker = valOrMissing(cpCoords.getPucker());
                     final String[] baseLine = new String[] { fname, solv, stoi,
                             charge, mult, func, basisSet, energy, dip, zpe,
-                            g298, firstFreq, secFreq, phi, theta, q, pucker };
+                            h298, g298, firstFreq, secFreq, phi, theta, q,
+                            pucker };
                     final String[] withCarbs = ObjectArrays.concat(baseLine,
                             valListOrMissing(cpResult.getCarbonDistances(), 6),
                             String.class);
@@ -107,7 +110,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                 }
             } else {
                 csvWriter.writeNext(new String[] { fname, solv, stoi, charge,
-                        mult, func, basisSet, energy, dip, zpe, g298,
+                        mult, func, basisSet, energy, dip, zpe, h298, g298,
                         firstFreq, secFreq });
             }
         } finally {

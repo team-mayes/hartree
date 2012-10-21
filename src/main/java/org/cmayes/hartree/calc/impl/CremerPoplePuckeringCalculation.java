@@ -79,7 +79,7 @@ public class CremerPoplePuckeringCalculation implements Calculation {
      * @return A table describing the parameters for different Cremer-Pople
      *         puckering states.
      */
-    private Table<Double, Double, String> getCpTable() {
+    Table<Double, Double, String> getCpTable() {
         final Table<Double, Double, String> table = HashBasedTable.create();
         CSVReader reader = null;
         try {

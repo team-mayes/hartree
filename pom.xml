@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cmayes</groupId>
 	<artifactId>hartree</artifactId>
@@ -8,7 +9,7 @@
 		<dependency>
 			<groupId>com.cmayes</groupId>
 			<artifactId>cmayes-common</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
@@ -76,6 +77,16 @@
 			<version>1.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jdbi</groupId>
+			<artifactId>jdbi</artifactId>
+			<version>2.39.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.flyway</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>1.7</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -100,14 +111,23 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.dstovall</groupId>
-				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.4.5</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.0</version>
 				<executions>
 					<execution>
+						<phase>package</phase>
 						<goals>
-							<goal>one-jar</goal>
+							<goal>shade</goal>
 						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>org.cmayes.hartree.Main</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -123,9 +143,15 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>com.googlecode.flyway</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>1.7</version>
+				<configuration>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 	<scm>
 		<connection>scm:git:git@github.com:cmayes/hartree.git</connection>
 		<url>scm:git:git@github.com:cmayes/hartree.git</url>

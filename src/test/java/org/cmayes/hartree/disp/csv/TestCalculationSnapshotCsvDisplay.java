@@ -29,17 +29,19 @@ public class TestCalculationSnapshotCsvDisplay {
     private static final String[] HEAD_LINE = { "File Name", "Solvent type",
             "Stoichiometry", "Charge", "Mult", "Functional", "Basis Set",
             "Energy (A.U.)", "dipole", "ZPE (kcal/mol)", "G298 (Hartrees)",
-            "Freq 1", "Freq 2" };
+            "H298 (Hartrees)", "Freq 1", "Freq 2" };
     private static final String[] ALT_HEAD_LINE = { "Alt File Name",
             "Solvent type", "Stoichiometry", "Charge", "Alt Mult",
             "Functional", "Basis Set", "Energy (A.U.)", "dipole",
-            "ZPE (kcal/mol)", "G298 (Hartrees)", "Freq 1", "Freq 2" };
+            "ZPE (kcal/mol)", "G298 (Hartrees)", "H298 (Hartrees)", "Freq 1",
+            "Freq 2" };
     private static final String[] DATA_LINE = { "someFileName.txt", "water",
             "C6H12NaO6(1+)", "1", "1", "m062x", "6-31+g(2df,p)",
-            "-849.236562347", "19.6701", "0.200499", "-1260.568296", "60.7784",
-            "90.3398" };
+            "-849.236562347", "19.6701", "0.200499", "-1260.493395",
+            "-1260.568296", "60.7784", "90.3398" };
     private static final String[] EMPTY_LINE = { "N/A", "N/A", "N/A", "N/A",
-            "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A" };
+            "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
+            "N/A" };
     private SnapshotCsvDisplay disp;
 
     /**
@@ -140,6 +142,7 @@ public class TestCalculationSnapshotCsvDisplay {
         snap.setFrequencyValues(Arrays.asList(60.7784, 90.3398));
         snap.setZpeCorrection(0.200499);
         snap.setGibbs298(-1260.568296);
+        snap.setEnthalpy298(-1260.493395);
         snap.setBasisSet("6-31+g(2df,p)");
         snap.setDipoleMomentTotal(19.6701);
         return snap;

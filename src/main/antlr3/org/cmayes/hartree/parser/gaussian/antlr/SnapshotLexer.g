@@ -27,6 +27,7 @@ tokens { TERM; CPUTIME; DEFDATA; FUNCSET;
     boolean dipCtx = false;
     boolean dipTotCtx = false;
     boolean g298Ctx = false;
+    boolean h298Ctx = false;
     boolean xyzCtx = false; 
     boolean natomsFound = false;
     boolean natomsCtx = false;
@@ -44,6 +45,10 @@ ZPECORR: {zpeCtx}? => FLOAT { zpeCtx = false; };
 
 G298OPEN: 'Sum of electronic and thermal Free Energies=' { g298Ctx = true; $channel = HIDDEN; };
 G298: {g298Ctx}? => FLOAT { g298Ctx = false; };
+
+H298OPEN: 'Sum of electronic and thermal Enthalpies=' { h298Ctx = true; $channel = HIDDEN; };
+H298: {h298Ctx}? => FLOAT { h298Ctx = false; };
+
 
 // Multiplicity
 MULTTAG: 'Multiplicity' { multCtx = true; $channel = HIDDEN; };
