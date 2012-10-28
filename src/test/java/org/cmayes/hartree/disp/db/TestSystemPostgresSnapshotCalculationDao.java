@@ -161,4 +161,15 @@ public class TestSystemPostgresSnapshotCalculationDao {
         dao.insertCategory(catBean);
         dao.insertCategory(catBean);
     }
+
+    /**
+     * Tests that we can create a category name row.
+     */
+    @Test
+    public void testCategoryNameInsert() {
+        assertNull(dao.findCategoryId(CAT_NAME));
+        dao.insertCategoryName(CAT_NAME);
+        final Integer catId = dao.findCategoryId(CAT_NAME);
+        assertEquals(catId, dao.findCategoryId(CAT_NAME));
+    }
 }

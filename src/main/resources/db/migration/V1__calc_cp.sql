@@ -12,8 +12,8 @@ CREATE TABLE project
 CREATE TABLE calculation
 (
   id bigserial NOT NULL,
-  project_id integer,
-  filename text,
+  project_id integer NOT NULL,
+  filename text NOT NULL,
   CONSTRAINT calculation_pk PRIMARY KEY (id ),
   CONSTRAINT calc_proj_fk FOREIGN KEY (project_id)
       REFERENCES project (id) MATCH SIMPLE
@@ -40,8 +40,7 @@ CREATE TABLE calc_summary
   zpe double precision,
   h298 double precision,
   g298 double precision,
-  freq1 double precision,
-  freq2 double precision,
+  frequencies double precision[],
   calc_id bigint NOT NULL,
   CONSTRAINT calc_summary_pk PRIMARY KEY (calc_id ),
   CONSTRAINT calc_summary_fk FOREIGN KEY (calc_id)
@@ -50,7 +49,6 @@ CREATE TABLE calc_summary
 );
 
 /* Cremer Pople calculation storage. */
-
 CREATE TABLE cremer_pople
 (
   calc_id bigint NOT NULL,
@@ -58,17 +56,8 @@ CREATE TABLE cremer_pople
   theta double precision,
   q double precision,
   pucker character varying(3),
-  r1 double precision,
-  r2 double precision,
-  r3 double precision,
-  r4 double precision,
-  r5 double precision,
-  r6 double precision,
-  o1 double precision,
-  o2 double precision,
-  o3 double precision,
-  o4 double precision,
-  o6 double precision,
+  r double precision[6],
+  o double precision[6],
   CONSTRAINT cremer_pople_pk PRIMARY KEY (calc_id ),
   CONSTRAINT cremer_pople_calc_id FOREIGN KEY (calc_id)
       REFERENCES calculation (id) MATCH SIMPLE
@@ -88,8 +77,8 @@ CREATE TABLE category
 /* Lookup table mapping calculations with categories. */
 CREATE TABLE calc_category
 (
-  calc_id bigint,
-  cat_id integer,
+  calc_id bigint NOT NULL,
+  cat_id integer NOT NULL,
   CONSTRAINT calc_cat_calc_fk FOREIGN KEY (calc_id)
       REFERENCES calculation (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
