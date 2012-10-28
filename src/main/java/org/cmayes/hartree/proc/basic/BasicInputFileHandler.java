@@ -16,6 +16,7 @@ import org.cmayes.hartree.proc.InputFileHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cmayes.common.MediaType;
 import com.cmayes.common.exception.EnvironmentException;
 import com.cmayes.common.file.AcceptAllFilter;
 import com.cmayes.common.file.ExtensionFilter;
@@ -88,9 +89,17 @@ public class BasicInputFileHandler implements InputFileHandler {
     @Override
     public Writer createOutWriter(final File inFile, final String cmdName,
             final String outExt) {
+        if (MediaType.RDBMS.getAllExtensions().contains(outExt)) {
+            logger.debug(String
+                    .format("Extension '%s' matches an RDBMS extension; returning null for out writer.",
+                            outExt));
+            return null;
+        }
+
         if (outDir == null) {
             return new OutputStreamWriter(sysOut);
         }
+
         final File tgtOutDir = processTgtOutDir(inFile);
         if (tgtOutDir.exists() || !tgtOutDir.mkdirs()) {
             logger.warn("Could not create out dir " + tgtOutDir);

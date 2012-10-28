@@ -4,11 +4,9 @@ import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 import static com.cmayes.common.util.FormatUtils.findIdx;
 import static com.cmayes.common.util.FormatUtils.toDouble;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.cmayes.hartree.calc.Calculation;
@@ -18,14 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
 
 import com.cmayes.common.exception.EnvironmentException;
 import com.cmayes.common.exception.InvalidDataException;
 import com.cmayes.common.util.ChemUtils;
 import com.cmayes.common.util.EnvUtils;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Table;
 
 /**
  * Calculates the puckering for the given Cremer-Pople result using Cartesian
@@ -57,44 +53,11 @@ public class CartesianCremerPoplePuckeringCalculation implements Calculation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Map<Vector3D, String> cartConfs;
 
-    public static void main(String[] args) {
-        new CartesianCremerPoplePuckeringCalculation().writeCartesianTable();
-    }
-
     /**
      * Zero-arg constructor.
      */
     public CartesianCremerPoplePuckeringCalculation() {
         this.cartConfs = createCartesianTable();
-    }
-
-    private void writeCartesianTable() {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter("CartCPCodes.csv");
-            final CSVWriter csvWriter = new CSVWriter(writer);
-            csvWriter.writeNext(new String[] { X_FIELD, Y_FIELD, Z_FIELD,
-                    CODE_FIELD });
-
-            for (Entry<Vector3D, String> cartConf : cartConfs.entrySet()) {
-                Vector3D coords = cartConf.getKey();
-                csvWriter.writeNext(new String[] {
-                        Double.toString(coords.getX()),
-                        Double.toString(coords.getY()),
-                        Double.toString(coords.getZ()), cartConf.getValue() });
-            }
-        } catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (final IOException e) {
-                    logger.warn("Couldn't close CSV file", e);
-                }
-            }
-        }
     }
 
     /**
@@ -121,28 +84,6 @@ public class CartesianCremerPoplePuckeringCalculation implements Calculation {
                     "Unhandled class '%s'", rawInput.getClass()));
         }
     }
-
-    // /**
-    // * Returns a Cartesian mapping of the table.
-    // *
-    // * @return A Cartesian mapping of the table.
-    // */
-    // public Map<Vector3D, String> createCartesianTable() {
-    // final Table<Double, Double, String> cpTable = new
-    // CremerPoplePuckeringCalculation()
-    // .getCpTable();
-    // final Map<Vector3D, String> vectorTable = new HashMap<Vector3D,
-    // String>();
-    // for (Double tableTheta : cpTable.rowKeySet()) {
-    // for (Entry<Double, String> tablePhiEntry : cpTable.row(tableTheta)
-    // .entrySet()) {
-    // final Vector3D phiThetaVector = ChemUtils.phiThetaToVector(
-    // tablePhiEntry.getKey(), tableTheta);
-    // vectorTable.put(phiThetaVector, tablePhiEntry.getValue());
-    // }
-    // }
-    // return vectorTable;
-    // }
 
     /**
      * Returns a Cartesian mapping of the table.

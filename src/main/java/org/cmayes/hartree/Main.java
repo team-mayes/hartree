@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.cmayes.hartree.calc.Calculation;
 import org.cmayes.hartree.calc.impl.CartesianCremerPoplePuckeringCalculation;
@@ -17,6 +18,7 @@ import org.cmayes.hartree.calc.impl.GlucoseBondLengthCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseRingCalculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
+import org.cmayes.hartree.disp.db.SnapshotPostgresDisplay;
 import org.cmayes.hartree.disp.json.JsonDisplay;
 import org.cmayes.hartree.disp.txt.LowestEnergyTemplateDisplay;
 import org.cmayes.hartree.disp.txt.NormalModeTextDisplay;
@@ -74,6 +76,12 @@ public class Main<T> {
     private ProcType targetProc;
     @Option(metaVar = "EXTS", aliases = { "-e" }, name = "--extensions", usage = "Extensions to include in input directory searches (.log and .out by default)")
     private String[] inputExtensions = new String[] { ".log", ".out" };
+    @Option(metaVar = "TAGS", aliases = { "-t" }, name = "--tags", usage = "Categories that describe the input data")
+    private String[] categories;
+    @Option(metaVar = "PROJ", aliases = { "-n" }, name = "--projname", usage = "The name of this data's project (required for DB inserts)")
+    private String projectName;
+    @Option(metaVar = "CFG", aliases = { "-c" }, name = "--cfgfile", usage = "Configuration settings file (required for DB inserts)")
+    private Properties configs;
 
     /**
      * Returns the specified file location.
@@ -287,9 +295,28 @@ public class Main<T> {
         if (MediaType.JSON.equals(tgtMediaType)) {
             return (Display<T>) (Object) new JsonDisplay();
         }
+
+        if (MediaType.RDBMS.equals(tgtMediaType)) {
+            return createRdbmsDisplay();
+        }
+
         return (Display<T>) asNotNull(DISP_TYPE_TBL.get(hType, tgtMediaType),
                 String.format("No display for media %s on type %s",
                         getTargetMediaType(), hType.name()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Display<T> createRdbmsDisplay() {
+        switch (hType) {
+        case SNAPSHOT:
+        case CPSNAPSHOT:
+            SnapshotPostgresDisplay snapshotPostgresDisplay = new SnapshotPostgresDisplay(
+                    configs);
+            snapshotPostgresDisplay.setProjectName(projectName);
+            //snapshotPostgresDisplay.setCategories(categories);
+        default:
+            throw new IllegalArgumentException("Unhandled operation");
+        }
     }
 
     /**
