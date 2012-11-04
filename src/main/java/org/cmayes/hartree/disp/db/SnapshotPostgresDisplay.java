@@ -1,5 +1,6 @@
 package org.cmayes.hartree.disp.db;
 
+import static com.cmayes.common.exception.ExceptionUtils.asNotBlank;
 import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 
 import java.io.Writer;
@@ -7,9 +8,14 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.cmayes.hartree.disp.Display;
+import org.cmayes.hartree.disp.db.impl.PostgresJdbiSnapshotCalculationDao;
 import org.cmayes.hartree.model.BaseResult;
 import org.postgresql.ds.PGPoolingDataSource;
 import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.Handle;
+import org.skife.jdbi.v2.IDBI;
+import org.skife.jdbi.v2.tweak.HandleCallback;
+import org.skife.jdbi.v2.util.IntegerMapper;
 
 import com.cmayes.common.MediaType;
 
@@ -18,43 +24,30 @@ import com.cmayes.common.MediaType;
  * 
  */
 public class SnapshotPostgresDisplay implements Display<BaseResult> {
-    public static final String DEFAULT_DB = "hartree";
-    public static final String DEFAULT_SERVER = "localhost";
-    public static final String PASSWORD_KEY = "db.password";
-    public static final String USER_KEY = "db.user";
-    public static final String SERVER_KEY = "db.host";
-    public static final String DATABASE_KEY = "db.name";
-    private final PostgresSnapshotCalculationDao dao;
-    private int projId;
+
+    private Integer projId;
     private Collection<Integer> catIds;
+    private final SnapshotCalculationDao dao;
 
     /**
-     * Creates a display instance with the given DAO.
+     * Creates a display instance with the given DAO (mainly for testing).
      * 
-     * @param tgtDao
-     *            The DAO to wrap.
+     * @param calcDao
+     *            The DAO instance to use.
      */
-    public SnapshotPostgresDisplay(final PostgresSnapshotCalculationDao tgtDao) {
-        dao = asNotNull(tgtDao, "DAO is null");
+    public SnapshotPostgresDisplay(final SnapshotCalculationDao calcDao) {
+        this.dao = asNotNull(calcDao, "Calc DAO is null");
     }
 
     /**
-     * Creates a display insance with a DAO configured by the given config
+     * Creates a display instance with a DAO configured by the given config
      * properties.
      * 
      * @param cfgProps
      *            The properties to use.
      */
     public SnapshotPostgresDisplay(final Properties cfgProps) {
-        final PGPoolingDataSource ds = new PGPoolingDataSource();
-        ds.setPassword(asNotNull(asNotNull(cfgProps, "DB properties are null")
-                .getProperty(PASSWORD_KEY), String.format(
-                "Value for key %s is null", PASSWORD_KEY)));
-        ds.setUser(asNotNull(cfgProps.getProperty(USER_KEY),
-                String.format("Value for key %s is null", USER_KEY)));
-        ds.setServerName(cfgProps.getProperty(SERVER_KEY, DEFAULT_SERVER));
-        ds.setDatabaseName(cfgProps.getProperty(DATABASE_KEY, DEFAULT_DB));
-        dao = new DBI(ds).onDemand(PostgresSnapshotCalculationDao.class);
+        this.dao = new PostgresJdbiSnapshotCalculationDao(cfgProps);
     }
 
     @Override
@@ -84,7 +77,13 @@ public class SnapshotPostgresDisplay implements Display<BaseResult> {
 
     }
 
-    public void setProjectName(String projectName) {
-        
+    /**
+     * Finds or creates the project name in the database.
+     * 
+     * @param projectName
+     *            THe name of the project to create.
+     */
+    public void setProjectName(final String projectName) {
+ 
     }
 }
