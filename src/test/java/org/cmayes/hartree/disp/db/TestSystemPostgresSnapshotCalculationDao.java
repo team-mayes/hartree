@@ -191,7 +191,7 @@ public class TestSystemPostgresSnapshotCalculationDao {
         assertNotNull(calcId);
         final BaseResult result = createBaseResultInstance();
         dao.insertSummary(calcId, result);
-        final BaseResult saved = dao.findSummary(calcId);
+        assertEquals(result, dao.findSummary(calcId));
     }
 
     /**
@@ -200,8 +200,7 @@ public class TestSystemPostgresSnapshotCalculationDao {
      * @return A test base result instance.
      */
     private BaseResult createBaseResultInstance() {
-        final DefaultBaseResult result = new DefaultBaseResult(CALC_FNAME);
-        result.setAtomCount(10);
+        final DefaultBaseResult result = new DefaultBaseResult();
         result.setBasisSet("test basis set");
         result.setCharge(3);
         result.setDipoleMomentTotal(99.44);
@@ -213,11 +212,9 @@ public class TestSystemPostgresSnapshotCalculationDao {
         result.setFunctional("aaw2");
         result.setGibbs298(44322.22);
         result.setMult(2);
-        result.setRotPart(323.8756);
         result.setSolvent("test solvent");
         result.setStoichiometry("stoi!");
         result.setSymmetricTop(true);
-        result.setTransPart(7777.01);
         return result;
     }
 }

@@ -9,10 +9,14 @@ import static com.cmayes.common.exception.ExceptionUtils.asPositive;
 
 import java.util.Properties;
 
+import org.cmayes.hartree.disp.db.HartreeBeanMapper;
 import org.cmayes.hartree.disp.db.JdbiUtils;
+import org.cmayes.hartree.disp.db.PostgresArrayArgumentFactory;
 import org.cmayes.hartree.disp.db.SnapshotCalculationDao;
+import org.cmayes.hartree.disp.db.SqlArray;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.CalculationCategory;
+import org.cmayes.hartree.model.def.DefaultBaseResult;
 import org.cmayes.hartree.model.def.DefaultCalculationCategory;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.IDBI;
@@ -134,7 +138,6 @@ public class PostgresJdbiSnapshotCalculationDao implements
     public Long findCalculationId(final int projectId, final String filename)
             throws EnvironmentException {
         try {
-
             return this.dbi.withHandle(new HandleCallback<Long>() {
                 public Long withHandle(final Handle conn) {
                     return conn
@@ -160,7 +163,6 @@ public class PostgresJdbiSnapshotCalculationDao implements
     public Integer findCategoryId(final String name)
             throws EnvironmentException {
         try {
-
             return this.dbi.withHandle(new HandleCallback<Integer>() {
                 public Integer withHandle(final Handle conn) {
                     return conn
@@ -183,7 +185,6 @@ public class PostgresJdbiSnapshotCalculationDao implements
     @Override
     public CalculationCategory findCategory(final String name) {
         try {
-
             return this.dbi
                     .withHandle(new HandleCallback<CalculationCategory>() {
                         public CalculationCategory withHandle(final Handle conn) {
@@ -257,8 +258,34 @@ public class PostgresJdbiSnapshotCalculationDao implements
      */
     @Override
     public void insertSummary(final long calcId, final BaseResult result) {
-        // TODO Auto-generated method stub
-
+        try {
+            this.dbi.withHandle(new HandleCallback<Object>() {
+                public Object withHandle(final Handle conn) {
+                    conn.registerArgumentFactory(new PostgresArrayArgumentFactory());
+                    final int insertCount = conn
+                            .createStatement(
+                                    "INSERT INTO calc_summary (calc_id, solvent_type, "
+                                            + "stoichiometry, charge, multiplicity, functional, basis_set, "
+                                            + "energy, dipole, zpe, h298, g298, frequencies) VALUES (:calcId, "
+                                            + ":solvent, :stoichiometry, :charge, :mult, :functional, "
+                                            + ":basisSet, :elecEn, :dipoleMomentTotal, :zpeCorrection, "
+                                            + ":enthalpy298, :gibbs298, :freqs)")
+                            .bind("calcId", calcId)
+                            .bind("freqs",
+                                    new SqlArray<Double>(Double.class, result
+                                            .getFrequencyValues()))
+                            .bindFromProperties(result).execute();
+                    if (insertCount != 1) {
+                        throw new DatabaseException(
+                                "'%d' rows returned from insert rather than 1",
+                                insertCount);
+                    }
+                    return null;
+                }
+            });
+        } catch (final CallbackFailedException e) {
+            throw evalError(e);
+        }
     }
 
     /**
@@ -269,8 +296,23 @@ public class PostgresJdbiSnapshotCalculationDao implements
     @Override
     public BaseResult findSummary(final long calcId)
             throws EnvironmentException {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return this.dbi.withHandle(new HandleCallback<BaseResult>() {
+                public BaseResult withHandle(final Handle conn) {
+                    return conn
+                            .createQuery(
+                                    "SELECT calc_id AS calcId, solvent_type AS solvent, stoichiometry, charge, "
+                                            + "multiplicity AS mult, functional, basis_set AS basisSet, energy "
+                                            + "AS elecEn, dipole AS dipoleMomentTotal, zpe AS zpeCorrection, h298 AS enthalpy298, "
+                                            + "g298 AS gibbs298, frequencies AS frequencyValues FROM calc_summary WHERE calc_id = ?")
+                            .bind(0, asPositive(calcId))
+                            .map(new HartreeBeanMapper<DefaultBaseResult>(
+                                    DefaultBaseResult.class)).first();
+                }
+            });
+        } catch (final CallbackFailedException e) {
+            throw evalError(e);
+        }
     }
 
     /**

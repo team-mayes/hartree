@@ -448,6 +448,9 @@ public class Main<T> {
         // Register string array handler for CLI options.
         CmdLineParser.registerHandler(String[].class,
                 StringArrayOptionHandler.class);
+        // Register handler for reading Properties files.
+        CmdLineParser.registerHandler(Properties.class,
+                PropertiesOptionHandler.class);
     }
 
     /** The processor type to use. */
