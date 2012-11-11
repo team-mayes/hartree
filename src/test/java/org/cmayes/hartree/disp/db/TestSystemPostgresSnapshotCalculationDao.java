@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNull;
 import org.cmayes.hartree.disp.db.impl.PostgresJdbiSnapshotCalculationDao;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.CalculationCategory;
+import org.cmayes.hartree.model.def.CpCalculationSnapshot;
+import org.cmayes.hartree.model.def.CremerPopleCoordinates;
 import org.cmayes.hartree.model.def.DefaultBaseResult;
 import org.cmayes.hartree.model.def.DefaultCalculationCategory;
 import org.junit.After;
@@ -66,6 +68,8 @@ public class TestSystemPostgresSnapshotCalculationDao {
         }
         if (calcId != null) {
             dbHandle.execute("DELETE FROM calc_summary WHERE calc_id = ?",
+                    calcId);
+            dbHandle.execute("DELETE FROM cremer_pople WHERE calc_id = ?",
                     calcId);
             final PreparedBatch calcBaseBatch = dbHandle
                     .prepareBatch("DELETE FROM calculation WHERE id = ?");
@@ -195,12 +199,27 @@ public class TestSystemPostgresSnapshotCalculationDao {
     }
 
     /**
+     * Tests inserting a base result.
+     */
+    @Test
+    public void testCpCoordsInsert() {
+        final Integer projectId = dao.insertProjectName(PROJ_NAME);
+        assertNotNull(projectId);
+        final Long calcId = dao.insertCalculation(projectId, CALC_FNAME);
+        assertNotNull(calcId);
+        final CpCalculationSnapshot cpInst = createCpInstance();
+        dao.insertSummary(calcId, cpInst);
+        assertEquals(cpInst, dao.findSummary(calcId));
+    }
+
+    /**
      * Creates a test base result instance.
      * 
      * @return A test base result instance.
      */
     private BaseResult createBaseResultInstance() {
         final DefaultBaseResult result = new DefaultBaseResult();
+        result.setSourceName(CALC_FNAME);
         result.setBasisSet("test basis set");
         result.setCharge(3);
         result.setDipoleMomentTotal(99.44);
@@ -215,6 +234,41 @@ public class TestSystemPostgresSnapshotCalculationDao {
         result.setSolvent("test solvent");
         result.setStoichiometry("stoi!");
         result.setSymmetricTop(true);
+        return result;
+    }
+
+    /**
+     * Creates a test base result instance.
+     * 
+     * @return A test base result instance.
+     */
+    private CpCalculationSnapshot createCpInstance() {
+        final CpCalculationSnapshot result = new CpCalculationSnapshot();
+        result.setSourceName(CALC_FNAME);
+        result.setBasisSet("test basis set");
+        result.setCharge(3);
+        result.setDipoleMomentTotal(99.44);
+        result.setElecEn(78.33);
+        result.setEnthalpy298(1.9);
+        result.getFrequencyValues().add(11.32);
+        result.getFrequencyValues().add(8888.3);
+        result.getFrequencyValues().add(99223.22);
+        result.setFunctional("aaw2");
+        result.setGibbs298(44322.22);
+        result.setMult(2);
+        result.setSolvent("test solvent");
+        result.setStoichiometry("stoi!");
+        result.getCarbonDistances().add(99.0);
+        result.getCarbonDistances().add(6633.22);
+        result.getCarbonDistances().add(8888.);
+        result.getCarbonDistances().add(9.);
+        result.getOxygenDistances().add(9292.1);
+        result.getOxygenDistances().add(77.0022);
+        result.getOxygenDistances().add(13.3332);
+        CremerPopleCoordinates cpCoords = new CremerPopleCoordinates(992.,
+                44321.66, 1919192.2);
+        cpCoords.setPucker("14b");
+        result.setCpCoords(cpCoords);
         return result;
     }
 }

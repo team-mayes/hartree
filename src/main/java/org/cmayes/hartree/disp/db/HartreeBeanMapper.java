@@ -30,7 +30,6 @@ public class HartreeBeanMapper<T> implements ResultSetMapper<T> {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Class<T> type;
-    private final Map<String, PropertyDescriptor> properties = new HashMap<String, PropertyDescriptor>();
 
     /**
      * Creates a mapper for the given type.

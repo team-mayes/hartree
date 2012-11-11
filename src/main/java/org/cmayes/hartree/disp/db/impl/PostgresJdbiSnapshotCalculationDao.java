@@ -7,6 +7,7 @@ import static com.cmayes.common.exception.ExceptionUtils.asNotBlank;
 import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 import static com.cmayes.common.exception.ExceptionUtils.asPositive;
 
+import java.sql.BatchUpdateException;
 import java.util.Properties;
 
 import org.cmayes.hartree.disp.db.HartreeBeanMapper;
@@ -16,10 +17,15 @@ import org.cmayes.hartree.disp.db.SnapshotCalculationDao;
 import org.cmayes.hartree.disp.db.SqlArray;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.CalculationCategory;
+import org.cmayes.hartree.model.CremerPopleResult;
+import org.cmayes.hartree.model.def.CpCalculationSnapshot;
+import org.cmayes.hartree.model.def.CremerPopleCoordinates;
 import org.cmayes.hartree.model.def.DefaultBaseResult;
 import org.cmayes.hartree.model.def.DefaultCalculationCategory;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.IDBI;
+import org.skife.jdbi.v2.TransactionCallback;
+import org.skife.jdbi.v2.TransactionStatus;
 import org.skife.jdbi.v2.exceptions.CallbackFailedException;
 import org.skife.jdbi.v2.exceptions.DBIException;
 import org.skife.jdbi.v2.tweak.HandleCallback;
@@ -259,10 +265,12 @@ public class PostgresJdbiSnapshotCalculationDao implements
     @Override
     public void insertSummary(final long calcId, final BaseResult result) {
         try {
-            this.dbi.withHandle(new HandleCallback<Object>() {
-                public Object withHandle(final Handle conn) {
+            this.dbi.inTransaction(new TransactionCallback<Object>() {
+                @Override
+                public Object inTransaction(final Handle conn,
+                        final TransactionStatus status) throws Exception {
                     conn.registerArgumentFactory(new PostgresArrayArgumentFactory());
-                    final int insertCount = conn
+                    final int baseCount = conn
                             .createStatement(
                                     "INSERT INTO calc_summary (calc_id, solvent_type, "
                                             + "stoichiometry, charge, multiplicity, functional, basis_set, "
@@ -275,10 +283,58 @@ public class PostgresJdbiSnapshotCalculationDao implements
                                     new SqlArray<Double>(Double.class, result
                                             .getFrequencyValues()))
                             .bindFromProperties(result).execute();
-                    if (insertCount != 1) {
+                    if (baseCount != 1) {
                         throw new DatabaseException(
-                                "'%d' rows returned from insert rather than 1",
-                                insertCount);
+                                "'%d' rows returned from base insert rather than 1",
+                                baseCount);
+                    }
+                    if (result instanceof CremerPopleResult) {
+                        final CremerPopleResult cpResult = (CremerPopleResult) result;
+                        final CremerPopleCoordinates cpCoords = cpResult
+                                .getCpCoords();
+                        if (cpCoords == null) {
+                            final int cpCount = conn
+                                    .createStatement(
+                                            "INSERT INTO cremer_pople (calc_id, r, o) "
+                                                    + "VALUES (:calcId, :carbs, :oxys)")
+                                    .bind("calcId", calcId)
+                                    .bind("carbs",
+                                            new SqlArray<Double>(
+                                                    Double.class,
+                                                    cpResult.getCarbonDistances()))
+                                    .bind("oxys",
+                                            new SqlArray<Double>(
+                                                    Double.class,
+                                                    cpResult.getOxygenDistances()))
+                                    .execute();
+                            if (cpCount != 1) {
+                                throw new DatabaseException(
+                                        "'%d' rows returned from cp insert rather than 1",
+                                        cpCount);
+                            }
+                        } else {
+                            final int cpCount = conn
+                                    .createStatement(
+                                            "INSERT INTO cremer_pople (calc_id, phi, theta, q, pucker, r, o) "
+                                                    + "VALUES (:calcId, :phi, :theta, :q, :pucker, :carbs, "
+                                                    + ":oxys)")
+                                    .bind("calcId", calcId)
+                                    .bind("carbs",
+                                            new SqlArray<Double>(
+                                                    Double.class,
+                                                    cpResult.getCarbonDistances()))
+                                    .bind("oxys",
+                                            new SqlArray<Double>(
+                                                    Double.class,
+                                                    cpResult.getOxygenDistances()))
+                                    .bindFromProperties(cpCoords).execute();
+                            if (cpCount != 1) {
+                                throw new DatabaseException(
+                                        "'%d' rows returned from cp insert rather than 1",
+                                        cpCount);
+                            }
+                        }
+
                     }
                     return null;
                 }
@@ -297,17 +353,40 @@ public class PostgresJdbiSnapshotCalculationDao implements
     public BaseResult findSummary(final long calcId)
             throws EnvironmentException {
         try {
+
             return this.dbi.withHandle(new HandleCallback<BaseResult>() {
                 public BaseResult withHandle(final Handle conn) {
-                    return conn
+                    final CremerPopleCoordinates cpCoords = conn
                             .createQuery(
-                                    "SELECT calc_id AS calcId, solvent_type AS solvent, stoichiometry, charge, "
-                                            + "multiplicity AS mult, functional, basis_set AS basisSet, energy "
-                                            + "AS elecEn, dipole AS dipoleMomentTotal, zpe AS zpeCorrection, h298 AS enthalpy298, "
-                                            + "g298 AS gibbs298, frequencies AS frequencyValues FROM calc_summary WHERE calc_id = ?")
+                                    "SELECT calc_id AS calcId, phi, theta, q, pucker FROM cremer_pople WHERE calc_id = ?")
                             .bind(0, asPositive(calcId))
-                            .map(new HartreeBeanMapper<DefaultBaseResult>(
-                                    DefaultBaseResult.class)).first();
+                            .map(new HartreeBeanMapper<CremerPopleCoordinates>(
+                                    CremerPopleCoordinates.class)).first();
+                    if (cpCoords == null) {
+                        return conn
+                                .createQuery(
+                                        "SELECT c.filename AS sourceName, cs.calc_id AS calcId, cs.solvent_type AS solvent, cs.stoichiometry, cs.charge, "
+                                                + "cs.multiplicity AS mult, cs.functional, cs.basis_set AS basisSet, cs.energy "
+                                                + "AS elecEn, cs.dipole AS dipoleMomentTotal, cs.zpe AS zpeCorrection, cs.h298 AS enthalpy298, "
+                                                + "cs.g298 AS gibbs298, cs.frequencies AS frequencyValues FROM calc_summary cs, calculation c "
+                                                + "WHERE c.id = ? AND calc_id = c.id")
+                                .bind(0, asPositive(calcId))
+                                .map(new HartreeBeanMapper<DefaultBaseResult>(
+                                        DefaultBaseResult.class)).first();
+                    }
+                    final CpCalculationSnapshot cpSnap = conn
+                            .createQuery(
+                                    "SELECT c.filename AS sourceName, cs.calc_id AS calcId, cs.solvent_type AS solvent, cs.stoichiometry, cs.charge, "
+                                            + "cs.multiplicity AS mult, cs.functional, cs.basis_set AS basisSet, cs.energy "
+                                            + "AS elecEn, cs.dipole AS dipoleMomentTotal, cs.zpe AS zpeCorrection, cs.h298 AS enthalpy298, "
+                                            + "cs.g298 AS gibbs298, cs.frequencies AS frequencyValues, cp.r AS carbonDistances, cp.o "
+                                            + "AS oxygenDistances FROM calc_summary cs, cremer_pople cp, calculation c "
+                                            + "WHERE c.id = ? AND cp.calc_id = c.id AND cs.calc_id = cp.calc_id")
+                            .bind(0, asPositive(calcId))
+                            .map(new HartreeBeanMapper<CpCalculationSnapshot>(
+                                    CpCalculationSnapshot.class)).first();
+                    cpSnap.setCpCoords(cpCoords);
+                    return cpSnap;
                 }
             });
         } catch (final CallbackFailedException e) {
@@ -331,6 +410,11 @@ public class PostgresJdbiSnapshotCalculationDao implements
             wrapMe = e.getCause();
         }
         if (wrapMe instanceof DBIException) {
+            Throwable inner = e.getCause();
+            while (inner != null) {
+                wrapMe = inner;
+                inner = inner.getCause();
+            }
             return new DatabaseException("Problems with database call", wrapMe);
         }
         return new EnvironmentException("Problems with callback", wrapMe);

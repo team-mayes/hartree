@@ -112,10 +112,9 @@ public class CremerPopleCoordinates {
             return false;
         }
         final CremerPopleCoordinates rhs = (CremerPopleCoordinates) object;
-        return new EqualsBuilder().appendSuper(super.equals(object))
-                .append(this.theta, rhs.theta).append(this.q, rhs.q)
-                .append(this.pucker, rhs.pucker).append(this.phi, rhs.phi)
-                .isEquals();
+        return new EqualsBuilder().append(this.theta, rhs.theta)
+                .append(this.q, rhs.q).append(this.pucker, rhs.pucker)
+                .append(this.phi, rhs.phi).isEquals();
     }
 
     /**
@@ -124,8 +123,7 @@ public class CremerPopleCoordinates {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return new HashCodeBuilder(-518709381, 532456673)
-                .appendSuper(super.hashCode()).append(this.theta)
+        return new HashCodeBuilder(-518709381, 532456673).append(this.theta)
                 .append(this.q).append(this.pucker).append(this.phi)
                 .toHashCode();
     }
