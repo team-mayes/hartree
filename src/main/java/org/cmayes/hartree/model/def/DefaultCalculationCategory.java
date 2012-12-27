@@ -11,7 +11,7 @@ import org.cmayes.hartree.model.CalculationCategory;
  * @author cmayes
  */
 public class DefaultCalculationCategory implements CalculationCategory {
-    private Integer id;
+    private Long id;
     private String name;
     private String description;
 
@@ -36,22 +36,33 @@ public class DefaultCalculationCategory implements CalculationCategory {
     }
 
     /**
+     * Creates an instance with the given ID.
+     * 
+     * @param catId
+     *            The category ID.
+     */
+    public DefaultCalculationCategory(String catName, final Long catId) {
+        this.name = catName;
+        this.id = catId;
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * @see org.cmayes.hartree.model.CalculationCategory#getId()
      */
     @Override
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.model.CalculationCategory#setId(java.lang.Integer)
+     * @see org.cmayes.hartree.model.CalculationCategory#setId(java.lang.Long)
      */
     @Override
-    public void setId(final Integer catId) {
+    public void setId(final Long catId) {
         this.id = catId;
     }
 

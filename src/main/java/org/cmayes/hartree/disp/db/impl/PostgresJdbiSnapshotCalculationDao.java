@@ -5,9 +5,13 @@ package org.cmayes.hartree.disp.db.impl;
 
 import static com.cmayes.common.exception.ExceptionUtils.asNotBlank;
 import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
+import static com.cmayes.common.exception.ExceptionUtils.asNotNullCollection;
 import static com.cmayes.common.exception.ExceptionUtils.asPositive;
 
-import java.sql.BatchUpdateException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.cmayes.hartree.disp.db.HartreeBeanMapper;
@@ -24,12 +28,12 @@ import org.cmayes.hartree.model.def.DefaultBaseResult;
 import org.cmayes.hartree.model.def.DefaultCalculationCategory;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.IDBI;
+import org.skife.jdbi.v2.PreparedBatch;
 import org.skife.jdbi.v2.TransactionCallback;
 import org.skife.jdbi.v2.TransactionStatus;
 import org.skife.jdbi.v2.exceptions.CallbackFailedException;
 import org.skife.jdbi.v2.exceptions.DBIException;
 import org.skife.jdbi.v2.tweak.HandleCallback;
-import org.skife.jdbi.v2.util.IntegerMapper;
 import org.skife.jdbi.v2.util.LongMapper;
 
 import com.cmayes.common.exception.DatabaseException;
@@ -41,6 +45,7 @@ import com.cmayes.common.exception.EnvironmentException;
  */
 public class PostgresJdbiSnapshotCalculationDao implements
         SnapshotCalculationDao {
+    private static final String CAT_INS = "INSERT INTO category (name) VALUES(?) RETURNING id";
     private final IDBI dbi;
 
     /**
@@ -69,15 +74,15 @@ public class PostgresJdbiSnapshotCalculationDao implements
      * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#findProjectId(java.lang.String)
      */
     @Override
-    public Integer findProjectId(final String name) throws EnvironmentException {
+    public Long findProjectId(final String name) throws EnvironmentException {
         try {
-            return this.dbi.withHandle(new HandleCallback<Integer>() {
-                public Integer withHandle(final Handle conn) {
+            return this.dbi.withHandle(new HandleCallback<Long>() {
+                public Long withHandle(final Handle conn) {
                     return conn
                             .createQuery(
                                     "select id from project where name = ?")
                             .bind(0, asNotBlank(name, "Project name is blank"))
-                            .map(IntegerMapper.FIRST).first();
+                            .map(LongMapper.FIRST).first();
                 }
             });
         } catch (final CallbackFailedException e) {
@@ -91,41 +96,15 @@ public class PostgresJdbiSnapshotCalculationDao implements
      * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#insertProjectName(java.lang.String)
      */
     @Override
-    public Integer insertProjectName(final String name)
-            throws EnvironmentException {
-        try {
-            return this.dbi.withHandle(new HandleCallback<Integer>() {
-                public Integer withHandle(final Handle conn) {
-                    return conn
-                            .createQuery(
-                                    "INSERT INTO project (name) VALUES(?) RETURNING id")
-                            .bind(0, asNotBlank(name, "Project name is blank"))
-                            .map(IntegerMapper.FIRST).first();
-                }
-            });
-        } catch (final CallbackFailedException e) {
-            throw evalError(e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#insertCalculation(int,
-     *      java.lang.String)
-     */
-    @Override
-    public Long insertCalculation(final int projectId, final String filename)
+    public Long insertProjectName(final String name)
             throws EnvironmentException {
         try {
             return this.dbi.withHandle(new HandleCallback<Long>() {
                 public Long withHandle(final Handle conn) {
                     return conn
                             .createQuery(
-                                    "INSERT INTO calculation (project_id, filename) "
-                                            + "VALUES(?, ?) RETURNING id")
-                            .bind(0, asPositive(projectId))
-                            .bind(1, asNotBlank(filename, "File name is blank"))
+                                    "INSERT INTO project (name) VALUES(?) RETURNING id")
+                            .bind(0, asNotBlank(name, "Project name is blank"))
                             .map(LongMapper.FIRST).first();
                 }
             });
@@ -137,11 +116,56 @@ public class PostgresJdbiSnapshotCalculationDao implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#findCalculationId(int,
+     * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#insertCalculation(long,
      *      java.lang.String)
      */
     @Override
-    public Long findCalculationId(final int projectId, final String filename)
+    public Long insertCalculation(final long projectId, final String filename,
+            final Collection<Long> catIds) throws EnvironmentException {
+        try {
+            return this.dbi.inTransaction(new TransactionCallback<Long>() {
+                @Override
+                public Long inTransaction(final Handle conn,
+                        final TransactionStatus status) throws Exception {
+                    final Long calcId = conn
+                            .createQuery(
+                                    "INSERT INTO calculation (project_id, filename) "
+                                            + "VALUES(?, ?) RETURNING id")
+                            .bind(0, asPositive(projectId))
+                            .bind(1, asNotBlank(filename, "File name is blank"))
+                            .map(LongMapper.FIRST).first();
+                    final PreparedBatch batchHandle = conn
+                            .prepareBatch("INSERT INTO calc_category (calc_id, cat_id) VALUES(?, ?)");
+                    for (Long catId : asNotNullCollection(catIds,
+                            "Categories is null")) {
+                        batchHandle.add().bind(0, calcId).bind(1, catId);
+                    }
+                    final int[] execResult = batchHandle.execute();
+                    int totalRows = 0;
+                    for (int i = 0; i < execResult.length; i++) {
+                        totalRows += execResult[i];
+                    }
+                    if (totalRows != catIds.size()) {
+                        throw new EnvironmentException(
+                                "Tried to add %d categories to calc %s but result was %d",
+                                catIds.size(), filename, totalRows);
+                    }
+                    return calcId;
+                }
+            });
+        } catch (final CallbackFailedException e) {
+            throw evalError(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#findCalculationId(long,
+     *      java.lang.String)
+     */
+    @Override
+    public Long findCalculationId(final long projectId, final String filename)
             throws EnvironmentException {
         try {
             return this.dbi.withHandle(new HandleCallback<Long>() {
@@ -166,16 +190,15 @@ public class PostgresJdbiSnapshotCalculationDao implements
      * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#findCategoryId(java.lang.String)
      */
     @Override
-    public Integer findCategoryId(final String name)
-            throws EnvironmentException {
+    public Long findCategoryId(final String name) throws EnvironmentException {
         try {
-            return this.dbi.withHandle(new HandleCallback<Integer>() {
-                public Integer withHandle(final Handle conn) {
+            return this.dbi.withHandle(new HandleCallback<Long>() {
+                public Long withHandle(final Handle conn) {
                     return conn
                             .createQuery(
                                     "select id from category where name = ?")
                             .bind(0, asNotBlank(name, "Category name is null"))
-                            .map(IntegerMapper.FIRST).first();
+                            .map(LongMapper.FIRST).first();
                 }
             });
         } catch (final CallbackFailedException e) {
@@ -210,23 +233,62 @@ public class PostgresJdbiSnapshotCalculationDao implements
     }
 
     /**
+     * Returns a list of categories with the given names (may not include all
+     * names if some are not found).
+     * 
+     * @param name
+     *            The names to fetch.
+     * @return Any categories found.
+     */
+    @Override
+    public List<CalculationCategory> findCategories(
+            final Collection<String> name) {
+        if (asNotNullCollection(name, "Category name list or elements is null")
+                .isEmpty()) {
+            throw new IllegalArgumentException("Empty name list");
+        }
+        try {
+            return this.dbi
+                    .withHandle(new HandleCallback<List<CalculationCategory>>() {
+                        @SuppressWarnings({ "unchecked", "rawtypes" })
+                        public List<CalculationCategory> withHandle(
+                                final Handle conn) {
+                            conn.registerArgumentFactory(new PostgresArrayArgumentFactory());
+                            return (List) conn
+                                    .createQuery(
+                                            "select id, name, description from category where name = any(?)")
+                                    .bind(0,
+                                            new SqlArray<String>(
+                                                    String.class,
+                                                    asNotNullCollection(name,
+                                                            "Category name list or elements is null")))
+                                    .map(DefaultCalculationCategory.class)
+                                    .list();
+                        }
+                    });
+        } catch (final CallbackFailedException e) {
+            throw evalError(e);
+        }
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#insertCategory(org.cmayes.hartree.model.CalculationCategory)
      */
     @Override
-    public Integer insertCategory(final CalculationCategory category)
+    public Long insertCategory(final CalculationCategory category)
             throws EnvironmentException {
         try {
 
-            return this.dbi.withHandle(new HandleCallback<Integer>() {
-                public Integer withHandle(final Handle conn) {
+            return this.dbi.withHandle(new HandleCallback<Long>() {
+                public Long withHandle(final Handle conn) {
                     return conn
                             .createQuery(
                                     "INSERT INTO category (name, description) "
                                             + "VALUES(:name, :description) RETURNING id")
-                            .bindFromProperties(category)
-                            .map(IntegerMapper.FIRST).first();
+                            .bindFromProperties(category).map(LongMapper.FIRST)
+                            .first();
                 }
             });
         } catch (final CallbackFailedException e) {
@@ -240,17 +302,49 @@ public class PostgresJdbiSnapshotCalculationDao implements
      * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#insertCategoryName(java.lang.String)
      */
     @Override
-    public Integer insertCategoryName(final String catName)
+    public Long insertCategoryName(final String catName)
             throws EnvironmentException {
         try {
-            return this.dbi.withHandle(new HandleCallback<Integer>() {
-                public Integer withHandle(final Handle conn) {
-                    return conn
-                            .createQuery(
-                                    "INSERT INTO category (name) VALUES(?) RETURNING id")
-                            .bind(0, catName).map(IntegerMapper.FIRST).first();
+            return this.dbi.withHandle(new HandleCallback<Long>() {
+                public Long withHandle(final Handle conn) {
+                    return conn.createQuery(CAT_INS).bind(0, catName)
+                            .map(LongMapper.FIRST).first();
                 }
             });
+        } catch (final CallbackFailedException e) {
+            throw evalError(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.cmayes.hartree.disp.db.SnapshotCalculationDao#insertCategoryNames(Collection)
+     */
+    @Override
+    public Map<String, Long> insertCategoryNames(
+            final Collection<String> catNames) throws EnvironmentException {
+        if (catNames == null || catNames.isEmpty()) {
+            return new HashMap<String, Long>(0);
+        }
+
+        try {
+            return this.dbi
+                    .inTransaction(new TransactionCallback<Map<String, Long>>() {
+                        @Override
+                        public Map<String, Long> inTransaction(Handle conn,
+                                TransactionStatus status) throws Exception {
+
+                            HashMap<String, Long> resultMap = new HashMap<String, Long>(
+                                    catNames.size());
+                            for (String curName : catNames) {
+                                resultMap.put(curName, conn
+                                        .createQuery(CAT_INS).bind(0, curName)
+                                        .map(LongMapper.FIRST).first());
+                            }
+                            return resultMap;
+                        }
+                    });
         } catch (final CallbackFailedException e) {
             throw evalError(e);
         }

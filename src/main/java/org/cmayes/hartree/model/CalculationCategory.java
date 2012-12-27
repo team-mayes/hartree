@@ -9,13 +9,13 @@ public interface CalculationCategory {
     /**
      * @return the id
      */
-    Integer getId();
+    Long getId();
 
     /**
      * @param catId
      *            the id to set
      */
-    void setId(Integer catId);
+    void setId(Long catId);
 
     /**
      * @return the name

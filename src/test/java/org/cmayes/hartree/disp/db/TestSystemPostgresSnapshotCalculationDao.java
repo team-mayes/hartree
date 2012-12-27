@@ -1,8 +1,15 @@
 package org.cmayes.hartree.disp.db;
 
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.cmayes.hartree.disp.db.impl.PostgresJdbiSnapshotCalculationDao;
 import org.cmayes.hartree.model.BaseResult;
@@ -21,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.exception.DatabaseException;
+import com.cmayes.common.util.CollectionUtils2;
 
 /**
  * Tests for {@link SnapshotCalculationDao}.
@@ -32,8 +40,8 @@ public class TestSystemPostgresSnapshotCalculationDao {
     private static final String PROJ_NAME = "__TEST_PROJ_DAO__";
     private static final String CALC_FNAME = "__TEST_PROJ_CALC_FILE__";
     private static final String CAT_NAME = "__TEST_PROJ_CATEGORY__";
-    /** Logger. */
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final String CAT_NAME2 = "__TEST_PROJ_CATEGORY2__";
+    private static final String CAT_NAME3 = "__TEST_PROJ_CATEGORY3__";
     private SnapshotCalculationDao dao;
     private DBI dbi;
 
@@ -54,14 +62,25 @@ public class TestSystemPostgresSnapshotCalculationDao {
         // TODO: Look into using transactions to roll back changes instead
         // of manual deletes.
         final Handle dbHandle = dbi.open();
-        final Integer catId = dao.findCategoryId(CAT_NAME);
-        if (catId != null) {
+        final List<CalculationCategory> cats = dao.findCategories(Arrays
+                .asList(CAT_NAME, CAT_NAME2, CAT_NAME3));
+        if (!cats.isEmpty()) {
+            final PreparedBatch calcCatBatch = dbHandle
+                    .prepareBatch("DELETE FROM calc_category WHERE cat_id = ?");
+            for (CalculationCategory calculationCategory : cats) {
+                calcCatBatch.add(calculationCategory.getId());
+            }
+            calcCatBatch.execute();
+            
             final PreparedBatch calcBaseBatch = dbHandle
                     .prepareBatch("DELETE FROM category WHERE id = ?");
-            calcBaseBatch.add(catId);
+            for (CalculationCategory calculationCategory : cats) {
+                calcBaseBatch.add(calculationCategory.getId());
+            }
             calcBaseBatch.execute();
+
         }
-        final Integer projId = dao.findProjectId(PROJ_NAME);
+        final Long projId = dao.findProjectId(PROJ_NAME);
         Long calcId = null;
         if (projId != null) {
             calcId = dao.findCalculationId(projId, CALC_FNAME);
@@ -89,7 +108,7 @@ public class TestSystemPostgresSnapshotCalculationDao {
      */
     @Test
     public void testProjectInsert() {
-        Integer id = dao.findProjectId(PROJ_NAME);
+        Long id = dao.findProjectId(PROJ_NAME);
         assertNull(id);
         id = dao.insertProjectName(PROJ_NAME);
         assertNotNull(id);
@@ -112,10 +131,13 @@ public class TestSystemPostgresSnapshotCalculationDao {
      */
     @Test
     public void testCalcInsert() {
-        final Integer projectId = dao.insertProjectName(PROJ_NAME);
+        final Long projectId = dao.insertProjectName(PROJ_NAME);
         assertNotNull(projectId);
+        final Long catId = dao.insertCategoryName(CAT_NAME);
+        assertNotNull(catId);
         assertNull(dao.findCalculationId(projectId, CALC_FNAME));
-        final Long calcId = dao.insertCalculation(projectId, CALC_FNAME);
+        final Long calcId = dao.insertCalculation(projectId, CALC_FNAME,
+                Arrays.asList(catId));
         assertEquals(calcId, dao.findCalculationId(projectId, CALC_FNAME));
     }
 
@@ -124,10 +146,12 @@ public class TestSystemPostgresSnapshotCalculationDao {
      */
     @Test(expected = DatabaseException.class)
     public void testCalcDuplicateInsert() {
-        final Integer projectId = dao.insertProjectName(PROJ_NAME);
+        final Long projectId = dao.insertProjectName(PROJ_NAME);
         assertNotNull(projectId);
-        dao.insertCalculation(projectId, CALC_FNAME);
-        dao.insertCalculation(projectId, CALC_FNAME);
+        final Long catId = dao.insertCategoryName(CAT_NAME);
+        assertNotNull(catId);
+        dao.insertCalculation(projectId, CALC_FNAME, Arrays.asList(catId));
+        dao.insertCalculation(projectId, CALC_FNAME, Arrays.asList(catId));
     }
 
     // Category //
@@ -141,8 +165,24 @@ public class TestSystemPostgresSnapshotCalculationDao {
         final DefaultCalculationCategory catBean = new DefaultCalculationCategory(
                 CAT_NAME, CAT_DESC);
         dao.insertCategory(catBean);
-        final Integer catId = dao.findCategoryId(CAT_NAME);
+        final Long catId = dao.findCategoryId(CAT_NAME);
         assertEquals(catId, dao.findCategoryId(CAT_NAME));
+    }
+
+    /**
+     * Tests that we can create a category row.
+     */
+    @Test
+    public void testCategoriesFetch() {
+        dao.insertCategoryName(CAT_NAME);
+        dao.insertCategoryName(CAT_NAME2);
+        dao.insertCategoryName(CAT_NAME3);
+        final List<String> cats = Arrays.asList(CAT_NAME, CAT_NAME2, CAT_NAME3);
+        final List<CalculationCategory> findCategories = dao
+                .findCategories(cats);
+        assertEquals(cats.size(), findCategories.size());
+        assertThat(CollectionUtils2.collectBeanValues(findCategories, "name",
+                String.class), hasItems(CAT_NAME, CAT_NAME2, CAT_NAME3));
     }
 
     /**
@@ -177,9 +217,23 @@ public class TestSystemPostgresSnapshotCalculationDao {
     @Test
     public void testCategoryNameInsert() {
         assertNull(dao.findCategoryId(CAT_NAME));
-        dao.insertCategoryName(CAT_NAME);
-        final Integer catId = dao.findCategoryId(CAT_NAME);
-        assertEquals(catId, dao.findCategoryId(CAT_NAME));
+        final Long catId = dao.insertCategoryName(CAT_NAME);
+        assertEquals(catId, dao.findCategory(CAT_NAME).getId());
+    }
+
+    /**
+     * Tests that we can create a category name row.
+     */
+    @Test
+    public void testCategoryNamesInsert() {
+        assertNull(dao.findCategoryId(CAT_NAME));
+        Map<String, Long> catIdMap = dao.insertCategoryNames(Arrays.asList(
+                CAT_NAME, CAT_NAME2, CAT_NAME3));
+        assertEquals(3, catIdMap.size());
+        for (Entry<String, Long> idEntry : catIdMap.entrySet()) {
+            assertEquals(idEntry.getValue(), dao.findCategory(idEntry.getKey())
+                    .getId());
+        }
     }
 
     // Calculation Summary //
@@ -189,9 +243,12 @@ public class TestSystemPostgresSnapshotCalculationDao {
      */
     @Test
     public void testSummaryInsert() {
-        final Integer projectId = dao.insertProjectName(PROJ_NAME);
+        final Long projectId = dao.insertProjectName(PROJ_NAME);
         assertNotNull(projectId);
-        final Long calcId = dao.insertCalculation(projectId, CALC_FNAME);
+        final Long catId = dao.insertCategoryName(CAT_NAME2);
+        assertNotNull(catId);
+        final Long calcId = dao.insertCalculation(projectId, CALC_FNAME,
+                Arrays.asList(catId));
         assertNotNull(calcId);
         final BaseResult result = createBaseResultInstance();
         dao.insertSummary(calcId, result);
@@ -203,9 +260,12 @@ public class TestSystemPostgresSnapshotCalculationDao {
      */
     @Test
     public void testCpCoordsInsert() {
-        final Integer projectId = dao.insertProjectName(PROJ_NAME);
+        final Long projectId = dao.insertProjectName(PROJ_NAME);
         assertNotNull(projectId);
-        final Long calcId = dao.insertCalculation(projectId, CALC_FNAME);
+        final Long catId = dao.insertCategoryName(CAT_NAME);
+        assertNotNull(catId);
+        final Long calcId = dao.insertCalculation(projectId, CALC_FNAME,
+                Arrays.asList(catId));
         assertNotNull(calcId);
         final CpCalculationSnapshot cpInst = createCpInstance();
         dao.insertSummary(calcId, cpInst);

@@ -1,5 +1,9 @@
 package org.cmayes.hartree.disp.db;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.CalculationCategory;
 
@@ -8,8 +12,6 @@ import com.cmayes.common.exception.EnvironmentException;
 /**
  * Provides an interface for interacting with a Postgres database for saving
  * snapshot calculations.
- * 
- * TODO: calc_sum, cremer-pople, listings
  * 
  * @author cmayes
  */
@@ -25,7 +27,7 @@ public interface SnapshotCalculationDao {
      * @throws EnvironmentException
      *             When the query fails.
      */
-    Integer findProjectId(String name) throws EnvironmentException;
+    Long findProjectId(String name) throws EnvironmentException;
 
     /**
      * Creates a project for the given name.
@@ -36,7 +38,7 @@ public interface SnapshotCalculationDao {
      * @throws EnvironmentException
      *             When the insert fails.
      */
-    Integer insertProjectName(String name) throws EnvironmentException;
+    Long insertProjectName(String name) throws EnvironmentException;
 
     // Calculation header //
 
@@ -47,12 +49,14 @@ public interface SnapshotCalculationDao {
      *            The project associated with this calculation.
      * @param filename
      *            The name to look for.
+     * @param catIds
+     *            The category IDs for this calculation.
      * @return The ID for the new entry.
      * @throws EnvironmentException
      *             When the insert fails.
      */
-    Long insertCalculation(int projectId, String filename)
-            throws EnvironmentException;
+    Long insertCalculation(long projectId, String filename,
+            Collection<Long> catIds) throws EnvironmentException;
 
     /**
      * Returns the ID for the given file and project.
@@ -65,7 +69,7 @@ public interface SnapshotCalculationDao {
      * @throws EnvironmentException
      *             When the query fails.
      */
-    Long findCalculationId(int projectId, String filename)
+    Long findCalculationId(long projectId, String filename)
             throws EnvironmentException;
 
     // Category //
@@ -79,7 +83,7 @@ public interface SnapshotCalculationDao {
      * @throws EnvironmentException
      *             When the query fails.
      */
-    Integer findCategoryId(String name) throws EnvironmentException;
+    Long findCategoryId(String name) throws EnvironmentException;
 
     /**
      * Returns the bean for the given category name.
@@ -93,6 +97,16 @@ public interface SnapshotCalculationDao {
     CalculationCategory findCategory(String name) throws EnvironmentException;
 
     /**
+     * Returns a list of categories with the given names (may not include all
+     * names if some are not found).
+     * 
+     * @param name
+     *            The names to fetch.
+     * @return Any categories found.
+     */
+    List<CalculationCategory> findCategories(final Collection<String> name);
+
+    /**
      * Creates the category.
      * 
      * @param category
@@ -101,7 +115,7 @@ public interface SnapshotCalculationDao {
      * @throws EnvironmentException
      *             When the insert fails.
      */
-    Integer insertCategory(CalculationCategory category)
+    Long insertCategory(CalculationCategory category)
             throws EnvironmentException;
 
     /**
@@ -113,7 +127,19 @@ public interface SnapshotCalculationDao {
      * @throws EnvironmentException
      *             When the insert fails.
      */
-    Integer insertCategoryName(String catName) throws EnvironmentException;
+    Long insertCategoryName(String catName) throws EnvironmentException;
+
+    /**
+     * Creates categories for each name.
+     * 
+     * @param catNames
+     *            The names to insert.
+     * @return Names mapped to their IDs.
+     * @throws EnvironmentException
+     *             When any insert fails.
+     */
+    Map<String, Long> insertCategoryNames(final Collection<String> catNames)
+            throws EnvironmentException;
 
     // Summary //
 
