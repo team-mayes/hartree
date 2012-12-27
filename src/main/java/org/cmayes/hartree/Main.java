@@ -4,6 +4,8 @@ import static com.cmayes.common.CommonConstants.NL;
 import static com.cmayes.common.exception.ExceptionUtils.asNotNull;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +42,9 @@ import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+
 import com.cmayes.common.MediaType;
 import com.cmayes.common.file.ExtensionFilter;
 import com.google.common.collect.HashBasedTable;
@@ -69,6 +74,7 @@ public class Main<T> {
     private File file;
     private File inDir;
     private File outDir;
+    private Properties configs;
     private FileProcessor<T> testProcessor;
     private HandlingType hType;
     @Option(metaVar = "MEDIA", aliases = { "-m" }, name = "--mediatype", usage = "The media type to use instead of the default.")
@@ -78,11 +84,9 @@ public class Main<T> {
     @Option(metaVar = "EXTS", aliases = { "-e" }, name = "--extensions", usage = "Extensions to include in input directory searches (.log and .out by default)")
     private String[] inputExtensions = new String[] { ".log", ".out" };
     @Option(metaVar = "TAGS", aliases = { "-t" }, name = "--tags", usage = "Categories that describe the input data")
-    private String[] categories;
+    private String[] categories = new String[] {};
     @Option(metaVar = "PROJ", aliases = { "-n" }, name = "--projname", usage = "The name of this data's project (required for DB inserts)")
     private String projectName;
-    @Option(metaVar = "CFG", aliases = { "-c" }, name = "--cfgfile", usage = "Configuration settings file (required for DB inserts)")
-    private Properties configs;
 
     /**
      * Returns the specified file location.
@@ -114,6 +118,31 @@ public class Main<T> {
     public void setFile(final File theFile) {
         if (theFile.canRead()) {
             this.file = theFile;
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "File %s is not readable", theFile.getAbsolutePath()));
+        }
+    }
+
+    /**
+     * Sets the file if it is readable.
+     * 
+     * @param theFile
+     *            The file to read.
+     * @throws IllegalArgumentException
+     *             If the file is not readable.
+     */
+    @Option(metaVar = "CFG", aliases = { "-c" }, name = "--cfgfile", usage = "Configuration settings file (required for DB inserts)")
+    public void setConfigFile(final File theFile) {
+        if (theFile.canRead()) {
+            this.configs = new Properties();
+            try {
+                this.configs.load(new FileReader(theFile));
+            } catch (final IOException e) {
+                throw new IllegalArgumentException(String.format(
+                        "Can't read properties file %s",
+                        theFile.getAbsolutePath()), e);
+            }
         } else {
             throw new IllegalArgumentException(String.format(
                     "File %s is not readable", theFile.getAbsolutePath()));
@@ -176,14 +205,24 @@ public class Main<T> {
      */
     @SuppressWarnings("rawtypes")
     public static void main(final String... args) {
+        // assume SLF4J is bound to logback in the current environment
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        // print logback's internal status
+        StatusPrinter.print(lc);
+        
         try {
+            LOGGER.debug("Before main");
             new Main().doMain(args);
+            LOGGER.debug("After");
         } catch (final CmdLineException e) {
             printErrorUsage(System.err, e);
             System.exit(1);
         } catch (final Exception e) {
+            LOGGER.debug("Top-level exception caught");
             LOGGER.error("Top-level exception caught", e);
-            System.err.println(e.getMessage());
+            System.err.printf(
+                    "Error: %s(%s). Check error logs for more detail.%s", e
+                            .getClass().getSimpleName(), e.getMessage(), NL);
             System.exit(2);
         }
     }
@@ -197,6 +236,7 @@ public class Main<T> {
      *             When there are problems processing the command line.
      */
     public void doMain(final String... args) throws CmdLineException {
+
         final CmdLineParser parser = new CmdLineParser(this);
 
         parser.parseArgument(args);
@@ -316,7 +356,11 @@ public class Main<T> {
         switch (hType) {
         case SNAPSHOT:
         case CPSNAPSHOT:
-            return (Display<T>) new SnapshotJdbcDisplay(configs);
+            SnapshotJdbcDisplay jdbcDisplay = new SnapshotJdbcDisplay(configs);
+            jdbcDisplay.setProjectConfig(
+                    asNotNull(projectName, "Project name required"),
+                    Arrays.asList(categories));
+            return (Display<T>) jdbcDisplay;
         default:
             throw new IllegalArgumentException("Unhandled operation " + hType);
         }
@@ -451,9 +495,6 @@ public class Main<T> {
         // Register string array handler for CLI options.
         CmdLineParser.registerHandler(String[].class,
                 StringArrayOptionHandler.class);
-        // Register handler for reading Properties files.
-        CmdLineParser.registerHandler(Properties.class,
-                PropertiesOptionHandler.class);
     }
 
     /** The processor type to use. */

@@ -23,7 +23,7 @@ import com.cmayes.common.util.CollectionUtils2;
  */
 public class SnapshotJdbcDisplay implements Display<BaseResult> {
     private Long projectId;
-    private Collection<Long> catIds = new ArrayList<Long>();
+    private Collection<Long> catIds = new ArrayList<Long>(0);
     private final SnapshotCalculationDao dao;
     private boolean writeMulti;
 
@@ -90,16 +90,18 @@ public class SnapshotJdbcDisplay implements Display<BaseResult> {
         if (projectId == null) {
             projectId = dao.insertProjectName(projectName);
         }
-        final List<CalculationCategory> catEntries = dao
-                .findCategories(asNotNullCollection(cats,
-                        "Category collection is null or has null values"));
-        final Collection<Long> ids = CollectionUtils2.collectBeanValues(
-                catEntries, "id", Long.class);
-        final ArrayList<String> newCats = new ArrayList<String>(cats);
-        newCats.removeAll(CollectionUtils2.collectBeanValues(catEntries,
-                "name", String.class));
-        ids.addAll(dao.insertCategoryNames(newCats).values());
-        catIds = ids;
+        if (cats != null && cats.size() > 0) {
+            final List<CalculationCategory> catEntries = dao
+                    .findCategories(asNotNullCollection(cats,
+                            "Category collection is null or has null values"));
+            final Collection<Long> ids = CollectionUtils2.collectBeanValues(
+                    catEntries, "id", Long.class);
+            final ArrayList<String> newCats = new ArrayList<String>(cats);
+            newCats.removeAll(CollectionUtils2.collectBeanValues(catEntries,
+                    "name", String.class));
+            ids.addAll(dao.insertCategoryNames(newCats).values());
+            catIds = ids;
+        }
     }
 
     /**
