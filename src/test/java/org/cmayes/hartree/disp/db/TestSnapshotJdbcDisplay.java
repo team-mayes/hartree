@@ -73,6 +73,7 @@ public class TestSnapshotJdbcDisplay {
         display.setProjectId(ID2);
         final BaseResult result = mock(BaseResult.class);
         when(result.getSourceName()).thenReturn(TEST_SOURCE_NAME);
+        when(calcDao.findCalculationId(ID2, TEST_SOURCE_NAME)).thenReturn(null);
         when(
                 calcDao.insertCalculation(eq(ID2), eq(TEST_SOURCE_NAME),
                         anyListOf(Long.class))).thenReturn(ID);
@@ -95,6 +96,7 @@ public class TestSnapshotJdbcDisplay {
         display.setProjectConfig(TEST_PROJ_NAME, catNames);
         final BaseResult result = mock(BaseResult.class);
         when(result.getSourceName()).thenReturn(TEST_SOURCE_NAME);
+        when(calcDao.findCalculationId(ID2, TEST_SOURCE_NAME)).thenReturn(null);
         when(
                 calcDao.insertCalculation(eq(ID2), eq(TEST_SOURCE_NAME),
                         (Collection<Long>) argThat(hasItems(CAT_ID1, CAT_ID2))))

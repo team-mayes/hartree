@@ -18,3 +18,5 @@ bin/
 out/
 hartree.log
 data/
+hartree.properties
+dependency-reduced-pom.xml

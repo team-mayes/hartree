@@ -13,6 +13,8 @@ import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.db.impl.PostgresJdbiSnapshotCalculationDao;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.CalculationCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.MediaType;
 import com.cmayes.common.util.CollectionUtils2;
@@ -22,7 +24,10 @@ import com.cmayes.common.util.CollectionUtils2;
  * 
  */
 public class SnapshotJdbcDisplay implements Display<BaseResult> {
+    /** Logger. */
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private Long projectId;
+    private String projectName;
     private Collection<Long> catIds = new ArrayList<Long>(0);
     private final SnapshotCalculationDao dao;
     private boolean writeMulti;
@@ -55,9 +60,15 @@ public class SnapshotJdbcDisplay implements Display<BaseResult> {
 
     @Override
     public void write(final Writer writer, final BaseResult valToDisp) {
-        final Long calcId = dao.insertCalculation(projectId,
-                valToDisp.getSourceName(), catIds);
-        dao.insertSummary(calcId, valToDisp);
+        if (dao.findCalculationId(projectId, valToDisp.getSourceName()) == null) {
+            final Long calcId = dao.insertCalculation(projectId,
+                    valToDisp.getSourceName(), catIds);
+            dao.insertSummary(calcId, valToDisp);
+        } else {
+            logger.warn(String.format(
+                    "Source %s in project %s already exists; skipping.",
+                    valToDisp.getSourceName(), projectName));
+        }
     }
 
     @Override
@@ -78,17 +89,18 @@ public class SnapshotJdbcDisplay implements Display<BaseResult> {
     /**
      * Finds or creates the project name and categories to use for this run.
      * 
-     * @param projectName
+     * @param projName
      *            The name of the project to use.
      * @param cats
      *            The categories for this run.
      */
-    public synchronized void setProjectConfig(final String projectName,
+    public synchronized void setProjectConfig(final String projName,
             final Collection<String> cats) {
-        projectId = dao.findProjectId(asNotNull(projectName,
+        projectId = dao.findProjectId(asNotNull(projName,
                 "Project name is null"));
+        this.projectName = projName;
         if (projectId == null) {
-            projectId = dao.insertProjectName(projectName);
+            projectId = dao.insertProjectName(projName);
         }
         if (cats != null && cats.size() > 0) {
             final List<CalculationCategory> catEntries = dao

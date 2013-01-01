@@ -205,20 +205,12 @@ public class Main<T> {
      */
     @SuppressWarnings("rawtypes")
     public static void main(final String... args) {
-        // assume SLF4J is bound to logback in the current environment
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        // print logback's internal status
-        StatusPrinter.print(lc);
-        
         try {
-            LOGGER.debug("Before main");
             new Main().doMain(args);
-            LOGGER.debug("After");
         } catch (final CmdLineException e) {
             printErrorUsage(System.err, e);
             System.exit(1);
         } catch (final Exception e) {
-            LOGGER.debug("Top-level exception caught");
             LOGGER.error("Top-level exception caught", e);
             System.err.printf(
                     "Error: %s(%s). Check error logs for more detail.%s", e
@@ -236,7 +228,6 @@ public class Main<T> {
      *             When there are problems processing the command line.
      */
     public void doMain(final String... args) throws CmdLineException {
-
         final CmdLineParser parser = new CmdLineParser(this);
 
         parser.parseArgument(args);
