@@ -229,4 +229,12 @@
 			<url>http://localhost:8080/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<packaging>pom</packaging>
+	<modules>
+		<module>hartree-common</module>
+		<module>hartree-antlr</module>
+		<module>hartree-cli</module>
+		<module>hartree-jython</module>
+		<module>hartree-jdbi</module>
+	</modules>
 </project>
