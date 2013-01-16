@@ -9,8 +9,6 @@ import optparse
 import re
 import logging
 from ioutils import walk, cmakedir
-from subprocess import Popen, PIPE
-import json
 import os.path
 from os.path import expanduser
 
@@ -18,7 +16,12 @@ from os.path import expanduser
 DEF_EXT = '.log'
 DEF_SUFFIX = 'ccsdt'
 DEF_JAVA_CMD = 'java'
-DEF_HARTREE_JAR_LOC = expanduser('~/apps/hartree-1.1.2.jar')
+DEF_JAVA_CLASSPATH_ADD = expanduser('~/apps')
+DEF_HARTREE_JAR_LOC = os.path.join(DEF_JAVA_CLASSPATH_ADD, 'hartree-1.1.2.jar')
+sys.path.append(DEF_HARTREE_JAR_LOC)
+
+from org.cmayes.hartree.loader.gaussian import SnapshotLoader
+from java.io import FileReader
 
 # Exceptions #
 
@@ -37,38 +40,20 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 # Logic #
 
-class HartreeMoleculeComparator(object):
+class JavaHartreeMoleculeComparator(object):
     def __init__(self, java_cmd=DEF_JAVA_CMD,
                  hartree_jar=DEF_HARTREE_JAR_LOC):
         for key, value in locals().items():
             if key != self:
                 setattr(self, key, value)
         self.logger = logging.getLogger('hartree_comparator')
-    
-    def create_cmd(self, fname):
-        cmd = [self.java_cmd]
-        cmd += ["-jar", self.hartree_jar]
-        cmd += ["snap", "-m", "json"]
-        cmd += ["-f", fname]
-        return cmd
-    
-    def run(self, cmd):
-        "Creates a handle to a subprocess running the given command"
-        return Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    
-    def parse_atoms(self, json_str):
-        return json.loads(json_str)[0]["atoms"]
+        self.loader = SnapshotLoader()
     
     def get_atoms(self, fname):
         "Pulls the atoms data structure from the given file"
-        proc = self.run(self.create_cmd(fname))
-        out, err = proc.communicate()
-        if proc.returncode != 0:
-            raise HartreeError(
-                "Hartree returned a bad exit code %d.  Errors: %s" % 
-                  (proc.returncode, err,))
-        return self.parse_atoms(out)
-    
+        result = self.loader.load(fname, FileReader(fname))
+        return result.getAtoms()
+        
     def compare(self, first, second):
         try:
             first_atoms = self.get_atoms(first)
@@ -101,7 +86,7 @@ class SuffixFileComparator(object):
             files.
         """
         if comp_func is None:
-            comp_func = HartreeMoleculeComparator().compare
+            comp_func = JavaHartreeMoleculeComparator().compare
         
         self.inst_comp_func = comp_func
         self.suffix_re = re.compile("%s%s$" % (opts.suffix, opts.file_ext,))
