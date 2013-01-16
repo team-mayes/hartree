@@ -9,4 +9,16 @@
   <artifactId>hartree-jython</artifactId>
   <name>Hartree Jython</name>
   <description>Jython interface for Hartree</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.cmayes.hartree</groupId>
+  		<artifactId>hartree-antlr</artifactId>
+  		<version>${project.parent.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.python</groupId>
+  		<artifactId>jython</artifactId>
+  		<version>2.5.3</version>
+  	</dependency>
+  </dependencies>
 </project>
