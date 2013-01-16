@@ -25,11 +25,12 @@ import com.cmayes.common.util.EnvUtils;
  * @author cmayes
  */
 public class LowestEnergyTemplateDisplay implements Display<LowestEnergyMapper> {
+    public static final String DEF_LOWTPL = "lowtpl";
     private static final MediaType TYPE = MediaType.TEXT;
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private volatile boolean writeMulti = false;
-    private volatile String tplName = "lowtpl";
+    private volatile String tplName = DEF_LOWTPL;
 
     /**
      * {@inheritDoc}
@@ -115,5 +116,19 @@ public class LowestEnergyTemplateDisplay implements Display<LowestEnergyMapper> 
     @Override
     public void setWriteMulti(final boolean writeMult) {
         this.writeMulti = writeMult;
+    }
+
+    /**
+     * @return the tplName
+     */
+    public String getTplName() {
+        return tplName;
+    }
+
+    /**
+     * @param templateName the tplName to set
+     */
+    public void setTplName(String templateName) {
+        this.tplName = templateName;
     }
 }

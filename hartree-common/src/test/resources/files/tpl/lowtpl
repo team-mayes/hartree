@@ -1,0 +1,13 @@
+%chk=/scratch/hmayes/aglucose/XXXXXX.chk
+%mem=10GB
+%nproc=8
+# opt(modredundant) m062x/6-31G(d) scf=xqc nosymm
+
+again!
+
+0 1
+${atoms}
+D 7 1 8 12 F
+D 1 8 12 16 F
+D 8 12 16 5 F
+D 12 16 5 7 F

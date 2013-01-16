@@ -42,7 +42,10 @@ public class TestLowestEnergyTemplateDisplay {
         final LowestEnergyMapper lowMap = new LowestEnergyMapper();
         lowMap.add(1, results);
         final Writer stringWriter = new StringWriter();
-        new LowestEnergyTemplateDisplay().write(stringWriter, lowMap);
+        LowestEnergyTemplateDisplay lowDisp = new LowestEnergyTemplateDisplay();
+        lowDisp.setTplName(FILE_DIR_PFX + "tpl/"
+                + LowestEnergyTemplateDisplay.DEF_LOWTPL);
+        lowDisp.write(stringWriter, lowMap);
         assertEquals(EnvUtils.getStringFromReader(new FileReader(new File(
                 FILE_DIR_PFX, "txt/aglc_b14_157.txt"))),
                 stringWriter.toString());
