@@ -11,6 +11,11 @@
 			<outputDirectory>lib/java</outputDirectory>
 		</dependencySet>
 	</dependencySets>
+	<files>
+		<file>
+			<source>README.rst</source>
+		</file>
+	</files>
 	<fileSets>
 		<fileSet>
 			<directory>src/main/python</directory>
