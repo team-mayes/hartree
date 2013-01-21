@@ -2,7 +2,7 @@
 
 <configuration>
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>hartree.log</file>
+		<file>${user.home}/.hartree/hartree.log</file>
 		<append>true</append>
 		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
 			by default -->

@@ -4,6 +4,7 @@ import static com.cmayes.common.CommonConstants.NL;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import java.util.Properties;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.python.core.PyException;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +25,8 @@ import org.slf4j.LoggerFactory;
 public class Runner {
     /** Logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(Runner.class);
+
     /** Receives leftover command line parameters. */
-    @Argument
-    private final List<String> arguments = new ArrayList<String>();
 
     /**
      * @param args
@@ -34,9 +35,6 @@ public class Runner {
     public static void main(final String... args) {
         try {
             new Runner().doMain(args);
-        } catch (final CmdLineException e) {
-            printErrorUsage(System.err, e);
-            System.exit(1);
         } catch (final Exception e) {
             LOGGER.error("Top-level exception caught", e);
             System.err.printf(
@@ -55,17 +53,21 @@ public class Runner {
      *             When there are problems processing the command line.
      */
     public void doMain(final String... args) throws CmdLineException {
-        final CmdLineParser parser = new CmdLineParser(this);
-
-        parser.parseArgument(args);
-
-        if (arguments.isEmpty()) {
-            throw new CmdLineException(parser, "Script location required.");
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Script location required.");
         }
+
+        final String script = args[0];
 
         initInterpreter(args);
         // instantiate- note that it is AFTER initialize
-        new PythonInterpreter().execfile(arguments.get(0));
+        try {
+            new PythonInterpreter().execfile(script);
+        } catch (final PyException e) {
+            LOGGER.error("Problems running script " + script, e);
+            System.err.printf("Error %s: '%s' while running script %s: %s",
+                    e.type, e.value, script, NL);
+        }
     }
 
     /**

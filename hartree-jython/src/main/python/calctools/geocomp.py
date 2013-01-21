@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env jython
 
 """
 Compares geometry of two files based on a suffix pattern match.
@@ -11,6 +11,7 @@ import logging
 from ioutils import walk, cmakedir
 import os.path
 from os.path import expanduser
+import java
 
 # Constants #
 DEF_EXT = '.log'
@@ -29,7 +30,11 @@ class FileParserError(Exception): pass
 class HartreeError(FileParserError): pass
 
 # Log Setup #
-logfile = expanduser('~/.calctools/geocomp.log')
+logdir = os.environ.get("LOGDIR")
+if logdir:
+    logfile = os.path.join(logdir, "geocomp.log")
+else:
+    logfile = expanduser('~/.hartree/geocomp.log')
 
 if not os.path.exists(logfile):
     cmakedir(os.path.dirname(logfile))    
@@ -40,7 +45,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 # Logic #
 
-class JavaHartreeMoleculeComparator(object):
+class HartreeMoleculeComparator(object):
     def __init__(self, java_cmd=DEF_JAVA_CMD,
                  hartree_jar=DEF_HARTREE_JAR_LOC):
         for key, value in locals().items():
@@ -86,7 +91,7 @@ class SuffixFileComparator(object):
             files.
         """
         if comp_func is None:
-            comp_func = JavaHartreeMoleculeComparator().compare
+            comp_func = HartreeMoleculeComparator().compare
         
         self.inst_comp_func = comp_func
         self.suffix_re = re.compile("%s%s$" % (opts.suffix, opts.file_ext,))
@@ -174,6 +179,8 @@ def parse_cmdline(argv):
     parser.add_option('-s', '--suffix',
                       help='Suffix to compare vs. base (default is %s)' % 
                       DEF_SUFFIX, default=DEF_SUFFIX)
+    parser.add_option('-q', '--quiet', action="store_true",
+        help='Suppress non-error output')
     parser.add_option(# customized description; put --help last
         '-h', '--help', action='help',
         help='Show this help message and exit.')
@@ -207,8 +214,10 @@ def main(argv=None, out=sys.stdout, err=sys.stderr, walker=walk,
                   (len(mismatch_pairs), ", ".join([":".join([key, value]) for 
                    (key, value) in mismatch_pairs.items()]), os.linesep,))
         return 2
+    if not opts.quiet:
+        out.write("All pairs match." + os.linesep)
     return 0  # success
 
 if __name__ == '__main__':
     status = main()
-    sys.exit(status)
+    java.lang.System.exit(status)

@@ -1,0 +1,58 @@
+#!/bin/bash
+
+#-- class --
+APPCLASS=org.cmayes.hartree.jython.Runner
+PY_MOD_REGEX='([^\/]+).py$'
+
+# Directories
+ROOTDIR=$(cd $(dirname $0)/..; pwd)
+LIBDIR=${ROOTDIR}/lib
+LOGDIR=${ROOTDIR}/log
+JAVA_LIBDIR=${LIBDIR}/java
+PYTHON_LIBDIR=${LIBDIR}/python
+PYTHON_EXECDIR=${PYTHON_LIBDIR}/calctools
+CFGDIR=${ROOTDIR}/cfg
+SCRIPTSDIR=${ROOTDIR}/scripts
+
+#-- initialize --
+umask 077
+
+CP=$CLASSPATH:$CFGDIR:$JAVA_LIBDIR
+
+for jar in ${JAVA_LIBDIR}/*.jar; do
+  CP=$CP:${jar}
+done
+
+function lspymods() {
+	echo "Known modules:" 1>&2
+	for py in ${PYTHON_EXECDIR}/*.py; do
+	        if [[ $py =~ $PY_MOD_REGEX ]] &&
+	           [ ${BASH_REMATCH[1]} != '__init__' ]; then
+	                echo "${BASH_REMATCH[1]}"
+	        fi
+	done
+}
+
+if [ $# -eq 0 ]; then
+        echo "Syntax: ${0##*/} CMDNAME [cmd args/options]"
+        lspymods
+        exit 1
+fi
+
+PYCMD=$1
+shift
+PYTGT="${PYTHON_EXECDIR}/${PYCMD}.py"
+
+if [ ! -f "$PYTGT" ]; then
+        echo "Could not find Python module at ${PYTGT}" 1>&2
+        lspymods
+        exit 2
+fi
+
+# Export environment variables to be used in the child process
+
+export LOGDIR
+
+# Main script
+
+java -cp "$CP" -Dpython.path=$PYTHON_LIBDIR $APPCLASS $PYTGT "$@"

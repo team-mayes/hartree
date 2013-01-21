@@ -35,11 +35,11 @@ class DefaultSuffixTests(unittest.TestCase):
     
     def test_ext(self):
         self.calc.eval_file(EXT_FILE)
-        self.assertIn(EXT_FILE, self.calc.ext_files)
+        self.assertTrue(EXT_FILE in self.calc.ext_files)
 
     def test_suffix(self):
         self.calc.eval_file(SUFFIX_FILE)
-        self.assertIn(SUFFIX_FILE, self.calc.suffix_files)
+        self.assertTrue(SUFFIX_FILE in self.calc.suffix_files)
         
 class CustomSuffixTests(unittest.TestCase):
     "Tests for custom suffix and extension evaluations"
@@ -50,19 +50,19 @@ class CustomSuffixTests(unittest.TestCase):
     
     def test_ext(self):
         self.calc.eval_file(EXT_FILE)
-        self.assertNotIn(EXT_FILE, self.calc.ext_files)
+        self.assertFalse(EXT_FILE in self.calc.ext_files)
 
     def test_suffix(self):
         self.calc.eval_file(SUFFIX_FILE)
-        self.assertNotIn(SUFFIX_FILE, self.calc.suffix_files)
+        self.assertFalse(SUFFIX_FILE in self.calc.suffix_files)
 
     def test_custom_ext(self):
         self.calc.eval_file(CUSTOM_EXT_FILE)
-        self.assertIn(CUSTOM_EXT_FILE, self.calc.ext_files)
+        self.assertTrue(CUSTOM_EXT_FILE in self.calc.ext_files)
 
     def test_custom_suffix(self):
         self.calc.eval_file(CUSTOM_SUFFIX_FILE)
-        self.assertIn(CUSTOM_SUFFIX_FILE, self.calc.suffix_files)
+        self.assertTrue(CUSTOM_SUFFIX_FILE in self.calc.suffix_files)
         
 class MatchingFilesTests(unittest.TestCase):
     "Tests for matching base to suffix"
@@ -77,14 +77,14 @@ class MatchingFilesTests(unittest.TestCase):
         self.calc.eval_file(EXT_FILE)
         mismatch_suffix = self.calc.map_file_pairs()
         self.assertFalse(mismatch_suffix)
-        self.assertDictEqual(self.calc.pairs, {SUFFIX_FILE: EXT_FILE})
+        self.assertEqual(self.calc.pairs, {SUFFIX_FILE: EXT_FILE})
         
     def test_not_ext_match(self):
         "Tests not matching with an invalid ext"
         self.calc.eval_file(SUFFIX_FILE)
         self.calc.eval_file(CUSTOM_EXT_FILE)
         mismatch_suffix = self.calc.map_file_pairs()
-        self.assertIn(SUFFIX_FILE, mismatch_suffix)
+        self.assertTrue(SUFFIX_FILE in mismatch_suffix)
         self.assertFalse(self.calc.pairs)
         
     def test_not_suffix_match(self):
@@ -117,7 +117,7 @@ class EvalFilesTests(unittest.TestCase):
         comp = MagicMock(return_value=False)
         calc = prep_calc(comp)
         mismatches = calc.compare()
-        self.assertDictEqual(mismatches, {SUFFIX_FILE: EXT_FILE})
+        self.assertEqual(mismatches, {SUFFIX_FILE: EXT_FILE})
         comp.assert_called_with(SUFFIX_FILE, EXT_FILE)
 
 # HartreeMoleculeComparator
