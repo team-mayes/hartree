@@ -49,6 +49,18 @@ if [ ! -f "$PYTGT" ]; then
         exit 2
 fi
 
+# detect Cygwin
+cygwin=false;
+case "$(uname)" in
+  CYGWIN*) cygwin=true;
+esac
+
+if $cygwin; then
+	CP=$(cygpath -mp $CP)
+	PYTGT=$(cygpath -mp $PYTGT)
+	PYTHON_LIBDIR=$(cygpath -mp $PYTHON_LIBDIR)
+fi
+
 # Export environment variables to be used in the child process
 
 export LOGDIR

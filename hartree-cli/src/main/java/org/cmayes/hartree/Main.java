@@ -82,7 +82,7 @@ public class Main<T> {
     @Option(metaVar = "PROC", aliases = { "-p" }, name = "--proctype", usage = "The processor type to use instead of the default.")
     private ProcType targetProc;
     @Option(metaVar = "EXTS", aliases = { "-e" }, name = "--extensions", usage = "Extensions to include in input directory searches (.log and .out by default)")
-    private String[] inputExtensions = new String[] { ".log", ".out" };
+    private String[] inputExtensions = new String[] { ".log" };
     @Option(metaVar = "TAGS", aliases = { "-t" }, name = "--tags", usage = "Categories that describe the input data")
     private String[] categories = new String[] {};
     @Option(metaVar = "PROJ", aliases = { "-n" }, name = "--projname", usage = "The name of this data's project (required for DB inserts)")

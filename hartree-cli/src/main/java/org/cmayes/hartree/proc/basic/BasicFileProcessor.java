@@ -37,6 +37,8 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
     private final HandlingType handlingType;
     private final InputFileHandler inputFileHandler;
 
+    
+    
     /**
      * Creates a processor that will use the given parser and display.
      * 
