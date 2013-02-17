@@ -7,7 +7,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.cmayes.hartree.model.BaseResult;
-import org.cmayes.hartree.model.CremerPopleResult;
 import org.cmayes.hartree.model.GlucoseRingResult;
 
 import com.cmayes.common.model.Atom;

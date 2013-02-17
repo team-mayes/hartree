@@ -1,6 +1,6 @@
-package org.cmayes.hartree.model;
+package org.cmayes.hartree.model.def;
 
-import org.cmayes.hartree.model.def.CremerPopleCoordinates;
+import org.cmayes.hartree.model.GlucoseRingResult;
 
 /**
  * Defines a result containing Cremer-Pople coordinates.

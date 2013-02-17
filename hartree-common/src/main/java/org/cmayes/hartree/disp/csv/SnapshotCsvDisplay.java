@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.model.BaseResult;
-import org.cmayes.hartree.model.CremerPopleResult;
 import org.cmayes.hartree.model.def.CremerPopleCoordinates;
+import org.cmayes.hartree.model.def.CremerPopleResult;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
