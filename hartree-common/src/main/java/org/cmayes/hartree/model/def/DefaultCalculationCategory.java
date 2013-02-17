@@ -38,10 +38,12 @@ public class DefaultCalculationCategory implements CalculationCategory {
     /**
      * Creates an instance with the given ID.
      * 
+     * @param catName
+     *            The name of the category.
      * @param catId
      *            The category ID.
      */
-    public DefaultCalculationCategory(String catName, final Long catId) {
+    public DefaultCalculationCategory(final String catName, final Long catId) {
         this.name = catName;
         this.id = catId;
     }

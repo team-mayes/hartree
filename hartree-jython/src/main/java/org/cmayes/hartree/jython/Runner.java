@@ -3,15 +3,10 @@ package org.cmayes.hartree.jython;
 import static com.cmayes.common.CommonConstants.NL;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Properties;
 
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 import org.python.core.PyException;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;

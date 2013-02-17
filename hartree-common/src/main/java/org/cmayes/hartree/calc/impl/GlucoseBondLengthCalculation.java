@@ -100,8 +100,13 @@ public class GlucoseBondLengthCalculation implements Calculation {
             final Atom curCarb = glucoseRing.get(i);
             oxyLens.add(findOxyLen(curCarb, otherAtoms));
         }
-        final Atom nonRingCarbon = findCarbon(otherAtoms);
-        oxyLens.add(findOxyLen(nonRingCarbon, otherAtoms));
+        try {
+            final Atom nonRingCarbon = findCarbon(otherAtoms);
+            oxyLens.add(findOxyLen(nonRingCarbon, otherAtoms));
+        } catch (final NotFoundException e) {
+            logger.debug("No non-ring carbon found for input "
+                    + cpSnap.getSourceName(), e);
+        }
         cpSnap.setOxygenDistances(oxyLens);
     }
 

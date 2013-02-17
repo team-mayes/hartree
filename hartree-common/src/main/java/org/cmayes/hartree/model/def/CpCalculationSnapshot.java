@@ -116,13 +116,15 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof CpCalculationSnapshot)) {
             return false;
         }
-        CpCalculationSnapshot rhs = (CpCalculationSnapshot) object;
+        final CpCalculationSnapshot rhs = (CpCalculationSnapshot) object;
         return new EqualsBuilder().appendSuper(super.equals(this))
                 .append(this.carbonDistances, rhs.carbonDistances)
                 .append(this.oxygenDistances, rhs.oxygenDistances)
@@ -131,6 +133,8 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -141,6 +145,8 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {

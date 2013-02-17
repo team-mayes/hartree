@@ -24,8 +24,6 @@ import org.junit.Test;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.PreparedBatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.exception.DatabaseException;
 import com.cmayes.common.util.CollectionUtils2;

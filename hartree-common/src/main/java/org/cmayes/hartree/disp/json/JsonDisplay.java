@@ -31,7 +31,7 @@ public class JsonDisplay implements Display<Object> {
     public JsonDisplay() {
         objectMapper = new ObjectMapper();
         // We close our writers in the FileProcessors.
-        objectMapper.getJsonFactory().disable(
+        objectMapper.getFactory().disable(
                 JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         // Enable pretty printing.
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);

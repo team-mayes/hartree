@@ -23,7 +23,8 @@ import org.slf4j.LoggerFactory;
 import com.cmayes.common.exception.EnvironmentException;
 
 /**
- * A basic linear file processor.
+ * A linear file processor that collects all output into a single file named
+ * "accumulator-<operation name>.<target-format-ext>"
  * 
  * @author cmayes
  * 
@@ -150,10 +151,10 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
     }
 
     /**
-     * @param accWriter
+     * @param writer
      *            the accWriter to set
      */
-    void setAccWriter(Writer accWriter) {
-        this.accWriter = accWriter;
+    void setAccWriter(Writer writer) {
+        this.accWriter = writer;
     }
 }
