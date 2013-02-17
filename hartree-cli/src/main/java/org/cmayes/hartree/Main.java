@@ -42,9 +42,6 @@ import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
-
 import com.cmayes.common.MediaType;
 import com.cmayes.common.file.ExtensionFilter;
 import com.google.common.collect.HashBasedTable;
@@ -286,7 +283,9 @@ public class Main<T> {
 
         if (ProcType.ACCUM.equals(proc)) {
             return new AccumulatingFileProcessor<T>(hType, getLoader(),
-                    getDisplay(), getCalcs(), outDir);
+                    getDisplay(), getCalcs(),
+                    new BasicInputFileHandler(new ExtensionFilter(
+                            inputExtensions), inDir, outDir));
         } else if (ProcType.BASIC.equals(proc)) {
             return new BasicFileProcessor<T>(hType, getLoader(), getDisplay(),
                     getCalcs(), new BasicInputFileHandler(new ExtensionFilter(

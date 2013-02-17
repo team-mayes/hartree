@@ -28,10 +28,24 @@ public interface InputFileHandler {
      * @param inFile
      *            The filename to process.
      * @param cmdName
-     *            TODO
+     *            The name of the Hartree command being processed.
      * @param outExt
-     *            TODO
+     *            The extension for the output file.
      * @return A target writer for the given input file.
      */
     Writer createOutWriter(File inFile, String cmdName, String outExt);
+
+    /**
+     * Returns the configured input directory.
+     * 
+     * @return the inDir
+     */
+    File getInDir();
+
+    /**
+     * Returns the configured output directory.
+     * 
+     * @return the outDir
+     */
+    File getOutDir();
 }

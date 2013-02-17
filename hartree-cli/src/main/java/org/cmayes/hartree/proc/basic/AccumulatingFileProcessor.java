@@ -16,6 +16,7 @@ import org.cmayes.hartree.calc.Calculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.loader.Loader;
 import org.cmayes.hartree.proc.FileProcessor;
+import org.cmayes.hartree.proc.InputFileHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,31 +37,8 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
     private final Display<T> displayer;
     private final List<Calculation> calculations;
     private final HandlingType handlingType;
-    private File outDir;
+    private final InputFileHandler inputFileHandler;
     private Writer accWriter;
-
-    /**
-     * Creates a processor that will use the given parser and display.
-     * 
-     * @param handType
-     *            The handling type.
-     * @param theParser
-     *            The parser to use.
-     * @param theDisp
-     *            The display to use.
-     * @param calcs
-     *            The calculations to use.
-     */
-    public AccumulatingFileProcessor(final HandlingType handType,
-            final Loader<T> theParser, final Display<T> theDisp,
-            final List<Calculation> calcs) {
-        this.handlingType = asNotNull(handType, "Handler type is null");
-        this.parser = asNotNull(theParser, "Parser is null");
-        this.displayer = asNotNull(theDisp, "Display is null");
-        this.displayer.setWriteMulti(true);
-        accWriter = new OutputStreamWriter(System.out);
-        this.calculations = asNotNull(calcs, "Calculations cannot be null.");
-    }
 
     /**
      * Creates a processor that will use the given parser and display and will
@@ -74,25 +52,26 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
      *            The display to use.
      * @param calcs
      *            The calculations to use.
-     * @param out
-     *            The output directory (may be null to indicate no output
-     *            directory).
+     * @param fileHandler
+     *            The handler to use for files.
      */
     public AccumulatingFileProcessor(final HandlingType handType,
             final Loader<T> theParser, final Display<T> theDisp,
-            final List<Calculation> calcs, final File out) {
+            final List<Calculation> calcs, final InputFileHandler fileHandler) {
         this.handlingType = asNotNull(handType, "Handler type is null");
         this.parser = asNotNull(theParser, "Parser is null");
         this.displayer = asNotNull(theDisp, "Display is null");
         this.displayer.setWriteMulti(true);
         this.calculations = asNotNull(calcs, "Calculations cannot be null.");
-        this.outDir = out;
-        if (outDir == null) {
+        this.inputFileHandler = asNotNull(fileHandler, "Handler is null");
+
+        if (inputFileHandler.getOutDir() == null) {
             accWriter = new OutputStreamWriter(System.out);
         } else {
-            final File outFile = new File(String.format("%s%s%s-%s.%s", outDir
-                    .getAbsolutePath(), File.separator, "accumulator",
-                    handlingType.getCommandName(), displayer.getMediaType()
+            final File outFile = new File(String.format("%s%s%s-%s.%s",
+                    inputFileHandler.getOutDir().getAbsolutePath(),
+                    File.separator, "accumulator", handlingType
+                            .getCommandName(), displayer.getMediaType()
                             .getPrimaryExtension()));
             try {
                 if (!outFile.exists() && (!outFile.createNewFile())) {
@@ -105,7 +84,6 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
                         + outFile, e);
             }
         }
-
     }
 
     /**
@@ -151,29 +129,7 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
      */
     @Override
     public void displayAll(final File processDir) {
-        if (processDir.isDirectory()) {
-            final String[] children = processDir.list();
-            for (int i = 0; i < children.length; i++) {
-                displayAll(new File(processDir, children[i]));
-            }
-        } else {
-            display(processDir);
-        }
-    }
-
-    /**
-     * @return the outDir
-     */
-    public File getOutDir() {
-        return outDir;
-    }
-
-    /**
-     * @param dir
-     *            the outDir to set
-     */
-    public void setOutDir(final File dir) {
-        this.outDir = dir;
+        inputFileHandler.handle(processDir, this);
     }
 
     @Override
@@ -184,5 +140,20 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
         } catch (final IOException e) {
             logger.warn("Problems closing the accumulator", e);
         }
+    }
+
+    /**
+     * @return the accWriter
+     */
+    Writer getAccWriter() {
+        return accWriter;
+    }
+
+    /**
+     * @param accWriter
+     *            the accWriter to set
+     */
+    void setAccWriter(Writer accWriter) {
+        this.accWriter = accWriter;
     }
 }

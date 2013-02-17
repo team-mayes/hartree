@@ -173,4 +173,22 @@ public class BasicInputFileHandler implements InputFileHandler {
     public void setSysOut(final PrintStream out) {
         this.sysOut = out;
     }
+
+    /**
+     * Returns the configured input directory.
+     * 
+     * @return the inDir
+     */
+    public File getInDir() {
+        return inDir;
+    }
+
+    /**
+     * Returns the configured output directory.
+     * 
+     * @return the outDir
+     */
+    public File getOutDir() {
+        return outDir;
+    }
 }
