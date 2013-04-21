@@ -98,14 +98,22 @@ public class GlucoseBondLengthCalculation implements Calculation {
         // Starting at idx 1 to skip oxygen
         for (int i = 1; i < glucoseRing.size() - 1; i++) {
             final Atom curCarb = glucoseRing.get(i);
-            oxyLens.add(findOxyLen(curCarb, otherAtoms));
+            try {
+                oxyLens.add(findLen(curCarb, otherAtoms, AtomicElement.OXYGEN));
+            } catch (final NotFoundException e) {
+                logger.debug(
+                        "Couldn't find oxygen for carbon {}; trying to find a nitrogen instead",
+                        curCarb);
+                oxyLens.add(findLen(curCarb, otherAtoms, AtomicElement.NITROGEN));
+            }
         }
         try {
             final Atom nonRingCarbon = findCarbon(otherAtoms);
-            oxyLens.add(findOxyLen(nonRingCarbon, otherAtoms));
+            oxyLens.add(findLen(nonRingCarbon, otherAtoms, AtomicElement.OXYGEN));
         } catch (final NotFoundException e) {
-            logger.debug("No non-ring carbon found for input "
-                    + cpSnap.getSourceName(), e);
+            logger.debug(
+                    "No non-ring carbon found for input "
+                            + cpSnap.getSourceName(), e);
         }
         cpSnap.setOxygenDistances(oxyLens);
     }
@@ -129,26 +137,31 @@ public class GlucoseBondLengthCalculation implements Calculation {
     }
 
     /**
-     * Finds the distance between the given carbon and the otherAtoms group
-     * oxygen atom that has a bond with it.
+     * Finds the distance between the given carbon and the otherAtoms group of
+     * the given type that has a bond with it the carbon.
      * 
      * @param curCarb
      *            The carb to check.
      * @param otherAtoms
-     *            The list of atoms containing candidate oxygens (and a carbon).
+     *            The list of atoms containing candidate elements (and a
+     *            carbon).
+     * @param elemType
+     *            The element type to search for.
      * @return The distance.
      * @throws NotFoundException
-     *             When the oxygen isn't found.
+     *             When the atom of the given element isn't found.
      */
-    private Double findOxyLen(final Atom curCarb, final List<Atom> otherAtoms) {
+    private Double findLen(final Atom curCarb, final List<Atom> otherAtoms,
+            final AtomicElement elemType) {
         for (Atom atom : otherAtoms) {
             if (ChemUtils.hasBond(curCarb, atom)
-                    && AtomicElement.OXYGEN.equals(atom.getType())) {
+                    && elemType.equals(atom.getType())) {
                 return ChemUtils.vectorForAtom(curCarb).distance(
                         ChemUtils.vectorForAtom(atom));
             }
         }
-        throw new NotFoundException("No oxygen found for carbon " + curCarb);
+        throw new NotFoundException(String.format("No %s found for carbon %s",
+                elemType.name().toLowerCase(), curCarb));
     }
 
 }
