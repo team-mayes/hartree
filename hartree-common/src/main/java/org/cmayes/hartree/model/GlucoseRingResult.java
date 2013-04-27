@@ -30,4 +30,9 @@ public interface GlucoseRingResult {
      * @return the oxygenDistances
      */
     List<Double> getOxygenDistances();
+    
+    /**
+     * @return the ionDistances
+     */
+    List<Double> getIonDistances();
 }

@@ -36,7 +36,8 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             "H298 (Hartrees)", "G298 (Hartrees)", "Freq 1", "Freq 2", "phi",
             "theta", "Q", "Pucker", "R1 (A)", "R2 (A)", "R3 (A)", "R4 (A)",
             "R5 (A)", "R6 (A)", "O1 (A)", "O2 (A)", "O3 (A)", "O4 (A)",
-            "O6 (A)" };
+            "O6 (A)", "Ion1 (A)", "Ion2 (A)", "Ion3 (A)", "Ion4 (A)",
+            "Ion5 (A)", "Ion6 (A)" };
     private boolean first = true;
     private volatile boolean writeMulti = false;
 
@@ -89,7 +90,8 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                             h298, g298, firstFreq, secFreq, MISSING, MISSING,
                             MISSING, MISSING, MISSING, MISSING, MISSING,
                             MISSING, MISSING, MISSING, MISSING, MISSING,
-                            MISSING, MISSING, MISSING });
+                            MISSING, MISSING, MISSING, MISSING, MISSING,
+                            MISSING, MISSING, MISSING, MISSING });
 
                 } else {
                     final String phi = valOrMissing(cpCoords.getPhi());
@@ -106,7 +108,10 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                     final String[] withOxys = ObjectArrays.concat(withCarbs,
                             valListOrMissing(cpResult.getOxygenDistances(), 5),
                             String.class);
-                    csvWriter.writeNext(withOxys);
+                    final String[] withIons = ObjectArrays.concat(withOxys,
+                            valListOrMissing(cpResult.getIonDistances(), 6),
+                            String.class);
+                    csvWriter.writeNext(withIons);
                 }
             } else {
                 csvWriter.writeNext(new String[] { fname, solv, stoi, charge,

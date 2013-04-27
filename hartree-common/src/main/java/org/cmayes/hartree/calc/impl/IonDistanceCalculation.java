@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.chem.AtomicElement;
 import com.cmayes.common.exception.NotFoundException;
+import com.cmayes.common.exception.TooManyException;
 import com.cmayes.common.model.Atom;
 import com.cmayes.common.util.ChemUtils;
 
@@ -17,11 +18,18 @@ import com.cmayes.common.util.ChemUtils;
  * @author cmayes
  * 
  */
-public class GlucoseBondLengthCalculation implements Calculation {
-    private static final int LAST_CARBON_IDX = 5;
-    private static final int FULL_RING_SIZE = 6;
+public class IonDistanceCalculation implements Calculation {
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final AtomicElement ionTarget;
+
+    /**
+     * TODO: Make parameterized ion value.
+     */
+    public IonDistanceCalculation() {
+        ionTarget = AtomicElement.SODIUM;
+    }
 
     /**
      * {@inheritDoc}
@@ -34,21 +42,19 @@ public class GlucoseBondLengthCalculation implements Calculation {
             final CpCalculationSnapshot cpSnap = new CpCalculationSnapshot(
                     (CpCalculationSnapshot) rawInput);
             try {
-                fillCarbons(cpSnap);
+                final Atom ionAtom = ChemUtils.findSingle(ionTarget,
+                        cpSnap.getAtoms());
+                fillIonDistances(cpSnap, ionAtom);
             } catch (final NotFoundException e) {
-                logger.warn("Could not find all carbon lengths for source "
-                        + cpSnap.getSourceName(), e);
-            } catch (final IllegalStateException e) {
-                logger.warn("Could not find all carbon lengths for source "
-                        + cpSnap.getSourceName(), e);
+                logger.info(
+                        "Could not find ion atom of type {}.  Skipping distance calc.",
+                        ionTarget.name(), e);
+            } catch (final TooManyException e) {
+                logger.info(
+                        "Found too many atoms of type {}.  Skipping distance calc.",
+                        ionTarget.name(), e);
             }
 
-            try {
-                fillOxygens(cpSnap);
-            } catch (final NotFoundException e) {
-                logger.warn("Could not find all oxygen lengths for atoms "
-                        + cpSnap.getSourceName(), e);
-            }
             return cpSnap;
         } else {
             throw new IllegalArgumentException(String.format(
@@ -61,26 +67,19 @@ public class GlucoseBondLengthCalculation implements Calculation {
      * 
      * @param cpSnap
      *            The instance to process.
+     * @param ion
+     *            The ion to measure against.
      */
-    private void fillCarbons(final CpCalculationSnapshot cpSnap) {
-        final List<Atom> glucoseRing = cpSnap.getGlucoseRing();
-        if (glucoseRing == null) {
-            throw new IllegalStateException("Glucose ring is null");
-        } else if (glucoseRing.size() < FULL_RING_SIZE) {
-            throw new IllegalStateException(String.format(
-                    "Glucose ring has %d atoms, which is less than six",
-                    glucoseRing.size()));
-        }
-        final List<Double> carbLens = new ArrayList<Double>(glucoseRing.size());
-        for (int i = 0; i < glucoseRing.size(); i++) {
-            int nextIdx = i + 1;
-            if (i == LAST_CARBON_IDX) {
-                nextIdx = 0;
+    private void fillIonDistances(final CpCalculationSnapshot cpSnap,
+            final Atom ion) {
+        final List<Atom> oxygens = cpSnap.getOxygenAtoms();
+        final List<Double> ionDistances = new ArrayList<Double>(6);
+        for (Atom oxyAtom : oxygens) {
+            if (oxyAtom != null) {
+                ionDistances.add(ChemUtils.findDistance(ion, oxyAtom));
             }
-            carbLens.add(ChemUtils.vectorForAtom(glucoseRing.get(i)).distance(
-                    ChemUtils.vectorForAtom(glucoseRing.get(nextIdx))));
         }
-        cpSnap.setCarbonDistances(carbLens);
+        cpSnap.setIonDistances(ionDistances);
     }
 
     /**
@@ -94,16 +93,13 @@ public class GlucoseBondLengthCalculation implements Calculation {
         final List<Atom> glucoseRing = cpSnap.getGlucoseRing();
         final List<Atom> otherAtoms = new ArrayList<Atom>(cpSnap.getAtoms());
         otherAtoms.removeAll(glucoseRing);
-        final List<Atom> oxyAtoms = new ArrayList<Atom>(6);
-        final List<Double> oxyLens = new ArrayList<Double>(5);
+        final List<Double> oxyLens = new ArrayList<Double>();
         // Starting at idx 1 to skip oxygen
         for (int i = 1; i < glucoseRing.size() - 1; i++) {
             final Atom curCarb = glucoseRing.get(i);
             try {
-                final Atom bondAtom = ChemUtils.findBondAtom(curCarb,
-                        otherAtoms, AtomicElement.OXYGEN);
-                oxyAtoms.add(bondAtom);
-                oxyLens.add(ChemUtils.findDistance(curCarb, bondAtom));
+                oxyLens.add(ChemUtils.findBond(curCarb, otherAtoms,
+                        AtomicElement.OXYGEN));
             } catch (final NotFoundException e) {
                 logger.debug(
                         "Couldn't find oxygen for carbon {}; trying to find a nitrogen instead",
@@ -112,25 +108,15 @@ public class GlucoseBondLengthCalculation implements Calculation {
                         AtomicElement.NITROGEN));
             }
         }
-
-        // Fill for any missing oxygens
-        while (oxyAtoms.size() < 5) {
-            oxyAtoms.add(null);
-        }
-        // Insert ring oxygen
-        oxyAtoms.set(4, glucoseRing.get(0));
         try {
             final Atom nonRingCarbon = findCarbon(otherAtoms);
-            final Atom bondAtom = ChemUtils.findBondAtom(nonRingCarbon,
-                    otherAtoms, AtomicElement.OXYGEN);
-            oxyAtoms.add(bondAtom);
-            oxyLens.add(ChemUtils.findDistance(nonRingCarbon, bondAtom));
+            oxyLens.add(ChemUtils.findBond(nonRingCarbon, otherAtoms,
+                    AtomicElement.OXYGEN));
         } catch (final NotFoundException e) {
             logger.debug(
                     "No non-ring carbon found for input "
                             + cpSnap.getSourceName(), e);
         }
-        cpSnap.setOxygenAtoms(oxyAtoms);
         cpSnap.setOxygenDistances(oxyLens);
     }
 

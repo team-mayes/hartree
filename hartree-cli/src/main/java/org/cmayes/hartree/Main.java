@@ -19,6 +19,7 @@ import org.cmayes.hartree.calc.impl.CartesianCremerPoplePuckeringCalculation;
 import org.cmayes.hartree.calc.impl.CremerPopleCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseBondLengthCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseRingCalculation;
+import org.cmayes.hartree.calc.impl.IonDistanceCalculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
 import org.cmayes.hartree.disp.db.SnapshotJdbcDisplay;
@@ -479,6 +480,7 @@ public class Main<T> {
         final ArrayList<Calculation> cpSnapCalcs = new ArrayList<Calculation>();
         cpSnapCalcs.add(new GlucoseRingCalculation());
         cpSnapCalcs.add(new GlucoseBondLengthCalculation());
+        cpSnapCalcs.add(new IonDistanceCalculation());
         cpSnapCalcs.add(new CremerPopleCalculation());
         cpSnapCalcs.add(new CartesianCremerPoplePuckeringCalculation());
         CALC_MAP.put(HandlingType.CPSNAPSHOT, cpSnapCalcs);

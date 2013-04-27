@@ -20,8 +20,10 @@ import com.cmayes.common.model.Atom;
 public class CpCalculationSnapshot extends DefaultBaseResult implements
         CremerPopleResult, GlucoseRingResult {
     private List<Atom> glucoseRing = new ArrayList<Atom>();
+    private List<Atom> oxygenAtoms = new ArrayList<Atom>();
     private List<Double> carbonDistances = new ArrayList<Double>();
     private List<Double> oxygenDistances = new ArrayList<Double>();
+    private List<Double> ionDistances = new ArrayList<Double>();
     private CremerPopleCoordinates cpCoords;
 
     /**
@@ -42,6 +44,8 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
         this.cpCoords = snap.getCpCoords();
         this.carbonDistances = snap.getCarbonDistances();
         this.oxygenDistances = snap.getOxygenDistances();
+        this.ionDistances = snap.getIonDistances();
+        this.oxygenAtoms = snap.getOxygenAtoms();
     }
 
     /**
@@ -69,6 +73,21 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
         this.glucoseRing = ring;
     }
 
+    /**
+     * @return the oxygenAtoms
+     */
+    public List<Atom> getOxygenAtoms() {
+        return oxygenAtoms;
+    }
+
+    /**
+     * @param oxyAtoms
+     *            the oxygen atoms to set
+     */
+    public void setOxygenAtoms(final List<Atom> oxyAtoms) {
+        this.oxygenAtoms = oxyAtoms;
+    }
+    
     /**
      * @return the cpCoords
      */
@@ -100,6 +119,10 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     }
 
     /**
+     * Returns the bond lengths between oxygen atoms and carbon members of the
+     * glucose ring. Note that the fifth item is O6; O5 is omitted as it is a
+     * member of the ring itself.
+     * 
      * @return the oxygenDistances
      */
     public List<Double> getOxygenDistances() {
@@ -109,9 +132,29 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     /**
      * @param oxygenDist
      *            the oxygenDistances to set
+     * @see #getOxygenDistances()
      */
     public void setOxygenDistances(final List<Double> oxygenDist) {
         this.oxygenDistances = oxygenDist;
+    }
+
+    /**
+     * Returns the distances between an ion atom and carbon members of the
+     * glucose ring.
+     * 
+     * @return the ionDistances
+     */
+    public List<Double> getIonDistances() {
+        return ionDistances;
+    }
+
+    /**
+     * @param ionDist
+     *            the ionDistances to set
+     * @see #getIonDistances()
+     */
+    public void setIonDistances(final List<Double> ionDist) {
+        this.ionDistances = ionDist;
     }
 
     /**
