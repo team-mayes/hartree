@@ -27,8 +27,8 @@ public class IonDistanceCalculation implements Calculation {
     /**
      * TODO: Make parameterized ion value.
      */
-    public IonDistanceCalculation() {
-        ionTarget = AtomicElement.SODIUM;
+    public IonDistanceCalculation(AtomicElement tgtType) {
+        ionTarget = tgtType;
     }
 
     /**

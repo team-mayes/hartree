@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cmayes.common.MediaType;
+import com.cmayes.common.chem.AtomicElement;
 import com.cmayes.common.file.ExtensionFilter;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -77,6 +78,8 @@ public class Main<T> {
     private Properties configs;
     private FileProcessor<T> testProcessor;
     private HandlingType hType;
+    @Option(metaVar = "ION", aliases = { "-i" }, name = "--ion", usage = "The ion element type to use.")
+    private AtomicElement ion;
     @Option(metaVar = "MEDIA", aliases = { "-m" }, name = "--mediatype", usage = "The media type to use instead of the default.")
     private MediaType targetMedia;
     @Option(metaVar = "PROC", aliases = { "-p" }, name = "--proctype", usage = "The processor type to use instead of the default.")
@@ -303,8 +306,17 @@ public class Main<T> {
      * @return The configured calculations for the current handling type.
      */
     private List<Calculation> getCalcs() {
-        final List<Calculation> list = CALC_MAP.get(hType);
-        return list == null ? new ArrayList<Calculation>() : list;
+        List<Calculation> staticList = CALC_MAP.get(hType);
+        if (staticList == null) {
+            return new ArrayList<Calculation>();
+        }
+        final List<Calculation> list = new ArrayList<Calculation>(staticList);
+        // TODO: Consider looking for glucose ring calc rather than doing a
+        // per-handling-type check.
+        if (HandlingType.CPSNAPSHOT.equals(hType)) {
+            list.add(new IonDistanceCalculation(getIon()));
+        }
+        return list;
     }
 
     /**
@@ -349,7 +361,8 @@ public class Main<T> {
         switch (hType) {
         case SNAPSHOT:
         case CPSNAPSHOT:
-            SnapshotJdbcDisplay jdbcDisplay = new SnapshotJdbcDisplay(configs);
+            final SnapshotJdbcDisplay jdbcDisplay = new SnapshotJdbcDisplay(
+                    configs);
             jdbcDisplay.setProjectConfig(
                     asNotNull(projectName, "Project name required"),
                     Arrays.asList(categories));
@@ -380,6 +393,16 @@ public class Main<T> {
                             hType));
         }
         return mediaType;
+    }
+
+    /**
+     * @return The ion to use for ion distance calculations (sodium by default).
+     */
+    AtomicElement getIon() {
+        if (ion != null) {
+            return ion;
+        }
+        return AtomicElement.SODIUM;
     }
 
     /**
@@ -484,7 +507,6 @@ public class Main<T> {
         cpSnapCalcs.add(new HMDihedralAngleCalculation());
         cpSnapCalcs.add(new ACDihedralAngleCalculation());
         cpSnapCalcs.add(new GlucoseBondLengthCalculation());
-        cpSnapCalcs.add(new IonDistanceCalculation());
         cpSnapCalcs.add(new CremerPopleCalculation());
         cpSnapCalcs.add(new CartesianCremerPoplePuckeringCalculation());
         CALC_MAP.put(HandlingType.CPSNAPSHOT, cpSnapCalcs);

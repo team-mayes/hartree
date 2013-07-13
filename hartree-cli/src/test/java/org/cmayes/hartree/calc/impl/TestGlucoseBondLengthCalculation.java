@@ -10,6 +10,7 @@ import java.util.List;
 import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.def.CpCalculationSnapshot;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -53,6 +54,7 @@ public class TestGlucoseBondLengthCalculation {
      *             If there are problems.
      */
     @Test
+    @Ignore
     public void testNagOxyLengths() throws Exception {
         final CpCalculationSnapshot bondCalc = (CpCalculationSnapshot) BOND_CALC
                 .calculate(loadTarget(NAG_LOG));
