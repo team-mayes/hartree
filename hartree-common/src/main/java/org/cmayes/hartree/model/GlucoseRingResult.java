@@ -30,9 +30,38 @@ public interface GlucoseRingResult {
      * @return the oxygenDistances
      */
     List<Double> getOxygenDistances();
-    
+
     /**
      * @return the ionDistances
      */
     List<Double> getIonDistances();
+
+    /**
+     * The first Hydroxymethyl arm angle in degrees for O5 - C5 - C6 - O6.
+     * 
+     * @return the hmArmAngle1
+     */
+    Double getHmArmAngle1();
+
+    /**
+     * The second Hydroxymethyl arm angle in degrees for C4 - C5 - C6 - O6.
+     * 
+     * @return the hmArmAngle2
+     */
+    Double getHmArmAngle2();
+    
+    /**
+     * The first dihedral angle in degrees for the Acetyl arm of NAG: C1 - C2 -
+     * N - C7.
+     * 
+     * @return the acArmAngle1
+     */
+    Double getAcArmAngle1();
+
+    /**
+     * The second dihedral angle in degrees for the Acetyl arm of NAG: C3 - C2 - N - C7.
+     * 
+     * @return the acArmAngle2
+     */
+    Double getAcArmAngle2();
 }

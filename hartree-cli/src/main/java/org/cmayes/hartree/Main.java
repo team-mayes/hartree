@@ -15,10 +15,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.cmayes.hartree.calc.Calculation;
+import org.cmayes.hartree.calc.impl.ACDihedralAngleCalculation;
 import org.cmayes.hartree.calc.impl.CartesianCremerPoplePuckeringCalculation;
 import org.cmayes.hartree.calc.impl.CremerPopleCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseBondLengthCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseRingCalculation;
+import org.cmayes.hartree.calc.impl.HMDihedralAngleCalculation;
 import org.cmayes.hartree.calc.impl.IonDistanceCalculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
@@ -479,6 +481,8 @@ public class Main<T> {
         // Add calcs
         final ArrayList<Calculation> cpSnapCalcs = new ArrayList<Calculation>();
         cpSnapCalcs.add(new GlucoseRingCalculation());
+        cpSnapCalcs.add(new HMDihedralAngleCalculation());
+        cpSnapCalcs.add(new ACDihedralAngleCalculation());
         cpSnapCalcs.add(new GlucoseBondLengthCalculation());
         cpSnapCalcs.add(new IonDistanceCalculation());
         cpSnapCalcs.add(new CremerPopleCalculation());

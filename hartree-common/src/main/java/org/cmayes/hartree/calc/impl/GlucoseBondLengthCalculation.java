@@ -1,5 +1,7 @@
 package org.cmayes.hartree.calc.impl;
 
+import static com.cmayes.common.util.ChemUtils.findSingleBondAtom;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,8 +102,8 @@ public class GlucoseBondLengthCalculation implements Calculation {
         for (int i = 1; i < glucoseRing.size() - 1; i++) {
             final Atom curCarb = glucoseRing.get(i);
             try {
-                final Atom bondAtom = ChemUtils.findBondAtom(curCarb,
-                        otherAtoms, AtomicElement.OXYGEN);
+                final Atom bondAtom = findSingleBondAtom(curCarb, otherAtoms,
+                        AtomicElement.OXYGEN);
                 oxyAtoms.add(bondAtom);
                 oxyLens.add(ChemUtils.findDistance(curCarb, bondAtom));
             } catch (final NotFoundException e) {
@@ -120,11 +122,12 @@ public class GlucoseBondLengthCalculation implements Calculation {
         // Insert ring oxygen
         oxyAtoms.set(4, glucoseRing.get(0));
         try {
-            final Atom nonRingCarbon = findCarbon(otherAtoms);
-            final Atom bondAtom = ChemUtils.findBondAtom(nonRingCarbon,
-                    otherAtoms, AtomicElement.OXYGEN);
-            oxyAtoms.add(bondAtom);
-            oxyLens.add(ChemUtils.findDistance(nonRingCarbon, bondAtom));
+            final Atom hmArmCarbon = findSingleBondAtom(glucoseRing.get(5),
+                    otherAtoms, AtomicElement.CARBON);
+            final Atom bondOxy = findSingleBondAtom(hmArmCarbon, otherAtoms,
+                    AtomicElement.OXYGEN);
+            oxyAtoms.add(bondOxy);
+            oxyLens.add(ChemUtils.findDistance(hmArmCarbon, bondOxy));
         } catch (final NotFoundException e) {
             logger.debug(
                     "No non-ring carbon found for input "
@@ -132,24 +135,6 @@ public class GlucoseBondLengthCalculation implements Calculation {
         }
         cpSnap.setOxygenAtoms(oxyAtoms);
         cpSnap.setOxygenDistances(oxyLens);
-    }
-
-    /**
-     * Finds the first carbon in the list of non-ring atoms.
-     * 
-     * @param otherAtoms
-     *            The atoms to search.
-     * @return The first carbon.
-     * @throws NotFoundException
-     *             If no carbon is found.
-     */
-    private Atom findCarbon(final List<Atom> otherAtoms) {
-        for (Atom atom : otherAtoms) {
-            if (AtomicElement.CARBON.equals(atom.getType())) {
-                return atom;
-            }
-        }
-        throw new NotFoundException("No carbon found in non-ring atoms.");
     }
 
 }
