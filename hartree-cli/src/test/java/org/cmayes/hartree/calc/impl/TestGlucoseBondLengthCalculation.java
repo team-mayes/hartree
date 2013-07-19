@@ -54,7 +54,6 @@ public class TestGlucoseBondLengthCalculation {
      *             If there are problems.
      */
     @Test
-    @Ignore
     public void testNagOxyLengths() throws Exception {
         final CpCalculationSnapshot bondCalc = (CpCalculationSnapshot) BOND_CALC
                 .calculate(loadTarget(NAG_LOG));
@@ -64,7 +63,7 @@ public class TestGlucoseBondLengthCalculation {
         assertThat(oxygenDistances.get(1), closeTo(1.45647, ERR_MARGIN));
         assertThat(oxygenDistances.get(2), closeTo(1.40613, ERR_MARGIN));
         assertThat(oxygenDistances.get(3), closeTo(1.43464, ERR_MARGIN));
-        assertThat(oxygenDistances.get(4), closeTo(1.22173, ERR_MARGIN));
+        assertThat(oxygenDistances.get(4), closeTo(1.41877, ERR_MARGIN));
     }
     
     
