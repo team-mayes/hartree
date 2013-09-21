@@ -25,9 +25,11 @@ public class IonDistanceCalculation implements Calculation {
     private final AtomicElement ionTarget;
 
     /**
-     * TODO: Make parameterized ion value.
+     * Creates a distance calculation for the given type.
+     * 
+     * @param tgtType The ion element type to target.
      */
-    public IonDistanceCalculation(AtomicElement tgtType) {
+    public IonDistanceCalculation(final AtomicElement tgtType) {
         ionTarget = tgtType;
     }
 

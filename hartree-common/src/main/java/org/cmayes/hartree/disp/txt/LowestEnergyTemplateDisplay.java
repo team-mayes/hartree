@@ -128,7 +128,7 @@ public class LowestEnergyTemplateDisplay implements Display<LowestEnergyMapper> 
     /**
      * @param templateName the tplName to set
      */
-    public void setTplName(String templateName) {
+    public void setTplName(final String templateName) {
         this.tplName = templateName;
     }
 }

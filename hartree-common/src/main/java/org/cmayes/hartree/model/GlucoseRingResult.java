@@ -64,4 +64,18 @@ public interface GlucoseRingResult {
      * @return the acArmAngle2
      */
     Double getAcArmAngle2();
+    
+    /**
+     * The first third angle in degrees for C5 - O5 - C1 - O1.
+     * 
+     * @return the thirdAngle1
+     */
+    Double getAnoAngle1();
+
+    /**
+     * The second third angle in degrees for C3 - C2 - C1 - O1.
+     * 
+     * @return the thirdAngle2
+     */
+    Double getAnoAngle2();
 }

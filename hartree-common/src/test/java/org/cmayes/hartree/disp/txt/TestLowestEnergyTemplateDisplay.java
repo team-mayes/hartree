@@ -42,7 +42,7 @@ public class TestLowestEnergyTemplateDisplay {
         final LowestEnergyMapper lowMap = new LowestEnergyMapper();
         lowMap.add(1, results);
         final Writer stringWriter = new StringWriter();
-        LowestEnergyTemplateDisplay lowDisp = new LowestEnergyTemplateDisplay();
+        final LowestEnergyTemplateDisplay lowDisp = new LowestEnergyTemplateDisplay();
         lowDisp.setTplName(FILE_DIR_PFX + "tpl/"
                 + LowestEnergyTemplateDisplay.DEF_LOWTPL);
         lowDisp.write(stringWriter, lowMap);

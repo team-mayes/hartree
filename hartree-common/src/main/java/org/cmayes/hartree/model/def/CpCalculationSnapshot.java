@@ -29,6 +29,8 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     private Double acArmAngle1;
     private Double hmArmAngle2;
     private Double acArmAngle2;
+    private Double anoAngle1;
+    private Double anoAngle2;
 
     /**
      * Zero-arg constructor.
@@ -54,6 +56,8 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
         this.hmArmAngle2 = snap.getHmArmAngle2();
         this.acArmAngle1 = snap.getAcArmAngle1();
         this.acArmAngle2 = snap.getAcArmAngle2();
+        this.anoAngle1 = snap.getAnoAngle1();
+        this.anoAngle2 = snap.getAnoAngle2();
     }
 
     /**
@@ -167,7 +171,7 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.model.GlucoseRingResult#getHmArmAngle1()
      */
     public Double getHmArmAngle1() {
@@ -184,7 +188,7 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.model.GlucoseRingResult#getHmArmAngle2()
      */
     public Double getHmArmAngle2() {
@@ -201,7 +205,7 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.model.GlucoseRingResult#getAcArmAngle1()
      */
     public Double getAcArmAngle1() {
@@ -215,10 +219,10 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     public void setAcArmAngle1(final Double angle1) {
         this.acArmAngle1 = angle1;
     }
-    
+
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.cmayes.hartree.model.GlucoseRingResult#getAcArmAngle2()
      */
     public Double getAcArmAngle2() {
@@ -234,8 +238,37 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     }
 
     /**
+     * @return the thirdAngle1
+     */
+    public Double getAnoAngle1() {
+        return anoAngle1;
+    }
+
+    /**
+     * @param thirdAngle1
+     *            the thirdAngle1 to set
+     */
+    public void setAnoAngle1(final Double thirdAngle1) {
+        this.anoAngle1 = thirdAngle1;
+    }
+
+    /**
+     * @return the thirdAngle2
+     */
+    public Double getAnoAngle2() {
+        return anoAngle2;
+    }
+
+    /**
+     * @param thirdAngle2
+     *            the thirdAngle2 to set
+     */
+    public void setAnoAngle2(final Double thirdAngle2) {
+        this.anoAngle2 = thirdAngle2;
+    }
+
+    /**
      * {@inheritDoc}
-     * 
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(final Object object) {
@@ -243,7 +276,9 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
             return false;
         }
         final CpCalculationSnapshot rhs = (CpCalculationSnapshot) object;
-        return new EqualsBuilder().appendSuper(super.equals(this))
+        return new EqualsBuilder().appendSuper(super.equals(object))
+                .append(this.anoAngle2, rhs.anoAngle2)
+                .append(this.anoAngle1, rhs.anoAngle1)
                 .append(this.carbonDistances, rhs.carbonDistances)
                 .append(this.ionDistances, rhs.ionDistances)
                 .append(this.oxygenDistances, rhs.oxygenDistances)
@@ -259,12 +294,12 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     /**
      * {@inheritDoc}
      * 
-     * 
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return new HashCodeBuilder(-451670217, -1850688737)
-                .appendSuper(super.hashCode()).append(this.carbonDistances)
+        return new HashCodeBuilder(-334262149, 954656579)
+                .appendSuper(super.hashCode()).append(this.anoAngle2)
+                .append(this.anoAngle1).append(this.carbonDistances)
                 .append(this.ionDistances).append(this.oxygenDistances)
                 .append(this.cpCoords).append(this.oxygenAtoms)
                 .append(this.hmArmAngle1).append(this.hmArmAngle2)
@@ -280,6 +315,8 @@ public class CpCalculationSnapshot extends DefaultBaseResult implements
     public String toString() {
         return new ToStringBuilder(this)
                 .append("functional", this.getFunctional())
+                .append("anoAngle1", this.anoAngle1)
+                .append("anoAngle2", this.anoAngle2)
                 .append("frequencyValues", this.getFrequencyValues())
                 .append("glucoseRing", this.glucoseRing)
                 .append("mult", this.getMult())

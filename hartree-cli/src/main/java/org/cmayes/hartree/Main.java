@@ -22,6 +22,7 @@ import org.cmayes.hartree.calc.impl.GlucoseBondLengthCalculation;
 import org.cmayes.hartree.calc.impl.GlucoseRingCalculation;
 import org.cmayes.hartree.calc.impl.HMDihedralAngleCalculation;
 import org.cmayes.hartree.calc.impl.IonDistanceCalculation;
+import org.cmayes.hartree.calc.impl.AnomericDihedralAngleCalculation;
 import org.cmayes.hartree.disp.Display;
 import org.cmayes.hartree.disp.csv.SnapshotCsvDisplay;
 import org.cmayes.hartree.disp.db.SnapshotJdbcDisplay;
@@ -306,7 +307,7 @@ public class Main<T> {
      * @return The configured calculations for the current handling type.
      */
     private List<Calculation> getCalcs() {
-        List<Calculation> staticList = CALC_MAP.get(hType);
+        final List<Calculation> staticList = CALC_MAP.get(hType);
         if (staticList == null) {
             return new ArrayList<Calculation>();
         }
@@ -506,6 +507,7 @@ public class Main<T> {
         cpSnapCalcs.add(new GlucoseRingCalculation());
         cpSnapCalcs.add(new HMDihedralAngleCalculation());
         cpSnapCalcs.add(new ACDihedralAngleCalculation());
+        cpSnapCalcs.add(new AnomericDihedralAngleCalculation());
         cpSnapCalcs.add(new GlucoseBondLengthCalculation());
         cpSnapCalcs.add(new CremerPopleCalculation());
         cpSnapCalcs.add(new CartesianCremerPoplePuckeringCalculation());

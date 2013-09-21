@@ -35,10 +35,10 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
             "H298 (Hartrees)", "G298 (Hartrees)", "Freq 1", "Freq 2", "phi",
             "theta", "Q", "Pucker", "HM1 (deg)", "HM2 (deg)", "AC1 (deg)",
-            "AC2 (deg)", "R1 (A)", "R2 (A)", "R3 (A)", "R4 (A)", "R5 (A)",
-            "R6 (A)", "O1 (A)", "O2 (A)", "O3 (A)", "O4 (A)", "O6 (A)",
-            "Ion1 (A)", "Ion2 (A)", "Ion3 (A)", "Ion4 (A)", "Ion5 (A)",
-            "Ion6 (A)" };
+            "AC2 (deg)", "Ano1 (deg)", "Ano2 (deg)", "R1 (A)", "R2 (A)",
+            "R3 (A)", "R4 (A)", "R5 (A)", "R6 (A)", "O1 (A)", "O2 (A)",
+            "O3 (A)", "O4 (A)", "O6 (A)", "Ion1 (A)", "Ion2 (A)", "Ion3 (A)",
+            "Ion4 (A)", "Ion5 (A)", "Ion6 (A)" };
     private boolean first = true;
     private volatile boolean writeMulti = false;
 
@@ -93,7 +93,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                             MISSING, MISSING, MISSING, MISSING, MISSING,
                             MISSING, MISSING, MISSING, MISSING, MISSING,
                             MISSING, MISSING, MISSING, MISSING, MISSING,
-                            MISSING, MISSING, MISSING });
+                            MISSING, MISSING, MISSING, MISSING, MISSING });
 
                 } else {
                     final String phi = valOrMissing(cpCoords.getPhi());
@@ -105,11 +105,13 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
                     final String hm2 = valOrMissing(cpResult.getHmArmAngle2());
                     final String ac1 = valOrMissing(cpResult.getAcArmAngle1());
                     final String ac2 = valOrMissing(cpResult.getAcArmAngle2());
+                    final String third1 = valOrMissing(cpResult.getAnoAngle1());
+                    final String third2 = valOrMissing(cpResult.getAnoAngle2());
 
                     final String[] baseLine = new String[] { fname, solv, stoi,
                             charge, mult, func, basisSet, energy, dip, zpe,
                             h298, g298, firstFreq, secFreq, phi, theta, q,
-                            pucker, hm1, hm2, ac1, ac2 };
+                            pucker, hm1, hm2, ac1, ac2, third1, third2 };
                     final String[] withCarbs = ObjectArrays.concat(baseLine,
                             valListOrMissing(cpResult.getCarbonDistances(), 6),
                             String.class);

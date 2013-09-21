@@ -154,7 +154,7 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
      * @param writer
      *            the accWriter to set
      */
-    void setAccWriter(Writer writer) {
+    void setAccWriter(final Writer writer) {
         this.accWriter = writer;
     }
 }

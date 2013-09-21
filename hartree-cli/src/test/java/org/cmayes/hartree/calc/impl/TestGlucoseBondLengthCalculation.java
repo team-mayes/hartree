@@ -10,7 +10,6 @@ import java.util.List;
 import org.cmayes.hartree.loader.gaussian.SnapshotLoader;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.def.CpCalculationSnapshot;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -150,7 +149,7 @@ public class TestGlucoseBondLengthCalculation {
      * @throws Exception
      *             If there are problems.
      */
-    private CpCalculationSnapshot loadTarget(String tgtLog) throws Exception {
+    private CpCalculationSnapshot loadTarget(final String tgtLog) throws Exception {
         return (CpCalculationSnapshot) RING_CALC.calculate(LOADER.load(
                 "glucNa3eO4areacttwater.out", new FileReader(FILE_DIR_PFX
                         + tgtLog)));

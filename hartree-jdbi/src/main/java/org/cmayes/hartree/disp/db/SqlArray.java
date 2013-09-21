@@ -59,7 +59,8 @@ public class SqlArray<T> {
      *            The type of the elements.
      * @return The SqlArray-wrapped array.
      */
-    public static <T> SqlArray<T> arrayOf(Class<T> iterType, Iterable<T> wrapMe) {
+    public static <T> SqlArray<T> arrayOf(final Class<T> iterType,
+            final Iterable<T> wrapMe) {
         return new SqlArray<T>(iterType, wrapMe);
     }
 

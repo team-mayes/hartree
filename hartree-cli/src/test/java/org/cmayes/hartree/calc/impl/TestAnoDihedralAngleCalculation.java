@@ -11,20 +11,19 @@ import org.cmayes.hartree.model.def.CpCalculationSnapshot;
 import org.junit.Test;
 
 /**
- * Tests for {@link HMDihedralAngleCalculation}.
+ * Tests for {@link AnomericDihedralAngleCalculation}.
  * 
  * @author cmayes
  */
-public class TestHMDihedralAngleCalculation {
+public class TestAnoDihedralAngleCalculation {
     private static final String BMAN_LOG = "bman_oe_256con2relaxb3lrel.log";
     private static final String NAG_LOG = "nag_e2_442relaxrelaxtsb3lyptsb3ltstircropt.log";
-    
 
     private static final double ERR_MARGIN = .01;
     private static final SnapshotLoader LOADER = new SnapshotLoader();
     private static final String FILE_DIR_PFX = "src/test/resources/files/g09/snapshot/";
     private static final GlucoseRingCalculation RING_CALC = new GlucoseRingCalculation();
-    private static final HMDihedralAngleCalculation DH_CALC = new HMDihedralAngleCalculation();
+    private static final AnomericDihedralAngleCalculation THIRD_CALC = new AnomericDihedralAngleCalculation();
 
     // BMAN //
 
@@ -34,11 +33,11 @@ public class TestHMDihedralAngleCalculation {
      */
     @Test
     public void testBmanDihedralAngles() throws Exception {
-        final CpCalculationSnapshot bondCalc = (CpCalculationSnapshot) DH_CALC
+        final CpCalculationSnapshot bondCalc = (CpCalculationSnapshot) THIRD_CALC
                 .calculate(loadTarget(BMAN_LOG));
 
-        assertThat(bondCalc.getHmArmAngle1(), closeTo(166.442, ERR_MARGIN));
-        assertThat(bondCalc.getHmArmAngle2(), closeTo(-69.221, ERR_MARGIN));
+        assertThat(bondCalc.getAnoAngle1(), closeTo(172.252, ERR_MARGIN));
+        assertThat(bondCalc.getAnoAngle2(), closeTo(-150.012, ERR_MARGIN));
     }
 
     // NAG //
@@ -49,14 +48,13 @@ public class TestHMDihedralAngleCalculation {
      */
     @Test
     public void testNagDihedralAngles() throws Exception {
-        final CpCalculationSnapshot bondCalc = (CpCalculationSnapshot) DH_CALC
+        final CpCalculationSnapshot bondCalc = (CpCalculationSnapshot) THIRD_CALC
                 .calculate(loadTarget(NAG_LOG));
 
-        assertThat(bondCalc.getHmArmAngle1(), closeTo(-71.966, ERR_MARGIN));
-        assertThat(bondCalc.getHmArmAngle2(), closeTo(59.370, ERR_MARGIN));
+        assertThat(bondCalc.getAnoAngle1(), closeTo(78.227, ERR_MARGIN));
+        assertThat(bondCalc.getAnoAngle2(), closeTo(-76.192, ERR_MARGIN));
     }
 
-    
     /**
      * Loads a {@link BaseResult} instance and passes it through a glucose ring
      * calculation, generating a {@link CpCalculationSnapshot}.
@@ -68,8 +66,7 @@ public class TestHMDihedralAngleCalculation {
      *             If there are problems.
      */
     private CpCalculationSnapshot loadTarget(final String tgtLog) throws Exception {
-        return (CpCalculationSnapshot) RING_CALC.calculate(LOADER.load(
-                "glucNa3eO4areacttwater.out", new FileReader(FILE_DIR_PFX
-                        + tgtLog)));
+        return (CpCalculationSnapshot) RING_CALC.calculate(LOADER.load(tgtLog,
+                new FileReader(FILE_DIR_PFX + tgtLog)));
     }
 }

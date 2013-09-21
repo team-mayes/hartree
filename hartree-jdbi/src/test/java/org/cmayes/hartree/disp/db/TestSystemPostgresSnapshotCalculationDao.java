@@ -225,7 +225,7 @@ public class TestSystemPostgresSnapshotCalculationDao {
     @Test
     public void testCategoryNamesInsert() {
         assertNull(dao.findCategoryId(CAT_NAME));
-        Map<String, Long> catIdMap = dao.insertCategoryNames(Arrays.asList(
+        final Map<String, Long> catIdMap = dao.insertCategoryNames(Arrays.asList(
                 CAT_NAME, CAT_NAME2, CAT_NAME3));
         assertEquals(3, catIdMap.size());
         for (Entry<String, Long> idEntry : catIdMap.entrySet()) {
@@ -323,7 +323,7 @@ public class TestSystemPostgresSnapshotCalculationDao {
         result.getOxygenDistances().add(9292.1);
         result.getOxygenDistances().add(77.0022);
         result.getOxygenDistances().add(13.3332);
-        CremerPopleCoordinates cpCoords = new CremerPopleCoordinates(992.,
+        final CremerPopleCoordinates cpCoords = new CremerPopleCoordinates(992.,
                 44321.66, 1919192.2);
         cpCoords.setPucker("14b");
         result.setCpCoords(cpCoords);

@@ -332,10 +332,10 @@ public class PostgresJdbiSnapshotCalculationDao implements
             return this.dbi
                     .inTransaction(new TransactionCallback<Map<String, Long>>() {
                         @Override
-                        public Map<String, Long> inTransaction(Handle conn,
-                                TransactionStatus status) throws Exception {
+                        public Map<String, Long> inTransaction(final Handle conn,
+                                final TransactionStatus status) throws Exception {
 
-                            HashMap<String, Long> resultMap = new HashMap<String, Long>(
+                            final HashMap<String, Long> resultMap = new HashMap<String, Long>(
                                     catNames.size());
                             for (String curName : catNames) {
                                 resultMap.put(curName, conn

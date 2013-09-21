@@ -66,7 +66,7 @@ public class TestACDihedralAngleCalculation {
      * @throws Exception
      *             If there are problems.
      */
-    private CpCalculationSnapshot loadTarget(String tgtLog) throws Exception {
+    private CpCalculationSnapshot loadTarget(final String tgtLog) throws Exception {
         return (CpCalculationSnapshot) RING_CALC.calculate(LOADER.load(
                 "glucNa3eO4areacttwater.out", new FileReader(FILE_DIR_PFX
                         + tgtLog)));
