@@ -16,10 +16,6 @@ import java
 # Constants #
 DEF_EXT = '.log'
 DEF_SUFFIX = 'ccsdt'
-DEF_JAVA_CMD = 'java'
-DEF_JAVA_CLASSPATH_ADD = expanduser('~/apps')
-DEF_HARTREE_JAR_LOC = os.path.join(DEF_JAVA_CLASSPATH_ADD, 'hartree-1.1.2.jar')
-sys.path.append(DEF_HARTREE_JAR_LOC)
 
 from org.cmayes.hartree.loader.gaussian import SnapshotLoader
 from java.io import FileReader
@@ -46,8 +42,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 # Logic #
 
 class HartreeMoleculeComparator(object):
-    def __init__(self, java_cmd=DEF_JAVA_CMD,
-                 hartree_jar=DEF_HARTREE_JAR_LOC):
+    def __init__(self):
         for key, value in locals().items():
             if key != self:
                 setattr(self, key, value)

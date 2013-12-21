@@ -1,0 +1,3 @@
+2,$\alpha$-glucose,alpringb3ltsmircfoptm.log
+9,5-HMF,gluc5b2-8ppO3pp3btsmircfoptm.log
+11,cyclic enol,glucEO3Dbb3lm.log
