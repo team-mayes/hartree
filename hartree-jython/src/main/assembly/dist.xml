@@ -24,6 +24,8 @@
 		<fileSet>
 			<directory>src/main/sh</directory>
 			<outputDirectory>scripts</outputDirectory>
+			<fileMode>755</fileMode>
+			<directoryMode>755</directoryMode>
 		</fileSet>
 		<fileSet>
 			<directory>src/main/config</directory>

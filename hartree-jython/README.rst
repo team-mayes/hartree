@@ -37,3 +37,26 @@ extracted.  The ``geocomp`` script compares the geometries of the two files
 to see whether they are identical.  If not, an error message is written to 
 standard error and the log file and the script exits with the code 2 (0 
 indicates success).
+
+xyz_si
+-------
+
+Usage::
+  hrun xyz_si <input_file>
+
+This command will read each line of the input file and create an output that
+contains the first two fields separated by a space on one line and the atoms
+contained in the end product of the file specified in the third field of the
+line.  For example, the line
+
+11,cyclic enol,glucEO3Dbb3lm.log
+
+...would result in the output
+
+11 cyclic enol
+C   -0.249986    0.890519   -0.021576
+C   -0.869790    1.437656   -1.287677
+...
+
+The output goes to stdout by default, but users may also use the `-f` option
+to specify a destination file.
