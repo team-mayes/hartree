@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<groupId>org.cmayes</groupId>
 	<artifactId>hartree</artifactId>
-	<version>1.1.8-SNAPSHOT</version>
+	<version>1.1.9-SNAPSHOT</version>
 
 	<dependencies>
 		<!-- Common libs -->
@@ -131,7 +131,8 @@
 		<connection>scm:git:git@github.com:cmayes/hartree.git</connection>
 		<url>scm:git:git@github.com:cmayes/hartree.git</url>
 		<developerConnection>scm:git:git@github.com:cmayes/hartree.git</developerConnection>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 
 	<distributionManagement>
 		<repository>
