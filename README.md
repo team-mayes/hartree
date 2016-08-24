@@ -5,7 +5,7 @@ I wrote Hartree to help my wife with her processing of Gaussian 09 log files.
 ## Build
 
 The project uses [Maven](https://maven.apache.org/ "Maven") as its build tool and
-has [cmayes-common](https://github.com/cmayes/cmayes-common) as its dependency.  
+has [cmayes-common](https://github.com/cmayes/cmayes-common) as a dependency.  
 Since cmayes-common is not yet in Maven Central, you will need to build and install
 this library locally.
 
