@@ -43,12 +43,12 @@ Once you have Maven and cmayes-common installed, you can build Hartree.
         $ cd ~/code
         $ git clone https://github.com/team-mayes/hartree
         $ cd hartree
-        $ git checkout hartree-1.1.7
+        $ git checkout hartree-1.1.8
         $ mvn clean package
 
 Note that you should check out the tag that corresponds to the release that you wish to build.
 
-The artifact at `hartree-cli/target/hartree-cli-1.1.7.jar` (or whichever version you've built)
+The artifact at `hartree-cli/target/hartree-cli-1.1.8.jar` (or whichever version you've built)
 is what you'll use.
 
 ## Usage
@@ -57,12 +57,12 @@ These usage instructions are from notes that I gave to my wife.
 
 The basic usage is:
 
-	$ java -jar hartree-cli-1.1.7.jar
+	$ java -jar hartree-cli-1.1.8.jar
 	Argument not one of (norm,therm,test)
 	java org.cmayes.hartree.Main [options...] (norm,therm,test)
 	Available arguments:
-	norm  : Handles normal mode evaluation   
-	therm : Handles thermo calculations      
+	norm  : Handles normal mode evaluation
+	therm : Handles thermo calculations
 	test  : Test mode (no handling performed)
 	Available options:
 	 --directory (-d) INDIR : The base directory of the files to process
@@ -73,12 +73,12 @@ This tells Java to run the main class in the JAR.  The output is a
 usage message because we have not specified an operation.  Normal mode
 is the only one that works right now, so let's try that:
 
-	$ java -jar hartree-cli-1.1.7.jar norm
+	$ java -jar hartree-cli-1.1.8.jar norm
 	Argument not one of (norm,therm,test)
 	java org.cmayes.hartree.Main [options...] (norm,therm,test)
 	Available arguments:
-	norm  : Handles normal mode evaluation   
-	therm : Handles thermo calculations      
+	norm  : Handles normal mode evaluation
+	therm : Handles thermo calculations
 	test  : Test mode (no handling performed)
 	Available options:
 	 --directory (-d) INDIR : The base directory of the files to process
@@ -87,16 +87,16 @@ is the only one that works right now, so let's try that:
 
 We need to specify a source to process.  Let's do a single file first.
 
-	$ java -jar hartree-cli-1.1.7.jar norm -f glucose5m062xEtOHnorm.log 
+	$ java -jar hartree-cli-1.1.8.jar norm -f glucose5m062xEtOHnorm.log
 	Normal mode summary for file glucose5m062xEtOHnorm.log
-	
+
 	Highest DoF percentages by dihedral:
 	...
 
 The report is dumped to standard out.  We could redirect this to a
 file, but it's just as easy to point Hartree to an output directory:
 
-	$ java -jar hartree-cli-1.1.7.jar norm -f glucose5m062xEtOHnorm.log -o out
+	$ java -jar hartree-cli-1.1.8.jar norm -f glucose5m062xEtOHnorm.log -o out
 	05:19:29.377 [main] DEBUG org.cmayes.hartree.Main - Created out dir
 	/home/cmayes/Downloads/out
 
@@ -111,7 +111,7 @@ This is the normal mode report.  It's named for the log file with "-norm.txt" at
 
 Now, let's try processing a whole directory at once:
 
-	$ java -jar hartree-cli-1.1.7.jar norm -d
+	$ java -jar hartree-cli-1.1.8.jar norm -d
 	~/g09/ -o out
 	line 741:11 mismatched input '45' expecting CPUTAG
 	...
