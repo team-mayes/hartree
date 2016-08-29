@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<groupId>org.cmayes</groupId>
 	<artifactId>hartree</artifactId>
-	<version>1.1.9-SNAPSHOT</version>
+	<version>1.1.10-SNAPSHOT</version>
 
 	<dependencies>
 		<!-- Common libs -->
@@ -86,7 +86,7 @@
 			            </configuration>
 			        </execution>
 			    </executions>
-			</plugin>			
+			</plugin>
 		</plugins>
 	</build>
 
@@ -136,14 +136,14 @@
 
 	<distributionManagement>
 		<repository>
-			<id>nexus.internal</id>
-			<name>Internal Release Repository</name>
-			<url>http://localhost:8080/nexus/content/repositories/releases</url>
+			<id>local.releases</id>
+			<name>Local FS Release Repository</name>
+			<url>file://releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>nexus.snapshots</id>
-			<name>Internal Snapshot Repository</name>
-			<url>http://localhost:8080/nexus/content/repositories/snapshots</url>
+			<id>local.snapshots</id>
+			<name>Local Snapshot Repository</name>
+			<url>file://snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<modules>
