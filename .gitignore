@@ -21,3 +21,5 @@ data/
 hartree.properties
 dependency-reduced-pom.xml
 *$py.class
+**/*.iml
+.idea/
