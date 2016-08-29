@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<groupId>org.cmayes</groupId>
 	<artifactId>hartree</artifactId>
-	<version>1.1.10-SNAPSHOT</version>
+	<version>1.1.9-SNAPSHOT</version>
 
 	<dependencies>
 		<!-- Common libs -->
