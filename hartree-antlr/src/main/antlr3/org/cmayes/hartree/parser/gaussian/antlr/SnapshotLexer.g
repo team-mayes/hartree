@@ -58,7 +58,7 @@ MULT: {multCtx}? => INT { multCtx = false; };
 XYZTAG: 'Input orientation:' { xyzCtx = true; $channel = HIDDEN; };
 XYZFLOAT: {xyzCtx}? FLOAT ;
 XYZINT: {xyzCtx}? INT ;
-XYZEND: 'Distance matrix (angstroms):' { xyzCtx = false; $channel = HIDDEN; };
+XYZEND: ('Distance matrix (angstroms):' | 'Rotational constants (GHZ):') { xyzCtx = false; $channel = HIDDEN; };
 
 // Number of atoms
 NATOMSTAG: {!natomsFound}? => 'NAtoms' { natomsCtx = true; $channel = HIDDEN; };

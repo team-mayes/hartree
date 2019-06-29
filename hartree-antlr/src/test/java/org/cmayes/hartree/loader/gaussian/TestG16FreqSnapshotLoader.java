@@ -60,7 +60,7 @@ public class TestG16FreqSnapshotLoader {
      */
     @Test
     public void testCharge() throws Exception {
-        assertThat(calc1.getCharge(), equalTo(1));
+        assertThat(calc1.getCharge(), equalTo(0));
     }
 
     /**
@@ -71,7 +71,7 @@ public class TestG16FreqSnapshotLoader {
      */
     @Test
     public void testElecEn() throws Exception {
-        assertThat(calc1.getElecEn(), closeTo(-849.236562278, ERR_MARGIN));
+        assertThat(calc1.getElecEn(), closeTo(-2290.50749608, ERR_MARGIN));
     }
 
     /**
@@ -82,7 +82,7 @@ public class TestG16FreqSnapshotLoader {
      */
     @Test
     public void testZpeCorr() throws Exception {
-        assertThat(calc1.getZpeCorrection(), closeTo(0.200499, ERR_MARGIN));
+        assertThat(calc1.getZpeCorrection(), closeTo(0.59385, ERR_MARGIN));
     }
 
     /**
@@ -93,8 +93,8 @@ public class TestG16FreqSnapshotLoader {
      */
     @Test
     public void testFreqVals() throws Exception {
-        assertThat(calc1.getFrequencyValues().get(0), closeTo(60.7784, ERR_MARGIN));
-        assertThat(calc1.getFrequencyValues().get(1), closeTo(90.3398, ERR_MARGIN));
+        assertThat(calc1.getFrequencyValues().get(0), closeTo(3.0714, ERR_MARGIN));
+        assertThat(calc1.getFrequencyValues().get(1), closeTo(7.9247, ERR_MARGIN));
     }
 
     /**
@@ -105,7 +105,7 @@ public class TestG16FreqSnapshotLoader {
      */
     @Test
     public void testFunctional() throws Exception {
-        assertThat(calc1.getFunctional(), equalTo("m062x"));
+        assertThat(calc1.getFunctional(), equalTo("RM062X"));
     }
 
     /**
@@ -116,7 +116,7 @@ public class TestG16FreqSnapshotLoader {
      */
     @Test
     public void testBasisSet() throws Exception {
-        assertThat(calc1.getBasisSet(), equalTo("6-31+g(2df,p)"));
+        assertThat(calc1.getBasisSet(), equalTo("6-311+G(2d,p)"));
     }
 
     /**
@@ -127,7 +127,7 @@ public class TestG16FreqSnapshotLoader {
      */
     @Test
     public void testStoi() throws Exception {
-        assertThat(calc1.getStoichiometry(), equalTo("C6H12NaO6(1+)"));
+        assertThat(calc1.getStoichiometry(), equalTo("C32H30O14"));
     }
 
     /**
@@ -138,6 +138,6 @@ public class TestG16FreqSnapshotLoader {
      */
     @Test
     public void testDipoleMoment() throws Exception {
-        assertThat(calc1.getDipoleMomentTotal(), closeTo(19.6701, ERR_MARGIN));
+        assertThat(calc1.getDipoleMomentTotal(), closeTo(2.5554, ERR_MARGIN));
     }
 }

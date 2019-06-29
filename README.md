@@ -14,14 +14,14 @@ this library locally.
 Maven is a Java library and can be unpacked in a local directory and added to your classpath.  For example:
 
 	$ cd ~/apps
-	$ wget http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-	$ tar zxvf apache-maven-3.3.9-bin.tar.gz
-	$ ln -s apache-maven-3.3.9 maven
+	$ wget http://www-eu.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz
+	$ tar zxvf apache-maven-3.6.0-bin.tar.gz
+	$ ln -s apache-maven-3.6.0 maven
 	$ echo 'export PATH=$PATH:$HOME/apps/maven/bin' >> ~/.bashrc
 	$ . ~/.bashrc
 	$ mvn --version
 
-The last command should produce an output starting with something similar to `Apache Maven 3.3.9`.
+The last command should produce an output starting with something similar to `Apache Maven 3.6.0`.
 
 ### Installing cmayes-common
 
@@ -30,10 +30,10 @@ This library also uses Maven, so be sure that it's installed as per the previous
 	$ cd ~/code
 	$ git clone https://github.com/cmayes/cmayes-common
 	$ cd cmayes-common
-	$ git checkout cmayes-common-1.1.5
+	$ git checkout cmayes-common-1.1.6
 	$ mvn clean install
 
-This will pull down the library's dependencies, run the build for the 1.1.5 release, and install
+This will pull down the library's dependencies, run the build for the 1.1.6 release, and install
 the release's JAR in your local Maven repository (usually `~/.m2/repository`).
 
 ### Building Hartree
@@ -43,19 +43,19 @@ Once you have Maven and cmayes-common installed, you can build Hartree.
         $ cd ~/code
         $ git clone https://github.com/team-mayes/hartree
         $ cd hartree
-        $ git checkout hartree-1.1.8
+        $ git checkout hartree-1.2.2
         $ mvn clean package
 
 Note that you should check out the tag that corresponds to the release that you wish to build.
 
-The artifact at `hartree-cli/target/hartree-cli-1.1.8.jar` (or whichever version you've built)
+The artifact at `hartree-cli/target/hartree-cli-1.2.2.jar` (or whichever version you've built)
 is what you'll use.
 
 ## Usage
 
 The basic usage is:
 
-	$ java -jar hartree-cli-1.1.8.jar
+	$ java -jar hartree-cli-1.2.2.jar
 	Argument not one of (norm,snap,cpsnap,test,therm,lowen)
         java org.cmayes.hartree.Main [options...] (norm,snap,cpsnap,test,therm,lowen)
         Available arguments:
@@ -84,7 +84,7 @@ usage message because we have not specified an operation.
 
 Let's try the normal mode option: 
 
-	$ java -jar hartree-cli-1.1.8.jar norm
+	$ java -jar hartree-cli-1.2.2.jar norm
         No input file or directory specified.
         java org.cmayes.hartree.Main [options...] (norm,snap,cpsnap,test,therm,lowen)
         Available arguments:
@@ -110,7 +110,7 @@ Let's try the normal mode option:
 
 As the error message indicate, We need to specify a source to process.  Let's do a single file first.
 
-	$ java -jar hartree-cli-1.1.8.jar norm -f glucose5m062xEtOHnorm.log
+	$ java -jar hartree-cli-1.2.2.jar norm -f glucose5m062xEtOHnorm.log
 	Normal mode summary for file glucose5m062xEtOHnorm.log
 
 	Highest DoF percentages by dihedral:
@@ -119,7 +119,7 @@ As the error message indicate, We need to specify a source to process.  Let's do
 The report is dumped to standard out.  We could redirect this to a
 file, but it's just as easy to point Hartree to an output directory:
 
-	$ java -jar hartree-cli-1.1.8.jar norm -f glucose5m062xEtOHnorm.log -o out
+	$ java -jar hartree-cli-1.2.2.jar norm -f glucose5m062xEtOHnorm.log -o out
 	05:19:29.377 [main] DEBUG org.cmayes.hartree.Main - Created out dir
 	/home/cmayes/Downloads/out
 
@@ -134,7 +134,7 @@ This is the normal mode report.  It's named for the log file with "-norm.txt" at
 
 Now, let's try processing a whole directory at once:
 
-	$ java -jar hartree-cli-1.1.8.jar norm -d ~/g09/ -o out
+	$ java -jar hartree-cli-1.2.2.jar norm -d ~/g09/ -o out
 	line 741:11 mismatched input '45' expecting CPUTAG
 	...
 

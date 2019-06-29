@@ -124,6 +124,7 @@ public class AntlrTokenStreamPrinter {
         }
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();
+        System.out.println("Start of stream ");
         for (Object o : tokens.getTokens()) {
             final Token token = (Token) o;
             if (!(GaussianLexer.WS == token.getType())) {
