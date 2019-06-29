@@ -1,16 +1,16 @@
 package org.cmayes.hartree.loader.gaussian;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.io.FileReader;
-
 import org.cmayes.hartree.model.BaseResult;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileReader;
+
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests load cases using different files.
@@ -18,13 +18,13 @@ import org.slf4j.LoggerFactory;
  * @author cmayes
  * 
  */
-public class TestSummaryLoader {
+public class TestG16FreqSnapshotLoader {
     private static final double ERR_MARGIN = .01;
     /** Logger. */
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(TestSummaryLoader.class);
+            .getLogger(TestG16FreqSnapshotLoader.class);
     /** The prefix for file locations. */
-    private static final String FILE_DIR_PFX = "src/test/resources/files/g09/snapshot/";
+    private static final String FILE_DIR_PFX = "src/test/resources/files/g16/";
     private static final SnapshotLoader LOADER = new SnapshotLoader();
     private static BaseResult calc1;
 
@@ -36,8 +36,8 @@ public class TestSummaryLoader {
      */
     @BeforeClass
     public static final void setUpClass() throws Exception {
-        calc1 = LOADER.load("glucNa3eO4areacttwater.out", new FileReader(
-                FILE_DIR_PFX + "glucNa3eO4areacttwater.out"));
+        calc1 = LOADER.load("pet_freq.log", new FileReader(
+                FILE_DIR_PFX + "pet_freq.log"));
         LOGGER.debug("Calc: " + calc1);
     }
 

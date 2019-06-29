@@ -20,7 +20,7 @@ import org.junit.Test;
  * @author cmayes
  * 
  */
-public class TestNormalModeLoader {
+public class TestG09NormalModeLoader {
     private static final int EXAMPLE_SUM_IDX = 41;
     private static final int NORM_COUNT = 66;
     /** The prefix for file locations. */

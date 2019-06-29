@@ -57,7 +57,7 @@ public class LowestEnergyLoader extends BaseGaussianLoader implements
         Atom curAtom = new DefaultAtom();
         List<Atom> curAtomList = new ArrayList<Atom>();
         @SuppressWarnings("unchecked")
-        final List<CommonTree> eventList = ast.getChildren();
+        final List<CommonTree> eventList = (List<CommonTree>) ast.getChildren();
         if (eventList == null) {
             logger.error("Parse failed: no AST children found for source "
                     + srcName);

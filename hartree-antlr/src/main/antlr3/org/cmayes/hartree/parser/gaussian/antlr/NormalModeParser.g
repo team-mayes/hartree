@@ -3,7 +3,7 @@ parser grammar NormalModeParser;
 options {
   language   = Java;
   output     = AST;
-  tokenVocab = Gaussian09Lexer;
+  tokenVocab = GaussianLexer;
 }
 
 @header {

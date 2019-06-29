@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author cmayes
  * 
  */
-public class TestCalcResultLoader {
+public class TestG09CalcResultLoader {
     /** The prefix for file locations. */
     private static final String FILE_DIR_PFX = "src/test/resources/files/g09/";
     /** Logger. */

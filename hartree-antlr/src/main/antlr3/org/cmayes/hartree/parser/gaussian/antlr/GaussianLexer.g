@@ -1,4 +1,4 @@
-lexer grammar Gaussian09Lexer;
+lexer grammar GaussianLexer;
 
 // Setting filter to true drops input that doesn't match our rules.
 options {
@@ -80,7 +80,7 @@ CPUFLOAT: {cpuCtx}? => FLOAT ;
 CPUINT: {cpuCtx}? => INT ;
 
 // Termination date
-TERMTAG: 'Normal termination of Gaussian 09 at' { termCtx = true; } ;
+TERMTAG: 'Normal termination of Gaussian ' INT ' at' { termCtx = true; } ;
 TERMINT: {termCtx}? => INT ;
 TERMDATE: {termCtx}? => DATE ;
 TERMEND: {termCtx}? => '.' { termCtx = false; natomsFound = false; } ;

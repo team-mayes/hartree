@@ -3,7 +3,7 @@ parser grammar CalcResultParser;
 options {
   language   = Java;
   output     = AST;
-  tokenVocab = Gaussian09Lexer;
+  tokenVocab = GaussianLexer;
 }
 
 @header {

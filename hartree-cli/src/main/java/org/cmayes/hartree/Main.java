@@ -466,7 +466,7 @@ public class Main<T> {
     }
 
     /**
-     * Overrides the return for {@link #createProcessor(HandlingType)}. Used for
+     * Overrides the return for {@link #createProcessor()}. Used for
      * setting a test processor instance.
      * 
      * @param testProc

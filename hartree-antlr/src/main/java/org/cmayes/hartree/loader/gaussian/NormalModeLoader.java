@@ -16,7 +16,7 @@ import org.cmayes.hartree.model.NormalModeCalculation;
 import org.cmayes.hartree.model.def.DefaultInternalMotion;
 import org.cmayes.hartree.model.def.DefaultNormalMode;
 import org.cmayes.hartree.model.def.DefaultNormalModeCalculation;
-import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
+import org.cmayes.hartree.parser.gaussian.antlr.GaussianLexer;
 import org.cmayes.hartree.parser.gaussian.antlr.NormalModeParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class NormalModeLoader extends BaseGaussianLoader implements
     }
 
     /**
-     * Fills a {@link CalculationResult} instance with data from the AST.
+     * Fills a {@link NormalModeCalculation} instance with data from the AST.
      * 
      * @param srcName
      *            The identifier for the source of the data.
@@ -64,7 +64,7 @@ public class NormalModeLoader extends BaseGaussianLoader implements
         NormalMode curNormal = null;
         InternalMotion curMotion = null;
         @SuppressWarnings("unchecked")
-        final List<CommonTree> eventList = ast.getChildren();
+        final List<CommonTree> eventList = (List<CommonTree>) ast.getChildren();
         if (eventList == null) {
             logger.error("Parse failed: no AST children found for source "
                     + srcName);
@@ -72,34 +72,34 @@ public class NormalModeLoader extends BaseGaussianLoader implements
         }
         for (CommonTree curNode : eventList) {
             switch (curNode.getType()) {
-            case Gaussian09Lexer.EOF:
+            case GaussianLexer.EOF:
                 break;
-            case Gaussian09Lexer.CPUTIME:
+            case GaussianLexer.CPUTIME:
                 result.getCpuTimes().add(processCpuTime(curNode));
                 break;
-            case Gaussian09Lexer.TERM:
+            case GaussianLexer.TERM:
                 result.getTerminationDates().add(processTermDate(curNode));
                 break;
-            case Gaussian09Lexer.TRANSPART:
+            case GaussianLexer.TRANSPART:
                 result.setTransPart(toDouble(curNode.getText()));
                 break;
-            case Gaussian09Lexer.ROTPART:
+            case GaussianLexer.ROTPART:
                 result.setRotPart(toDouble(curNode.getText()));
                 break;
-            case Gaussian09Lexer.MULT:
+            case GaussianLexer.MULT:
                 result.setMult(toInt(curNode.getText()));
                 break;
-            case Gaussian09Lexer.FREQVAL:
+            case GaussianLexer.FREQVAL:
                 final Double freqVal = toDouble(curNode.getText());
                 if (freqVal != null) {
                     result.getFrequencyValues().add(freqVal);
                 }
                 break;
-            case Gaussian09Lexer.ASYM:
+            case GaussianLexer.ASYM:
                 result.setSymmetricTop(false);
                 break;
-            case Gaussian09Lexer.XYZINT:
-            case Gaussian09Lexer.XYZFLOAT:
+            case GaussianLexer.XYZINT:
+            case GaussianLexer.XYZFLOAT:
                 handleAtom(curNode.getText(), curAtom, atomColCount);
                 atomColCount++;
                 if (atomColCount % ATOM_COL_COUNT == 0) {
@@ -107,20 +107,20 @@ public class NormalModeLoader extends BaseGaussianLoader implements
                     curAtom = new DefaultAtom();
                 }
                 break;
-            case Gaussian09Lexer.NORMTAG:
+            case GaussianLexer.NORMTAG:
                 curNormal = new DefaultNormalMode();
                 result.getNormalModes().add(curNormal);
                 break;
-            case Gaussian09Lexer.NORMOPEN:
+            case GaussianLexer.NORMOPEN:
                 curMotion = new DefaultInternalMotion();
                 curNormal.getMotions().add(curMotion);
                 curMotion.setType(InternalMotionType.valueOfSymbol(curNode
                         .getText().substring(0, 1)));
                 break;
-            case Gaussian09Lexer.NORMATOM:
+            case GaussianLexer.NORMATOM:
                 curMotion.getMembers().add(toInt(curNode.getText()));
                 break;
-            case Gaussian09Lexer.NORMFLOAT:
+            case GaussianLexer.NORMFLOAT:
                 if (curMotion.getValue() == null) {
                     curMotion.setValue(toDouble(curNode.getText()));
                 } else {
@@ -148,7 +148,7 @@ public class NormalModeLoader extends BaseGaussianLoader implements
      */
     protected CommonTree extractAst(final String srcName, final Reader reader) {
         try {
-            final Gaussian09Lexer lexer = new Gaussian09Lexer(
+            final GaussianLexer lexer = new GaussianLexer(
                     new ANTLRReaderStream(reader));
             final NormalModeParser parser = new NormalModeParser(
                     new CommonTokenStream(lexer));
