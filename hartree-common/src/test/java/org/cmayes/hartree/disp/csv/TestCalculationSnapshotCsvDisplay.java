@@ -28,12 +28,12 @@ public class TestCalculationSnapshotCsvDisplay {
     /** Logger. */
     private static final String[] HEAD_LINE = { "File Name", "Solvent type",
             "Stoichiometry", "Charge", "Mult", "Functional", "Basis Set",
-            "Energy (A.U.)", "dipole", "ZPE (kcal/mol)", "G298 (Hartrees)",
-            "H298 (Hartrees)", "Freq 1", "Freq 2" };
+            "Energy (A.U.)", "dipole", "ZPE (Hartrees)", "H298 (Hartrees)",
+            "G298 (Hartrees)", "Freq 1", "Freq 2" };
     private static final String[] ALT_HEAD_LINE = { "Alt File Name",
             "Solvent type", "Stoichiometry", "Charge", "Alt Mult",
             "Functional", "Basis Set", "Energy (A.U.)", "dipole",
-            "ZPE (kcal/mol)", "G298 (Hartrees)", "H298 (Hartrees)", "Freq 1",
+            "ZPE (Hartrees)", "H298 (Hartrees)", "G298 (Hartrees)", "Freq 1",
             "Freq 2" };
     private static final String[] DATA_LINE = { "someFileName.txt", "water",
             "C6H12NaO6(1+)", "1", "1", "m062x", "6-31+g(2df,p)",

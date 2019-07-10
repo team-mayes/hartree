@@ -56,7 +56,7 @@ public class SnapshotLoader extends BaseGaussianLoader implements
         int atomColCount = 0;
         Atom curAtom = new DefaultAtom();
         @SuppressWarnings("unchecked")
-        final List<CommonTree> eventList = ast.getChildren();
+        final List<CommonTree> eventList = (List<CommonTree>) ast.getChildren();
         if (eventList == null) {
             logger.error("Parse failed: no AST children found for source "
                     + srcName);

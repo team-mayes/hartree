@@ -13,7 +13,7 @@ import org.cmayes.hartree.loader.ParseException;
 import org.cmayes.hartree.model.BaseResult;
 import org.cmayes.hartree.model.def.DefaultBaseResult;
 import org.cmayes.hartree.parser.gaussian.antlr.CalcResultParser;
-import org.cmayes.hartree.parser.gaussian.antlr.Gaussian09Lexer;
+import org.cmayes.hartree.parser.gaussian.antlr.GaussianLexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class CalcResultLoader extends BaseGaussianLoader implements
         int atomColCount = 0;
         Atom curAtom = new DefaultAtom();
         @SuppressWarnings("unchecked")
-        final List<CommonTree> eventList = ast.getChildren();
+        final List<CommonTree> eventList = (List<CommonTree>) ast.getChildren();
         if (eventList == null) {
             logger.error("Parse failed: no AST children found for source "
                     + srcName);
@@ -68,40 +68,40 @@ public class CalcResultLoader extends BaseGaussianLoader implements
         }
         for (CommonTree curNode : eventList) {
             switch (curNode.getType()) {
-            case Gaussian09Lexer.EOF:
+            case GaussianLexer.EOF:
                 break;
-            case Gaussian09Lexer.CPUTIME:
+            case GaussianLexer.CPUTIME:
                 result.getCpuTimes().add(processCpuTime(curNode));
                 break;
-            case Gaussian09Lexer.TERM:
+            case GaussianLexer.TERM:
                 result.getTerminationDates().add(processTermDate(curNode));
                 break;
-            case Gaussian09Lexer.TRANSPART:
+            case GaussianLexer.TRANSPART:
                 result.setTransPart(toDouble(curNode.getText()));
                 break;
-            case Gaussian09Lexer.ROTPART:
+            case GaussianLexer.ROTPART:
                 result.setRotPart(toDouble(curNode.getText()));
                 break;
-            case Gaussian09Lexer.MULT:
+            case GaussianLexer.MULT:
                 result.setMult(toInt(curNode.getText()));
                 break;
-            case Gaussian09Lexer.NATOMS:
+            case GaussianLexer.NATOMS:
                 result.setAtomCount(toInt(curNode.getText()));
                 break;
-            case Gaussian09Lexer.FREQVAL:
+            case GaussianLexer.FREQVAL:
                 final Double freqVal = toDouble(curNode.getText());
                 if (freqVal != null) {
                     result.getFrequencyValues().add(freqVal);
                 }
                 break;
-            case Gaussian09Lexer.ELECENG:
+            case GaussianLexer.ELECENG:
                 result.setElecEn(toDouble(curNode.getText()));
                 break;
-            case Gaussian09Lexer.ASYM:
+            case GaussianLexer.ASYM:
                 result.setSymmetricTop(false);
                 break;
-            case Gaussian09Lexer.XYZINT:
-            case Gaussian09Lexer.XYZFLOAT:
+            case GaussianLexer.XYZINT:
+            case GaussianLexer.XYZFLOAT:
                 handleAtom(curNode.getText(), curAtom, atomColCount);
                 atomColCount++;
                 if (atomColCount % ATOM_COL_COUNT == 0) {
@@ -130,7 +130,7 @@ public class CalcResultLoader extends BaseGaussianLoader implements
      */
     protected CommonTree extractAst(final String srcName, final Reader reader) {
         try {
-            final Gaussian09Lexer lexer = new Gaussian09Lexer(
+            final GaussianLexer lexer = new GaussianLexer(
                     new ANTLRReaderStream(reader));
             final CalcResultParser parser = new CalcResultParser(
                     new CommonTokenStream(lexer));

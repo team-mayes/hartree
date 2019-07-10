@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author cmayes
  */
-public class TestLowestEnergyLoader {
+public class TestG09LowestEnergyLoader {
     /** The prefix for file locations. */
     private static final String FILE_DIR_PFX = "src/test/resources/files/";
     private ObjectMapper mapper = new ObjectMapper();

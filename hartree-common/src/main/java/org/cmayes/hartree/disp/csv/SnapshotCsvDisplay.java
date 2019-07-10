@@ -28,11 +28,11 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
     private String[] headerRow;
     private final String[] defaultHeaderRow = new String[] { "File Name",
             "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
-            "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
-            "G298 (Hartrees)", "H298 (Hartrees)", "Freq 1", "Freq 2" };
+            "Basis Set", "Energy (A.U.)", "dipole", "ZPE (Hartrees)",
+            "H298 (Hartrees)", "G298 (Hartrees)", "Freq 1", "Freq 2" };
     private final String[] cpHeaderRow = new String[] { "File Name",
             "Solvent type", "Stoichiometry", "Charge", "Mult", "Functional",
-            "Basis Set", "Energy (A.U.)", "dipole", "ZPE (kcal/mol)",
+            "Basis Set", "Energy (A.U.)", "dipole", "ZPE (Hartrees)",
             "H298 (Hartrees)", "G298 (Hartrees)", "Freq 1", "Freq 2", "phi",
             "theta", "Q", "Pucker", "HM1 (deg)", "HM2 (deg)", "AC1 (deg)",
             "AC2 (deg)", "Ano1 (deg)", "Ano2 (deg)", "R1 (A)", "R2 (A)",
