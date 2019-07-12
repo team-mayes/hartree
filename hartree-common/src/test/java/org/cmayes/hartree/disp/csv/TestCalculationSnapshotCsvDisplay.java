@@ -29,7 +29,7 @@ public class TestCalculationSnapshotCsvDisplay {
     private static final String[] HEAD_LINE = { "File Name", "Solvent type",
             "Stoichiometry", "Charge", "Mult", "Functional", "Basis Set",
             "Energy (A.U.)", "dipole", "ZPE (Hartrees)", "H298 (Hartrees)",
-            "G298 (Hartrees)", "Freq 1", "Freq 2" };
+            "G298 (Hartrees)", "Freq 1", "Freq 2", "BSSE (Hartrees)" };
     private static final String[] ALT_HEAD_LINE = { "Alt File Name",
             "Solvent type", "Stoichiometry", "Charge", "Alt Mult",
             "Functional", "Basis Set", "Energy (A.U.)", "dipole",

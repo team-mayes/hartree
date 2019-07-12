@@ -10,7 +10,7 @@
   Example: This file does not have a ring, and works great with snap:
 
         $ hartree snap -f ./hartree-antlr/src/test/resources/files/g09/methanolmp4mp2TooLittleData.log
-        "File Name","Solvent type","Stoichiometry","Charge","Mult","Functional","Basis Set","Energy (A.U.)","dipole","ZPE (kcal/mol)","G298 (Hartrees)","H298 (Hartrees)","Freq 1","Freq 2"
+        "File Name","Solvent type","Stoichiometry","Charge","Mult","Functional","Basis Set","Energy (A.U.)","dipole","ZPE (Hartrees)","G298 (Hartrees)","H298 (Hartrees)","Freq 1","Freq 2"
         "methanolmp4mp2TooLittleData.log","thf","CH4O","0","1","mp4","6-31G(d)","-115.039357504","2.1353","N/A","N/A","N/A","N/A","N/A"
 
   It has no ring and no output is produced using cpsnap:

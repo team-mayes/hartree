@@ -227,7 +227,7 @@ one in the file. The column headings in the resulting csv file are:
 * Basis Set: basis set, if applicable ("N/A" if semiempirical)
 * Energy (A.U.): Last-listed electronic energy
 * dipole: total dipole moment for the system
-* ZPE (kcal/mol): the zero point energy; "N/A" if no calculated (no frequency calculated)
+* ZPE (Hartrees): the zero point energy; "N/A" if no calculated (no frequency calculated)
 * G298 (Hartrees): Gibbs free energy at 298 K (if calculated)
 * H298 (Hartrees): Enthalpy at 298 K (if calculated)
 * Freq 1: Lowest frequency (wavenumber) in cm^-1; since Gaussian sorts frequencies, listing the lowest first, and since it 

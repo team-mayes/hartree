@@ -314,4 +314,15 @@ public interface BaseResult extends NamedSource {
      *            the enthalpy298 to set
      */
     void setEnthalpy298(Double enthalpy298);
+
+    /**
+     * @return the bsse
+     */
+    Double getBsse();
+
+    /**
+     * @param bsse
+     *            the bsse to set
+     */
+    void setBsse(Double bsse);
 }

@@ -28,6 +28,7 @@ tokens { TERM; CPUTIME; DEFDATA; FUNCSET;
     boolean dipTotCtx = false;
     boolean g298Ctx = false;
     boolean h298Ctx = false;
+    boolean bsseCtx = false;
     boolean xyzCtx = false; 
     boolean natomsFound = false;
     boolean natomsCtx = false;
@@ -49,6 +50,8 @@ G298: {g298Ctx}? => FLOAT { g298Ctx = false; };
 H298OPEN: 'Sum of electronic and thermal Enthalpies=' { h298Ctx = true; $channel = HIDDEN; };
 H298: {h298Ctx}? => FLOAT { h298Ctx = false; };
 
+BSSEOPEN: 'BSSE energy' { bsseCtx = true; $channel = HIDDEN; };
+BSSE: {bsseCtx}? => FLOAT { bsseCtx = false; };
 
 // Multiplicity
 MULTTAG: 'Multiplicity' { multCtx = true; $channel = HIDDEN; };
