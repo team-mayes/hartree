@@ -128,7 +128,7 @@ public class SnapshotCsvDisplay implements Display<BaseResult> {
             } else {
                 csvWriter.writeNext(new String[] { fname, solv, stoi, charge,
                         mult, func, basisSet, energy, dip, zpe, h298, g298,
-                        firstFreq, secFreq });
+                        firstFreq, secFreq, bsse });
             }
         } finally {
             try {

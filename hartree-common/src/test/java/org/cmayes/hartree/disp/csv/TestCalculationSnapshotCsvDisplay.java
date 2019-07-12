@@ -38,10 +38,11 @@ public class TestCalculationSnapshotCsvDisplay {
     private static final String[] DATA_LINE = { "someFileName.txt", "water",
             "C6H12NaO6(1+)", "1", "1", "m062x", "6-31+g(2df,p)",
             "-849.236562347", "19.6701", "0.200499", "-1260.493395",
-            "-1260.568296", "60.7784", "90.3398" };
+            "-1260.568296", "60.7784", "90.3398", "N/A" };
     private static final String[] EMPTY_LINE = { "N/A", "N/A", "N/A", "N/A",
             "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
-            "N/A" };
+            "N/A", "N/A" };
+
     private SnapshotCsvDisplay disp;
 
     /**
