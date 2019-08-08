@@ -54,14 +54,14 @@ import com.google.common.collect.Table;
 
 /**
  * This is the main entry point for running Hartree CLI functions.
- * 
+ *
+ * @param <T> The target data type.
  * @author cmayes
- * 
- * @param <T>
- *            The target data type.
  */
 public class Main<T> {
-    /** Logger. */
+    /**
+     * Logger.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
     private static final Map<HandlingType, Loader<?>> HAND_TYPE_MAP = new HashMap<HandlingType, Loader<?>>();
     private static final Map<HandlingType, List<Calculation>> CALC_MAP = new HashMap<HandlingType, List<Calculation>>();
@@ -70,7 +70,9 @@ public class Main<T> {
     private static final Map<HandlingType, MediaType> DEF_MEDIA = new HashMap<HandlingType, MediaType>();
     private static final Map<HandlingType, ProcType> DEF_PROC = new HashMap<HandlingType, ProcType>();
 
-    /** Receives leftover command line parameters. */
+    /**
+     * Receives leftover command line parameters.
+     */
     @Argument
     private final List<String> arguments = new ArrayList<String>();
     private File file;
@@ -79,22 +81,24 @@ public class Main<T> {
     private Properties configs;
     private FileProcessor<T> testProcessor;
     private HandlingType hType;
-    @Option(metaVar = "ION", aliases = { "-i" }, name = "--ion", usage = "The ion element type to use.")
+    @Option(metaVar = "ION", aliases = {"-i"}, name = "--ion", usage = "The ion element type to use.")
     private AtomicElement ion;
-    @Option(metaVar = "MEDIA", aliases = { "-m" }, name = "--mediatype", usage = "The media type to use instead of the default.")
+    @Option(metaVar = "MEDIA", aliases = {"-m"}, name = "--mediatype", usage = "The media type to use instead of the default.")
     private MediaType targetMedia;
-    @Option(metaVar = "PROC", aliases = { "-p" }, name = "--proctype", usage = "The processor type to use instead of the default.")
+    @Option(metaVar = "PROC", aliases = {"-p"}, name = "--proctype", usage = "The processor type to use instead of the default.")
     private ProcType targetProc;
-    @Option(metaVar = "EXTS", aliases = { "-e" }, name = "--extensions", usage = "Extensions to include in input directory searches (.log and .out by default)")
-    private String[] inputExtensions = new String[] { ".log" };
-    @Option(metaVar = "TAGS", aliases = { "-t" }, name = "--tags", usage = "Categories that describe the input data")
-    private String[] categories = new String[] {};
-    @Option(metaVar = "PROJ", aliases = { "-n" }, name = "--projname", usage = "The name of this data's project (required for DB inserts)")
+    @Option(metaVar = "EXTS", aliases = {"-e"}, name = "--extensions", usage = "Extensions to include in input directory searches (.log and .out by default)")
+    private String[] inputExtensions = new String[]{".log"};
+    @Option(metaVar = "TAGS", aliases = {"-t"}, name = "--tags", usage = "Categories that describe the input data")
+    private String[] categories = new String[]{};
+    @Option(metaVar = "PROJ", aliases = {"-n"}, name = "--projname", usage = "The name of this data's project (required for DB inserts)")
     private String projectName;
+    @Option(aliases = {"-h"}, name = "--help", usage = "Displays usage info")
+    private boolean help;
 
     /**
      * Returns the specified file location.
-     * 
+     *
      * @return The specified file location.
      */
     File getFile() {
@@ -103,7 +107,7 @@ public class Main<T> {
 
     /**
      * Returns the specified directory location.
-     * 
+     *
      * @return The specified directory location.
      */
     File getDirectory() {
@@ -112,13 +116,11 @@ public class Main<T> {
 
     /**
      * Sets the file if it is readable.
-     * 
-     * @param theFile
-     *            The file to read.
-     * @throws IllegalArgumentException
-     *             If the file is not readable.
+     *
+     * @param theFile The file to read.
+     * @throws IllegalArgumentException If the file is not readable.
      */
-    @Option(metaVar = "INFILE", aliases = { "-f" }, name = "--file", usage = "The file to process")
+    @Option(metaVar = "INFILE", aliases = {"-f"}, name = "--file", usage = "The file to process")
     public void setFile(final File theFile) {
         if (theFile.canRead()) {
             this.file = theFile;
@@ -130,13 +132,11 @@ public class Main<T> {
 
     /**
      * Sets the file if it is readable.
-     * 
-     * @param theFile
-     *            The file to read.
-     * @throws IllegalArgumentException
-     *             If the file is not readable.
+     *
+     * @param theFile The file to read.
+     * @throws IllegalArgumentException If the file is not readable.
      */
-    @Option(metaVar = "CFG", aliases = { "-c" }, name = "--cfgfile", usage = "Configuration settings file (required for DB inserts)")
+    @Option(metaVar = "CFG", aliases = {"-c"}, name = "--cfgfile", usage = "Configuration settings file (required for DB inserts)")
     public void setConfigFile(final File theFile) {
         if (theFile.canRead()) {
             this.configs = new Properties();
@@ -155,11 +155,10 @@ public class Main<T> {
 
     /**
      * Sets the directory if it is a readable directory.
-     * 
-     * @param dir
-     *            The base directory to start from.
+     *
+     * @param dir The base directory to start from.
      */
-    @Option(metaVar = "INDIR", aliases = { "-d" }, name = "--directory", usage = "The base directory of the files to process")
+    @Option(metaVar = "INDIR", aliases = {"-d"}, name = "--directory", usage = "The base directory of the files to process")
     public void setDirectory(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.inDir = dir;
@@ -180,11 +179,10 @@ public class Main<T> {
     /**
      * Sets the out directory. Attempts to create the directory if it does not
      * exist.
-     * 
-     * @param dir
-     *            The base directory to start from.
+     *
+     * @param dir The base directory to start from.
      */
-    @Option(metaVar = "OUTDIR", aliases = { "-o" }, name = "--outdir", usage = "The output directory for result files")
+    @Option(metaVar = "OUTDIR", aliases = {"-o"}, name = "--outdir", usage = "The output directory for result files")
     public void setOutDir(final File dir) {
         if (dir.canRead() && dir.isDirectory()) {
             this.outDir = dir;
@@ -204,13 +202,15 @@ public class Main<T> {
     }
 
     /**
-     * @param args
-     *            The CLI arguments.
+     * @param args The CLI arguments.
      */
     @SuppressWarnings("rawtypes")
     public static void main(final String... args) {
         try {
             new Main().doMain(args);
+        } catch (final HelpMessageException e) {
+            printUsage(System.err, e.getParser());
+            System.exit(0);
         } catch (final CmdLineException e) {
             printErrorUsage(System.err, e);
             System.exit(1);
@@ -225,16 +225,18 @@ public class Main<T> {
 
     /**
      * Performs argument processing and command dispatching.
-     * 
-     * @param args
-     *            The arguments to process.
-     * @throws CmdLineException
-     *             When there are problems processing the command line.
+     *
+     * @param args The arguments to process.
+     * @throws CmdLineException When there are problems processing the command line.
      */
     public void doMain(final String... args) throws CmdLineException {
         final CmdLineParser parser = new CmdLineParser(this);
 
         parser.parseArgument(args);
+
+        if (help) {
+            throw new HelpMessageException(parser, "help");
+        }
 
         if (arguments.isEmpty()) {
             throw new CmdLineException(parser, String.format(
@@ -270,7 +272,7 @@ public class Main<T> {
 
     /**
      * Returns a new {@link FileProcessor} instance.
-     * 
+     *
      * @return A new FileProcessor instance.
      */
     FileProcessor<T> createProcessor() {
@@ -296,14 +298,14 @@ public class Main<T> {
         } else if (ProcType.BASIC.equals(proc)) {
             return new BasicFileProcessor<T>(hType, getLoader(), getDisplay(),
                     getCalcs(), new BasicInputFileHandler(new ExtensionFilter(
-                            inputExtensions), inDir, outDir));
+                    inputExtensions), inDir, outDir));
         }
         throw new IllegalArgumentException("Unhandled processor type " + proc);
     }
 
     /**
      * Finds the configured calculations for the current handling type.
-     * 
+     *
      * @return The configured calculations for the current handling type.
      */
     private List<Calculation> getCalcs() {
@@ -322,7 +324,7 @@ public class Main<T> {
 
     /**
      * Returns the loader for the target type.
-     * 
+     *
      * @return The loader for the target type.
      */
     @SuppressWarnings("unchecked")
@@ -333,7 +335,7 @@ public class Main<T> {
 
     /**
      * Return the display for the target type and media.
-     * 
+     *
      * @return The display for the target type and media.
      */
     @SuppressWarnings("unchecked")
@@ -354,33 +356,32 @@ public class Main<T> {
 
     /**
      * Returns a display instance for JDBC.
-     * 
+     *
      * @return A display instance for JDBC.
      */
     @SuppressWarnings("unchecked")
     private Display<T> createRdbmsDisplay() {
         switch (hType) {
-        case SNAPSHOT:
-        case CPSNAPSHOT:
-            final SnapshotJdbcDisplay jdbcDisplay = new SnapshotJdbcDisplay(
-                    configs);
-            jdbcDisplay.setProjectConfig(
-                    asNotNull(projectName, "Project name required"),
-                    Arrays.asList(categories));
-            return (Display<T>) jdbcDisplay;
-        default:
-            throw new IllegalArgumentException("Unhandled operation " + hType);
+            case SNAPSHOT:
+            case CPSNAPSHOT:
+                final SnapshotJdbcDisplay jdbcDisplay = new SnapshotJdbcDisplay(
+                        configs);
+                jdbcDisplay.setProjectConfig(
+                        asNotNull(projectName, "Project name required"),
+                        Arrays.asList(categories));
+                return (Display<T>) jdbcDisplay;
+            default:
+                throw new IllegalArgumentException("Unhandled operation " + hType);
         }
     }
 
     /**
      * Returns either the user's specified target media type or the default
      * media type for the target type.
-     * 
+     *
      * @return The media type to display.
-     * @throws IllegalStateException
-     *             If neither targetMedia nor a default mapping for the target
-     *             type are set.
+     * @throws IllegalStateException If neither targetMedia nor a default mapping for the target
+     *                               type are set.
      */
     MediaType getTargetMediaType() {
         if (targetMedia != null) {
@@ -408,28 +409,34 @@ public class Main<T> {
 
     /**
      * Prints a usage message to the given stream using the given exception.
-     * 
-     * @param outs
-     *            The stream to print to.
-     * @param e
-     *            The exception to evaluate.
+     *
+     * @param outs The stream to print to.
+     * @param e    The exception to evaluate.
      */
     static void printErrorUsage(final PrintStream outs, final CmdLineException e) {
         outs.println(e.getMessage());
+        printUsage(outs, e.getParser());
+    }
+
+    /**
+     * Prints a usage message to the given stream using the given exception.
+     *
+     * @param outs The stream to print to.
+     */
+    static void printUsage(final PrintStream outs, final CmdLineParser parser) {
         outs.printf("java %s [options...] (%s)%s", Main.class.getName(),
                 getHandlerNames(), NL);
         outs.println("Available arguments:");
         printArgs(outs);
         outs.println("Available options:");
-        e.getParser().printUsage(outs);
+        parser.printUsage(outs);
         outs.println();
     }
 
     /**
      * Prints a formatted description of the available handling types.
-     * 
-     * @param outs
-     *            The {@link PrintStream} to print to.
+     *
+     * @param outs The {@link PrintStream} to print to.
      */
     private static void printArgs(final PrintStream outs) {
         int maxCmd = 0;
@@ -448,7 +455,7 @@ public class Main<T> {
 
     /**
      * Returns the names of the handler commands.
-     * 
+     *
      * @return The names of the handler commands.
      */
     static String getHandlerNames() {
@@ -468,9 +475,8 @@ public class Main<T> {
     /**
      * Overrides the return for {@link #createProcessor()}. Used for
      * setting a test processor instance.
-     * 
-     * @param testProc
-     *            the testProcessor to set
+     *
+     * @param testProc the testProcessor to set
      */
     public void setTestFileProcessor(final FileProcessor<T> testProc) {
         this.testProcessor = testProc;
@@ -517,7 +523,9 @@ public class Main<T> {
                 StringArrayOptionHandler.class);
     }
 
-    /** The processor type to use. */
+    /**
+     * The processor type to use.
+     */
     private static enum ProcType {
         BASIC, ACCUM;
     }

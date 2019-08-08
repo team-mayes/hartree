@@ -42,6 +42,7 @@ public class DefaultBaseResult implements BaseResult {
     private Double enthalpy298;
     private Double elecEn;
     private Integer atomCount;
+    private Double bsse;
 
     /**
      * Zero-arg constructor.
@@ -187,113 +188,50 @@ public class DefaultBaseResult implements BaseResult {
         return atom;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#getMult()
-     */
     public Integer getMult() {
         return mult;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#setMult(java.lang.Integer)
-     */
     public void setMult(final Integer multVal) {
         this.mult = multVal;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#getRotPart()
-     */
     public Double getRotPart() {
         return rotPart;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#setRotPart(java.lang.Double)
-     */
     public void setRotPart(final Double rotationalPart) {
         this.rotPart = rotationalPart;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#getTransPart()
-     */
     public Double getTransPart() {
         return transPart;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#setTransPart(java.lang.Double
-     *      )
-     */
     public void setTransPart(final Double translationalPart) {
         this.transPart = translationalPart;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#getFrequencyValues()
-     */
     public List<Double> getFrequencyValues() {
         return frequencyValues;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#setFrequencyValues(java.util
-     *      .List)
-     */
     public void setFrequencyValues(final List<Double> freqValues) {
         this.frequencyValues = freqValues;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#getTerminationDates()
-     */
     public List<Date> getTerminationDates() {
         return terminationDates;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#setTerminationDates(java.
-     *      util.List)
-     */
     public void setTerminationDates(final List<Date> termDates) {
         this.terminationDates = termDates;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#getCpuTimes()
-     */
     public List<Duration> getCpuTimes() {
         return cpuTimes;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#setCpuTimes(java.util.List)
-     */
     public void setCpuTimes(final List<Duration> durations) {
         this.cpuTimes = durations;
     }
@@ -438,40 +376,19 @@ public class DefaultBaseResult implements BaseResult {
         this.gibbs298 = g298;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#getElecEn()
-     */
     public Double getElecEn() {
         return elecEn;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#setElecEn(java.lang.Double)
-     */
     public void setElecEn(final Double energies) {
         this.elecEn = energies;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#getAtomCount()
-     */
     public Integer getAtomCount() {
         return atomCount;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.cmayes.hartree.model.CalculationResult#setAtomCount(java.lang.Integer
-     *      )
-     */
-    public void setAtomCount(final Integer count) {
+        public void setAtomCount(final Integer count) {
         this.atomCount = count;
     }
 
@@ -488,6 +405,16 @@ public class DefaultBaseResult implements BaseResult {
      */
     public void setEnthalpy298(final Double enthalpy) {
         this.enthalpy298 = enthalpy;
+    }
+
+    @Override
+    public Double getBsse() {
+        return this.bsse;
+    }
+
+    @Override
+    public void setBsse(Double bsse) {
+        this.bsse = bsse;
     }
 
     /**
