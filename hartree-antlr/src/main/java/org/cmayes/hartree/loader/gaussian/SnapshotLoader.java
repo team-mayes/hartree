@@ -99,8 +99,7 @@ public class SnapshotLoader extends BaseGaussianLoader implements
                 result.setBasisSet(funcSetSplit[1]);
                 break;
             case SnapshotLexer.SOLVENT:
-                final String[] solvSplit = curNode.getText().split("=");
-                result.setSolvent(solvSplit[1]);
+                result.setSolvent(stripEndComma(curNode.getText()));
                 break;
             case SnapshotLexer.ZPECORR:
                 result.setZpeCorrection(toDouble(curNode.getText()));
@@ -134,6 +133,16 @@ public class SnapshotLoader extends BaseGaussianLoader implements
         }
 
         return result;
+    }
+
+    private String stripEndComma(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        if (text.endsWith(",")) {
+            return text.substring(0, text.length() - 1);
+        }
+        return text;
     }
 
     /**
