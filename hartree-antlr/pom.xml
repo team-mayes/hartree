@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.cmayes</groupId>
 		<artifactId>hartree</artifactId>
-		<version>1.2.4-SNAPSHOT</version>
+		<version>1.2.4-RC1</version>
 	</parent>
 	<groupId>org.cmayes.hartree</groupId>
 	<artifactId>hartree-antlr</artifactId>
