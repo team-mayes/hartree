@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>com.cmayes</groupId>
 			<artifactId>cmayes-common</artifactId>
-			<version>1.1.6</version>
+			<version>1.1.7</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
