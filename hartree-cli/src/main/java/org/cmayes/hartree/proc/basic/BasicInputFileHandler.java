@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.cmayes.hartree.proc.FileProcessor;
@@ -72,6 +73,7 @@ public class BasicInputFileHandler implements InputFileHandler {
             final FileProcessor<?> fileProcessor) {
         if (processDir.isDirectory()) {
             final String[] children = processDir.list(fileFilter);
+            Arrays.sort(children);
             for (int i = 0; i < children.length; i++) {
                 handle(new File(processDir, children[i]), fileProcessor);
             }
