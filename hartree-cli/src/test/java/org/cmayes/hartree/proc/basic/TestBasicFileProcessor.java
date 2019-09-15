@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.cmayes.hartree.HandlingType;
@@ -50,7 +51,7 @@ public class TestBasicFileProcessor {
         final BasicFileProcessor<BaseResult> proc = new BasicFileProcessor<BaseResult>(
                 HandlingType.SNAPSHOT, theParser, theDisp, calcs, fileHandler);
         final File dir = new File(CommonConstants.TMPDIR);
-        proc.displayAll(dir);
+        proc.displayDir(dir);
         proc.finish();
         verify(fileHandler).handle(dir, proc);
     }
@@ -83,7 +84,7 @@ public class TestBasicFileProcessor {
             final DefaultBaseResult result = new DefaultBaseResult(SRC_NAME);
             when(theParser.load(eq(tgtFile.getName()), any(FileReader.class)))
                     .thenReturn(result);
-            proc.display(tgtFile);
+            proc.displayAll(Collections.singletonList(tgtFile));
             verify(theDisp).write(writer, result);
             verify(theDisp).finish(writer);
             verify(writer).close();
@@ -114,7 +115,7 @@ public class TestBasicFileProcessor {
                         HandlingType.SNAPSHOT.getCommandName(),
                         MediaType.LOG.getPrimaryExtension()))
                 .thenReturn(writer);
-        proc.display(tgtFile);
+        proc.displayAll(Collections.singletonList(tgtFile));
     }
 
     /**
@@ -149,7 +150,7 @@ public class TestBasicFileProcessor {
             final DefaultBaseResult changedResult = new DefaultBaseResult(
                     CHG_SRC_NAME);
             when(calc.calculate(result)).thenReturn(changedResult);
-            proc.display(tgtFile);
+            proc.displayAll(Collections.singletonList(tgtFile));
             verify(theDisp).write(writer, changedResult);
             verify(theDisp).finish(writer);
             verify(writer).close();

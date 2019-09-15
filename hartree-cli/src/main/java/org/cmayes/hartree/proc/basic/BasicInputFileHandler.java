@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 import org.cmayes.hartree.proc.FileProcessor;
@@ -78,7 +80,7 @@ public class BasicInputFileHandler implements InputFileHandler {
                 handle(new File(processDir, children[i]), fileProcessor);
             }
         } else {
-            fileProcessor.display(processDir);
+            fileProcessor.displayAll(Collections.singletonList(processDir));
         }
     }
 

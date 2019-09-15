@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.cmayes.hartree.proc.FileProcessor;
 import org.junit.After;
@@ -150,7 +152,7 @@ public class TestBasicInputFileHandler {
         @SuppressWarnings("unchecked")
         final FileProcessor<Object> fProc = mock(FileProcessor.class);
         proc.handle(INDIR, fProc);
-        verify(fProc).display(inFile);
+        verify(fProc).displayAll(Collections.singletonList(inFile));
         verifyNoMoreInteractions(fProc);
     }
 
@@ -201,8 +203,8 @@ public class TestBasicInputFileHandler {
         @SuppressWarnings("unchecked")
         final FileProcessor<Object> fProc = mock(FileProcessor.class);
         proc.handle(INDIR, fProc);
-        verify(fProc).display(inFile);
-        verify(fProc).display(txtFile);
+        verify(fProc).displayAll(Collections.singletonList(inFile));
+        verify(fProc).displayAll(Collections.singletonList(txtFile));
         verifyNoMoreInteractions(fProc);
     }
 }

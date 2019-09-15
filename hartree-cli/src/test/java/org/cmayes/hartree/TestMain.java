@@ -1,13 +1,8 @@
 package org.cmayes.hartree;
 
 import static com.cmayes.common.CommonConstants.FILE_SEP;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -44,6 +39,8 @@ public class TestMain {
             FILE_SEP);
     private static final String REV4_LOC = String.format("%s%sGL_THF_rev4.log",
             GAUSS_DIR, FILE_SEP);
+    private static final String B14_LOC = String.format("%s%saglc_b14_157.log",
+            GAUSS_DIR, FILE_SEP);
 
     /**
      * Tests specifying an existing file.
@@ -55,7 +52,7 @@ public class TestMain {
     public void testFilePresent() throws Exception {
         final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
         main.doMain("-f", REV4_LOC, TEST_ARG);
-        assertThat(main.getFile().getPath(), equalTo(REV4_LOC));
+        assertThat(main.getFiles().get(0).getPath(), equalTo(REV4_LOC));
     }
 
     /**
@@ -64,10 +61,25 @@ public class TestMain {
      * @throws Exception
      *             When the test throws an exception.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = CmdLineException.class)
     public void testFileMissing() throws Exception {
         final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
         main.doMain("-f", "badLoc");
+    }
+
+    /**
+     * Tests specifying an existing file.
+     *
+     * @throws Exception
+     *             When the test throws an exception.
+     */
+    @Test
+    public void testMultiFilePresent() throws Exception {
+        final Main<NormalModeCalculation> main = new Main<NormalModeCalculation>();
+        main.doMain("-f", REV4_LOC, "-f", B14_LOC, TEST_ARG);
+
+        assertEquals(2, main.getFiles().size());
+        assertThat(main.getFiles(), containsInAnyOrder(new File(REV4_LOC), new File(B14_LOC)));
     }
 
     /**
@@ -211,7 +223,7 @@ public class TestMain {
         main.doMain("-f", REV4_LOC, NORM_ARG);
         assertThat(main.getDisplay(), instanceOf(NormalModeTextDisplay.class));
         assertThat(main.getLoader(), instanceOf(NormalModeLoader.class));
-        verify(fp).display(Mockito.any(File.class));
+        verify(fp).displayAll(Mockito.anyListOf(File.class));
     }
 
     /**
@@ -230,7 +242,7 @@ public class TestMain {
         main.doMain("-d", GAUSS_DIR, NORM_ARG);
         assertThat(main.getDisplay(), instanceOf(NormalModeTextDisplay.class));
         assertThat(main.getLoader(), instanceOf(NormalModeLoader.class));
-        verify(fp).displayAll(Mockito.any(File.class));
+        verify(fp).displayDir(Mockito.any(File.class));
     }
 
     /**
@@ -273,7 +285,7 @@ public class TestMain {
         main.doMain("-f", REV4_LOC, SNAP_ARG);
         assertThat(main.getDisplay(), instanceOf(SnapshotCsvDisplay.class));
         assertThat(main.getLoader(), instanceOf(SnapshotLoader.class));
-        verify(fp).display(Mockito.any(File.class));
+        verify(fp).displayAll(Mockito.anyListOf(File.class));
     }
 
     /**
@@ -292,6 +304,6 @@ public class TestMain {
         main.doMain("-d", GAUSS_DIR, SNAP_ARG);
         assertThat(main.getDisplay(), instanceOf(SnapshotCsvDisplay.class));
         assertThat(main.getLoader(), instanceOf(SnapshotLoader.class));
-        verify(fp).displayAll(Mockito.any(File.class));
+        verify(fp).displayDir(Mockito.any(File.class));
     }
 }

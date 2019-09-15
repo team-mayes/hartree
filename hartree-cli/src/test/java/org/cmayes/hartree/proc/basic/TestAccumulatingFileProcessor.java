@@ -18,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.cmayes.hartree.HandlingType;
@@ -56,7 +57,7 @@ public class TestAccumulatingFileProcessor {
         final AccumulatingFileProcessor<BaseResult> proc = new AccumulatingFileProcessor<BaseResult>(
                 HandlingType.SNAPSHOT, theParser, theDisp, calcs, fileHandler);
         final File dir = new File(CommonConstants.TMPDIR);
-        proc.displayAll(dir);
+        proc.displayDir(dir);
         proc.finish();
         verify(fileHandler).handle(dir, proc);
     }
@@ -91,7 +92,7 @@ public class TestAccumulatingFileProcessor {
             final DefaultBaseResult result = new DefaultBaseResult(SRC_NAME);
             when(theParser.load(eq(tgtFile.getName()), any(FileReader.class)))
                     .thenReturn(result);
-            proc.display(tgtFile);
+            proc.displayAll(Collections.singletonList(tgtFile));
             proc.finish();
             verify(theDisp).write(writer, result);
             verify(theDisp).finish(writer);
@@ -134,7 +135,7 @@ public class TestAccumulatingFileProcessor {
             final DefaultBaseResult result = new DefaultBaseResult(SRC_NAME);
             when(theParser.load(eq(tgtFile.getName()), any(FileReader.class)))
                     .thenReturn(result);
-            proc.display(tgtFile);
+            proc.displayAll((Collections.singletonList(tgtFile)));
             proc.finish();
             verify(theDisp).write(writer, result);
             verify(theDisp).finish(writer);
@@ -160,7 +161,7 @@ public class TestAccumulatingFileProcessor {
         final AccumulatingFileProcessor<BaseResult> proc = new AccumulatingFileProcessor<BaseResult>(
                 HandlingType.SNAPSHOT, theParser, theDisp, calcs, fileHandler);
         final File tgtFile = new File("this does not exist");
-        proc.display(tgtFile);
+        proc.displayAll((Collections.singletonList(tgtFile)));
     }
 
     /**
@@ -198,7 +199,7 @@ public class TestAccumulatingFileProcessor {
             final DefaultBaseResult changedResult = new DefaultBaseResult(
                     CHG_SRC_NAME);
             when(calc.calculate(result)).thenReturn(changedResult);
-            proc.display(tgtFile);
+            proc.displayAll((Collections.singletonList(tgtFile)));
             proc.finish();
             verify(theDisp).write(writer, changedResult);
             verify(theDisp).finish(writer);
