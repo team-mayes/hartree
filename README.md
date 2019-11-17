@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/team-mayes/hartree/workflows/JavaCI/badge.svg)](https://github.com/cteam-mayes/hartree/actions)
+
 # Hartree: Tools for Processing Computational Chemistry Data
 
 I wrote Hartree to help my wife with her processing of Gaussian 09 log files.
