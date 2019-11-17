@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/team-mayes/hartree/workflows/JavaCI/badge.svg)](https://github.com/cteam-mayes/hartree/actions)
+[![Actions Status](https://github.com/team-mayes/hartree/workflows/JavaCI/badge.svg)](https://github.com/team-mayes/hartree/actions)
 
 # Hartree: Tools for Processing Computational Chemistry Data
 
