@@ -16,7 +16,7 @@ jobs:
         java-version: 1.8
 
     - name: Install cmayes-common
-      run: mvn install:install-file -Dfile=target/cmayes-common-1.1.7.jar
+      run: mvn install:install-file -Dfile=dependencies/cmayes-common-1.1.7.jar
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
