@@ -35,7 +35,7 @@ public class TestG09LowestEnergyLoader {
         final LowestEnergyLoader loader = new LowestEnergyLoader();
         final LowestEnergyMapper load = loader.load("g09/aglc_b14_157.log",
                 new FileReader(FILE_DIR_PFX + "g09/aglc_b14_157.log"));
-        final List<Atom> results = mapper.readValue(new File(FILE_DIR_PFX,
+        final List<DefaultAtom> results = mapper.readValue(new File(FILE_DIR_PFX,
                 "json/aglc_b14_157.json"),
                 new TypeReference<List<DefaultAtom>>() {
                 });

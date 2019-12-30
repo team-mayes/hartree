@@ -32,13 +32,13 @@ tokens { TERM; CPUTIME; DEFDATA; FUNCSET;
     boolean xyzCtx = false; 
     boolean natomsFound = false;
     boolean natomsCtx = false;
+    boolean solventCtx = false;
 }
 
 // Def block
 
 DEFOPEN: {!defCtx}? SEPDASH WS HASH { defCtx = true; $channel = HIDDEN; };
 FUNCSET: {defCtx}? => ANUM SLASH FORMULA ;
-SOLVENT: {defCtx}? => ('S'|'s') 'olvent=' WORD;
 DEFCLOSE: {defCtx}? => SEPDASH { defCtx = false; $channel = HIDDEN; };
 
 ZPEOPEN: 'Zero-point correction=' { zpeCtx = true; $channel = HIDDEN; };
@@ -81,6 +81,10 @@ DIPTAG: 'Dipole moment' { dipCtx = true; $channel = HIDDEN; };
 DIPTOTTAG: {dipCtx}? =>  'Tot=' { dipTotCtx = true; $channel = HIDDEN; };
 DIPTOT: {dipTotCtx}? => FLOAT { dipCtx = false; dipTotCtx = false; };
 
+// Solvent
+SOLVENTTAG:  ('S'|'s') 'olvent' WS ':' WS  { solventCtx = true; $channel = HIDDEN; };
+SOLVENT: {solventCtx}? => (ANUM | '-' | ',')+  { solventCtx = false; };
+
 SCFTAG: 'SCF Done' { elecEngCtx = true; $channel = HIDDEN; };
 ELECENG: {elecEngCtx}? => FLOAT { elecEngCtx = false; };
 
@@ -103,8 +107,6 @@ TERMINT: {termCtx}? => INT ;
 TERMDATE: {termCtx}? => DATE ;
 TERMEND: {termCtx}? => '.' { termCtx = false; } ;
 
-
-
 fragment FLOAT: ('-')? ('0'..'9')+ '.' ('0'..'9')+ (('e'|'E'|'D'|'d') ('+'|'-')? ('0'..'9')+)? ;
 fragment INT: ('-')? '0'..'9'+ ;
 fragment ANUM: ('0'..'9' | 'A'..'Z' | 'a'..'z')+ ;
@@ -115,4 +117,4 @@ fragment WS: (' ' | '\t' | '\n' | '\r' | '\f')+ ;
 fragment SEPDASH: '------' ;
 fragment HASH: '#' ;
 fragment SLASH: '/' ;
-fragment FORMULA: (ANUM | '+' | '-' | '(' | ')' | ',')+ ; 
+fragment FORMULA: (ANUM | '+' | '-' | '(' | ')' | ',')+ ;

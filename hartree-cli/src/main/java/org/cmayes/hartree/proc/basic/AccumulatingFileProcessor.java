@@ -90,16 +90,18 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
     /**
      * {@inheritDoc}
      * 
-     * @see org.cmayes.hartree.proc.FileProcessor#display(java.io.File)
+     * @see org.cmayes.hartree.proc.FileProcessor#displayAll(List)
      */
-    public void display(final File processMe) {
-        try {
-            final T procResult = applyCalcs(parser.load(processMe.getName(),
-                    new FileReader(processMe)));
-            displayer.write(accWriter, procResult);
-        } catch (final FileNotFoundException e) {
-            throw new EnvironmentException(
-                    "File not found while creating reader", e);
+    public void displayAll(final List<File> processMe) {
+        for (File targetFile : processMe) {
+            try {
+                final T procResult = applyCalcs(parser.load(targetFile.getName(),
+                        new FileReader(targetFile)));
+                displayer.write(accWriter, procResult);
+            } catch (final FileNotFoundException e) {
+                throw new EnvironmentException(
+                        "File not found while creating reader", e);
+            }
         }
     }
 
@@ -125,11 +127,11 @@ public class AccumulatingFileProcessor<T> implements FileProcessor<T> {
      * 
      * @param processDir
      *            The directory (or file) to process.
-     * @see #display(File)
-     * @see org.cmayes.hartree.proc.FileProcessor#displayAll(java.io.File)
+     * @see #displayAll(List) 
+     * @see org.cmayes.hartree.proc.FileProcessor#displayDir(java.io.File)
      */
     @Override
-    public void displayAll(final File processDir) {
+    public void displayDir(final File processDir) {
         inputFileHandler.handle(processDir, this);
     }
 

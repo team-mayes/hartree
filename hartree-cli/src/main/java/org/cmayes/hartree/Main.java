@@ -75,7 +75,8 @@ public class Main<T> {
      */
     @Argument
     private final List<String> arguments = new ArrayList<String>();
-    private File file;
+    @Option(metaVar = "INFILES", aliases = {"-f"}, name = "--file", usage = "The file to process", multiValued = true)
+    private List<File> files;
     private File inDir;
     private File outDir;
     private Properties configs;
@@ -97,12 +98,12 @@ public class Main<T> {
     private boolean help;
 
     /**
-     * Returns the specified file location.
+     * Returns the specified file locations.
      *
-     * @return The specified file location.
+     * @return The specified file locations.
      */
-    File getFile() {
-        return file;
+    List<File> getFiles() {
+        return files;
     }
 
     /**
@@ -114,21 +115,22 @@ public class Main<T> {
         return inDir;
     }
 
-    /**
-     * Sets the file if it is readable.
-     *
-     * @param theFile The file to read.
-     * @throws IllegalArgumentException If the file is not readable.
-     */
-    @Option(metaVar = "INFILE", aliases = {"-f"}, name = "--file", usage = "The file to process")
-    public void setFile(final File theFile) {
-        if (theFile.canRead()) {
-            this.file = theFile;
-        } else {
-            throw new IllegalArgumentException(String.format(
-                    "File %s is not readable", theFile.getAbsolutePath()));
-        }
-    }
+//    /**
+//     * Adds the files if they are readable.
+//     *
+//     * @param theFiles The files to read.
+//     * @throws IllegalArgumentException If the file is not readable.
+//     */
+//    public void setFiles(final List<File> theFiles) {
+//        for (File aFile : theFiles) {
+//            if (aFile.canRead()) {
+//                this.files = theFiles;
+//            } else {
+//                throw new IllegalArgumentException(String.format(
+//                        "File %s is not readable", aFile.getAbsolutePath()));
+//            }
+//        }
+//    }
 
     /**
      * Sets the file if it is readable.
@@ -257,10 +259,10 @@ public class Main<T> {
 
         final FileProcessor<T> proc = createProcessor();
         try {
-            if (file != null) {
-                proc.display(file);
+            if (files != null) {
+                proc.displayAll(files);
             } else if (inDir != null) {
-                proc.displayAll(inDir);
+                proc.displayDir(inDir);
             } else {
                 throw new CmdLineException(parser,
                         "No input file or directory specified.");

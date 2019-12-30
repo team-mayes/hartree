@@ -33,5 +33,5 @@ xyzAtoms
 
 script
   :
-  (FUNCSET? SOLVENT? (CHARGE|MULT)+ (xyzAtoms|ELECENG|STOI|DIPTOT|NATOMS|BSSE)+ (FREQVAL+ | (cputime term)))+ ZPECORR? H298? G298? cputime? term? EOF
+  (FUNCSET? (CHARGE|MULT)+ (xyzAtoms|ELECENG|STOI|DIPTOT|NATOMS|BSSE|SOLVENT)+ (FREQVAL+ | (cputime term)))+ ZPECORR? H298? G298? cputime? term? EOF
   ;

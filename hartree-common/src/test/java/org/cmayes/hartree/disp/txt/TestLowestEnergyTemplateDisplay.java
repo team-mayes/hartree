@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.cmayes.hartree.model.LowestEnergyMapper;
 import org.junit.Test;
@@ -35,12 +36,12 @@ public class TestLowestEnergyTemplateDisplay {
      */
     @Test
     public void testSimple() throws Exception {
-        final List<Atom> results = mapper.readValue(new File(FILE_DIR_PFX,
+        final List<DefaultAtom> results = mapper.readValue(new File(FILE_DIR_PFX,
                 "json/aglc_b14_157.json"),
                 new TypeReference<List<DefaultAtom>>() {
                 });
         final LowestEnergyMapper lowMap = new LowestEnergyMapper();
-        lowMap.add(1, results);
+        lowMap.add(1, results.stream().map(Atom.class::cast).collect(Collectors.toList()));
         final Writer stringWriter = new StringWriter();
         final LowestEnergyTemplateDisplay lowDisp = new LowestEnergyTemplateDisplay();
         lowDisp.setTplName(FILE_DIR_PFX + "tpl/"

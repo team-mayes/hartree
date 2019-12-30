@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/team-mayes/hartree/workflows/JavaCI/badge.svg)](https://github.com/team-mayes/hartree/actions)
+
 # Hartree: Tools for Processing Computational Chemistry Data
 
 I wrote Hartree to help my wife with her processing of Gaussian 09 log files.
@@ -30,10 +32,10 @@ This library also uses Maven, so be sure that it's installed as per the previous
 	$ cd ~/code
 	$ git clone https://github.com/cmayes/cmayes-common
 	$ cd cmayes-common
-	$ git checkout cmayes-common-1.1.6
+	$ git checkout cmayes-common-1.1.7
 	$ mvn clean install
 
-This will pull down the library's dependencies, run the build for the 1.1.6 release, and install
+This will pull down the library's dependencies, run the build for the 1.1.7 release, and install
 the release's JAR in your local Maven repository (usually `~/.m2/repository`).
 
 ### Building Hartree
@@ -43,19 +45,19 @@ Once you have Maven and cmayes-common installed, you can build Hartree.
         $ cd ~/code
         $ git clone https://github.com/team-mayes/hartree
         $ cd hartree
-        $ git checkout hartree-1.2.2
+        $ git checkout hartree-1.2.5
         $ mvn clean package
 
 Note that you should check out the tag that corresponds to the release that you wish to build.
 
-The artifact at `hartree-cli/target/hartree-cli-1.2.2.jar` (or whichever version you've built)
+The artifact at `hartree-cli/target/hartree-cli-1.2.5.jar` (or whichever version you've built)
 is what you'll use.
 
 ## Usage
 
 The basic usage is:
 
-	$ java -jar hartree-cli-1.2.2.jar
+	$ java -jar hartree-cli-1.2.5.jar
 	Argument not one of (norm,snap,cpsnap,test,therm,lowen)
         java org.cmayes.hartree.Main [options...] (norm,snap,cpsnap,test,therm,lowen)
         Available arguments:
@@ -84,7 +86,7 @@ usage message because we have not specified an operation.
 
 Let's try the normal mode option: 
 
-	$ java -jar hartree-cli-1.2.2.jar norm
+	$ java -jar hartree-cli-1.2.5.jar norm
         No input file or directory specified.
         java org.cmayes.hartree.Main [options...] (norm,snap,cpsnap,test,therm,lowen)
         Available arguments:
@@ -110,7 +112,7 @@ Let's try the normal mode option:
 
 As the error message indicate, We need to specify a source to process.  Let's do a single file first.
 
-	$ java -jar hartree-cli-1.2.2.jar norm -f glucose5m062xEtOHnorm.log
+	$ java -jar hartree-cli-1.2.5.jar norm -f glucose5m062xEtOHnorm.log
 	Normal mode summary for file glucose5m062xEtOHnorm.log
 
 	Highest DoF percentages by dihedral:
@@ -119,7 +121,7 @@ As the error message indicate, We need to specify a source to process.  Let's do
 The report is dumped to standard out.  We could redirect this to a
 file, but it's just as easy to point Hartree to an output directory:
 
-	$ java -jar hartree-cli-1.2.2.jar norm -f glucose5m062xEtOHnorm.log -o out
+	$ java -jar hartree-cli-1.2.5.jar norm -f glucose5m062xEtOHnorm.log -o out
 	05:19:29.377 [main] DEBUG org.cmayes.hartree.Main - Created out dir
 	/home/cmayes/Downloads/out
 
@@ -134,7 +136,7 @@ This is the normal mode report.  It's named for the log file with "-norm.txt" at
 
 Now, let's try processing a whole directory at once:
 
-	$ java -jar hartree-cli-1.2.2.jar norm -d ~/g09/ -o out
+	$ java -jar hartree-cli-1.2.5.jar norm -d ~/g09/ -o out
 	line 741:11 mismatched input '45' expecting CPUTAG
 	...
 

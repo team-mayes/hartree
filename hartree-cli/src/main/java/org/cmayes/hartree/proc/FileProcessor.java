@@ -1,6 +1,7 @@
 package org.cmayes.hartree.proc;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Defines a file processor that produces instances of type T.
@@ -12,22 +13,21 @@ import java.io.File;
  */
 public interface FileProcessor<T> {
     /**
-     * Process a single file.
+     * Process a list of files.
      * 
-     * @param processMe
-     *            The file to process.
+     * @param processFiles
+     *            The files to process.
      */
-    void display(final File processMe);
-
+    void displayAll(final List<File> processFiles);
     /**
      * Displays all files in the given directory and its children. If the input
      * is a file, the data is processed singly.
      * 
      * @param processDir
      *            The directory (or file) to process.
-     * @see #display(File)
+     * @see #displayAll(List)
      */
-    void displayAll(final File processDir);
+    void displayDir(final File processDir);
 
     /**
      * Indicate that all processing is done, allowing for output finishing, I/O

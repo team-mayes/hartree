@@ -1,16 +1,17 @@
 package org.cmayes.hartree.loader.gaussian;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.io.FileReader;
-
 import org.cmayes.hartree.model.BaseResult;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileReader;
+
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests load cases using different files.
@@ -18,13 +19,13 @@ import org.slf4j.LoggerFactory;
  * @author cmayes
  * 
  */
-public class TestG09SnapshotLoader {
+public class TestG16TiMissing {
     private static final double ERR_MARGIN = .01;
     /** Logger. */
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(TestG09SnapshotLoader.class);
+            .getLogger(TestG16TiMissing.class);
     /** The prefix for file locations. */
-    private static final String FILE_DIR_PFX = "src/test/resources/files/g09/snapshot/";
+    private static final String FILE_DIR_PFX = "src/test/resources/files/g16/";
     private static final SnapshotLoader LOADER = new SnapshotLoader();
     private static BaseResult calc1;
 
@@ -36,8 +37,8 @@ public class TestG09SnapshotLoader {
      */
     @BeforeClass
     public static final void setUpClass() throws Exception {
-        calc1 = LOADER.load("glucNa3eO4areacttwater.out", new FileReader(
-                FILE_DIR_PFX + "glucNa3eO4areacttwater.out"));
+        calc1 = LOADER.load("tieg4pdc2_optfreq.log", new FileReader(
+                FILE_DIR_PFX + "tieg4pdc2_optfreq.log"));
         LOGGER.debug("Calc: " + calc1);
     }
 
@@ -60,7 +61,7 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testCharge() throws Exception {
-        assertThat(calc1.getCharge(), equalTo(1));
+        assertThat(calc1.getCharge(), equalTo(0));
     }
 
     /**
@@ -71,7 +72,7 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testElecEn() throws Exception {
-        assertThat(calc1.getElecEn(), closeTo(-849.236562278, ERR_MARGIN));
+        assertThat(calc1.getElecEn(), closeTo(-2488.87921549, ERR_MARGIN));
     }
 
     /**
@@ -82,7 +83,7 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testZpeCorr() throws Exception {
-        assertThat(calc1.getZpeCorrection(), closeTo(0.200499, ERR_MARGIN));
+        assertThat(calc1.getZpeCorrection(), closeTo(0.418926, ERR_MARGIN));
     }
 
     /**
@@ -93,8 +94,8 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testFreqVals() throws Exception {
-        assertThat(calc1.getFrequencyValues().get(0), closeTo(60.7784, ERR_MARGIN));
-        assertThat(calc1.getFrequencyValues().get(1), closeTo(90.3398, ERR_MARGIN));
+        assertThat(calc1.getFrequencyValues().get(0), closeTo(15.4741, ERR_MARGIN));
+        assertThat(calc1.getFrequencyValues().get(1), closeTo(21.3676, ERR_MARGIN));
     }
 
     /**
@@ -105,7 +106,7 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testFunctional() throws Exception {
-        assertThat(calc1.getFunctional(), equalTo("m062x"));
+        assertThat(calc1.getFunctional(), equalTo("RM062X"));
     }
 
     /**
@@ -116,7 +117,7 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testBasisSet() throws Exception {
-        assertThat(calc1.getBasisSet(), equalTo("6-31+g(2df,p)"));
+        assertThat(calc1.getBasisSet(), equalTo("def2TZVP"));
     }
 
     /**
@@ -127,7 +128,7 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testStoi() throws Exception {
-        assertThat(calc1.getStoichiometry(), equalTo("C6H12NaO6(1+)"));
+        assertThat(calc1.getStoichiometry(), equalTo("C15H24O14Ti"));
     }
 
     /**
@@ -138,9 +139,8 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testDipoleMoment() throws Exception {
-        assertThat(calc1.getDipoleMomentTotal(), closeTo(19.6701, ERR_MARGIN));
+        assertThat(calc1.getDipoleMomentTotal(), closeTo(6.694, ERR_MARGIN));
     }
-
 
     /**
      * Test.
@@ -150,6 +150,6 @@ public class TestG09SnapshotLoader {
      */
     @Test
     public void testSolvent() throws Exception {
-        assertThat(calc1.getSolvent(), equalTo("Water"));
+        assertEquals("1,2-EthaneDiol", calc1.getSolvent());
     }
 }

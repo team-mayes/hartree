@@ -68,35 +68,36 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      * {@inheritDoc}
      * 
      */
-    public void display(final File processMe) {
-        Writer writer = null;
-
-        FileReader fileReader = null;
-        try {
-            writer = inputFileHandler.createOutWriter(processMe, handlingType
-                    .getCommandName(), displayer.getMediaType()
-                    .getPrimaryExtension());
-            fileReader = new FileReader(processMe);
-            final T procResult = applyCalcs(parser.load(processMe.getName(),
-                    fileReader));
-            displayer.write(writer, procResult);
-        } catch (final FileNotFoundException e) {
-            throw new EnvironmentException(
-                    "File not found while creating reader", e);
-        } finally {
-            displayer.finish(writer);
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (final IOException e) {
-                    logger.warn("Problems closing writer: " + e.getMessage());
+    public void displayAll(final List<File> processFiles) {
+        for (File targetFile: processFiles) {
+            Writer writer = null;
+            FileReader fileReader = null;
+            try {
+                writer = inputFileHandler.createOutWriter(targetFile, handlingType
+                        .getCommandName(), displayer.getMediaType()
+                        .getPrimaryExtension());
+                fileReader = new FileReader(targetFile);
+                final T procResult = applyCalcs(parser.load(targetFile.getName(),
+                        fileReader));
+                displayer.write(writer, procResult);
+            } catch (final FileNotFoundException e) {
+                throw new EnvironmentException(
+                        "File not found while creating reader", e);
+            } finally {
+                displayer.finish(writer);
+                if (writer != null) {
+                    try {
+                        writer.close();
+                    } catch (final IOException e) {
+                        logger.warn("Problems closing writer: " + e.getMessage());
+                    }
                 }
-            }
-            if (fileReader != null) {
-                try {
-                    fileReader.close();
-                } catch (final IOException e) {
-                    logger.warn("Problems closing reader: " + e.getMessage());
+                if (fileReader != null) {
+                    try {
+                        fileReader.close();
+                    } catch (final IOException e) {
+                        logger.warn("Problems closing reader: " + e.getMessage());
+                    }
                 }
             }
         }
@@ -124,11 +125,11 @@ public class BasicFileProcessor<T> implements FileProcessor<T> {
      * 
      * @param processDir
      *            The directory (or file) to process.
-     * @see #display(File)
-     * @see org.cmayes.hartree.proc.FileProcessor#displayAll(java.io.File)
+     * @see #displayAll(List) 
+     * @see org.cmayes.hartree.proc.FileProcessor#displayDir(java.io.File)
      */
     @Override
-    public void displayAll(final File processDir) {
+    public void displayDir(final File processDir) {
         inputFileHandler.handle(processDir, this);
     }
 
