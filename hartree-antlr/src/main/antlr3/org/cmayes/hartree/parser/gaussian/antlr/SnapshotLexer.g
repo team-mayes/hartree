@@ -38,7 +38,7 @@ tokens { TERM; CPUTIME; DEFDATA; FUNCSET;
 
 DEFOPEN: {!defCtx}? SEPDASH WS HASH { defCtx = true; $channel = HIDDEN; };
 FUNCSET: {defCtx}? => ANUM SLASH FORMULA ;
-SOLVENT: {defCtx}? => 'solvent=' WORD;
+SOLVENT: {defCtx}? => ('S'|'s') 'olvent=' WORD;
 DEFCLOSE: {defCtx}? => SEPDASH { defCtx = false; $channel = HIDDEN; };
 
 ZPEOPEN: 'Zero-point correction=' { zpeCtx = true; $channel = HIDDEN; };

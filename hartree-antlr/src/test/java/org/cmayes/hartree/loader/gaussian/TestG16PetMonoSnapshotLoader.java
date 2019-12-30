@@ -140,4 +140,15 @@ public class TestG16PetMonoSnapshotLoader {
     public void testDipoleMoment() throws Exception {
         assertThat(calc1.getDipoleMomentTotal(), closeTo(5.2962, ERR_MARGIN));
     }
+
+    /**
+     * Test.
+     *
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testSolvent() throws Exception {
+        assertThat(calc1.getSolvent(), equalTo("PerFluoroBenzene"));
+    }
 }

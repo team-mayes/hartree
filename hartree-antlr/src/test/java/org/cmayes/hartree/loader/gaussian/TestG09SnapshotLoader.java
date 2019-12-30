@@ -140,4 +140,16 @@ public class TestG09SnapshotLoader {
     public void testDipoleMoment() throws Exception {
         assertThat(calc1.getDipoleMomentTotal(), closeTo(19.6701, ERR_MARGIN));
     }
+
+
+    /**
+     * Test.
+     *
+     * @throws Exception
+     *             When there's a problem.
+     */
+    @Test
+    public void testSolvent() throws Exception {
+        assertThat(calc1.getSolvent(), equalTo("water"));
+    }
 }
