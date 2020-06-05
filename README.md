@@ -11,6 +11,13 @@ has [cmayes-common](https://github.com/cmayes/cmayes-common) as a dependency.
 Since cmayes-common is not yet in Maven Central, you will need to build and install
 this library locally.
 
+### Verifying Java's Version
+
+    $ java -version
+
+Hartree requires Java 8 or better.  If the above command doesn't work, you will need to upgrade your Java version.
+If you're able to, I'd suggest using [SDKMan](https://sdkman.io/jdks) for managing local JDK versions.
+
 ### Installing Maven
 
 Maven is a Java library and can be unpacked in a local directory and added to your classpath.  For example:
