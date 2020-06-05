@@ -15,8 +15,8 @@ this library locally.
 
     $ java -version
 
-Hartree requires Java 8 or better.  If the above command doesn't work, you will need to upgrade your Java version.
-If you're able to, I'd suggest using [SDKMan](https://sdkman.io/jdks) for managing local JDK versions.
+Hartree requires Java 8 or better.  If the above command doesn't show 8.x or above, you will need to upgrade your 
+Java version.  If you're able to, I'd suggest using [SDKMan](https://sdkman.io/jdks) for managing local JDK versions.
 
 ### Installing Maven
 
