@@ -16,14 +16,14 @@ this library locally.
 Maven is a Java library and can be unpacked in a local directory and added to your classpath.  For example:
 
 	$ cd ~/apps
-	$ wget http://www-eu.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz
-	$ tar zxvf apache-maven-3.6.0-bin.tar.gz
-	$ ln -s apache-maven-3.6.0 maven
+	$ wget http://www-eu.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+	$ tar zxvf apache-maven-3.6.3-bin.tar.gz
+	$ ln -s apache-maven-3.6.3 maven
 	$ echo 'export PATH=$PATH:$HOME/apps/maven/bin' >> ~/.bashrc
 	$ . ~/.bashrc
 	$ mvn --version
 
-The last command should produce an output starting with something similar to `Apache Maven 3.6.0`.
+The last command should produce an output starting with something similar to `Apache Maven 3.6.3`.
 
 ### Installing cmayes-common
 
