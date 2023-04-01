@@ -12,7 +12,7 @@
 
 	<properties>
 		<!-- No bugfix release for jackson-core, so its version is hard-coded locally -->
-		<jackson.version>2.13.2</jackson.version>
+		<jackson.version>2.14.2</jackson.version>
 	</properties>
 	
 	<dependencies>
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.13.4.1</version>
+			<version>${jackson.version}</version>
 		</dependency>
 	</dependencies>
 </project>
