@@ -12,7 +12,7 @@
 
 	<properties>
 		<!-- No bugfix release for jackson-core, so its version is hard-coded locally -->
-		<jackson.version>2.14.2</jackson.version>
+		<jackson.version>2.15.0</jackson.version>
 	</properties>
 	
 	<dependencies>
